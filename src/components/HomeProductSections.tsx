@@ -8,8 +8,10 @@ import { api } from '@/lib/api';
 import { Product } from '@/types';
 import { toProduct } from '@/lib/productMapper';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
+import { useLang } from '@/context/LanguageContext';
 
 export function FeaturedProductsSection() {
+  const { t } = useLang();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -31,14 +33,13 @@ export function FeaturedProductsSection() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-extrabold text-[#1B3A6B]">Öne Çıkan Ürünler</h2>
-            <p className="text-gray-500 text-sm mt-1">En çok tercih edilen ürünlerimiz</p>
+            <h2 className="text-2xl font-extrabold text-[#1B3A6B]">{t('featuredProducts')}</h2>
           </div>
           <Link
             href="/urunler"
             className="text-orange-500 hover:text-orange-600 flex items-center gap-1 text-sm font-semibold"
           >
-            Tümünü Gör <ChevronRight size={16} />
+            {t('viewAll')} <ChevronRight size={16} />
           </Link>
         </div>
 
@@ -61,6 +62,7 @@ export function FeaturedProductsSection() {
 }
 
 export function RecentlyViewedSection() {
+  const { t } = useLang();
   const { ids } = useRecentlyViewed();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,10 +81,10 @@ export function RecentlyViewedSection() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Clock size={20} className="text-orange-500" />
-          <h2 className="text-xl font-extrabold text-[#1B3A6B]">Son Baktıklarınız</h2>
+          <h2 className="text-xl font-extrabold text-[#1B3A6B]">{t('recentlyViewed')}</h2>
         </div>
         <Link href="/urunler" className="text-orange-500 hover:text-orange-600 flex items-center gap-1 text-sm font-semibold">
-          Tüm Ürünler <ChevronRight size={16} />
+          {t('allProducts')} <ChevronRight size={16} />
         </Link>
       </div>
       {loading ? (
@@ -103,6 +105,7 @@ export function RecentlyViewedSection() {
 }
 
 export function NewProductsSection() {
+  const { t } = useLang();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -124,14 +127,13 @@ export function NewProductsSection() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-extrabold text-white">Yeni Gelenler</h2>
-            <p className="text-gray-400 text-sm mt-1">En son eklenen ürünlerimiz</p>
+            <h2 className="text-2xl font-extrabold text-white">{t('newArrivals')}</h2>
           </div>
           <Link
             href="/urunler"
             className="text-orange-400 hover:text-orange-300 flex items-center gap-1 text-sm font-semibold"
           >
-            Tümünü Gör <ChevronRight size={16} />
+            {t('viewAll')} <ChevronRight size={16} />
           </Link>
         </div>
 

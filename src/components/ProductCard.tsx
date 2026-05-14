@@ -10,6 +10,7 @@ import { useFavorites } from '@/context/FavoritesContext';
 import { useCompare } from '@/context/CompareContext';
 import QuickViewModal from '@/components/QuickViewModal';
 import FlashSaleCountdown from '@/components/FlashSaleCountdown';
+import { useLang } from '@/context/LanguageContext';
 
 interface ProductCardProps {
   product: Product;
@@ -19,6 +20,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const { isFavorite, toggle: toggleFav } = useFavorites();
   const { add: addToCompare, remove: removeFromCompare, isIn: isInCompare, items: compareItems } = useCompare();
+  const { t, lang } = useLang();
   const [countOffset, setCountOffset] = useState(0);
   const [added, setAdded] = useState(false);
   const [quickView, setQuickView] = useState(false);
@@ -69,7 +71,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           {product.isNew && (
             <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-              YENİ
+              {lang === 'en' ? 'NEW' : 'YENİ'}
             </span>
           )}
         </div>
@@ -95,7 +97,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="bg-white text-[#1B3A6B] font-semibold px-3 py-2 rounded-full flex items-center gap-1.5 text-sm hover:bg-orange-500 hover:text-white transition-colors shadow"
           >
             <Eye size={14} />
-            Hızlı Bak
+            {t('quickView')}
           </button>
         </div>
       </div>
@@ -128,10 +130,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Stock */}
         <p className="text-xs text-gray-400 mb-3">
           {product.stock > 10
-            ? <span className="text-green-600 font-medium">✓ Stokta var</span>
+            ? <span className="text-green-600 font-medium">✓ {t('inStock')}</span>
             : product.stock > 0
-            ? <span className="text-orange-500 font-medium">⚠ Son {product.stock} adet</span>
-            : <span className="text-red-500 font-medium">✗ Stokta yok</span>
+            ? <span className="text-orange-500 font-medium">⚠ {lang === 'en' ? `Only ${product.stock} ${t('lastItems')}` : `Son ${product.stock} adet!`}</span>
+            : <span className="text-red-500 font-medium">✗ {t('outOfStock')}</span>
           }
         </p>
 
@@ -165,12 +167,12 @@ export default function ProductCard({ product }: ProductCardProps) {
               }`}
             >
               {added ? <Check size={16} /> : <ShoppingCart size={16} />}
-              {added ? 'Eklendi!' : 'Sepete Ekle'}
+              {added ? t('addedToCart') : t('addToCart')}
             </button>
             <button
               onClick={(e) => { e.preventDefault(); isInCompare(product.id) ? removeFromCompare(product.id) : addToCompare(product); }}
               disabled={!isInCompare(product.id) && compareItems.length >= 3}
-              title={isInCompare(product.id) ? 'Karşılaştırmadan Çıkar' : 'Karşılaştır'}
+              title={isInCompare(product.id) ? t('removeFromCompare') : t('compare')}
               className={`p-2.5 rounded-xl border-2 transition-colors disabled:opacity-40 ${
                 isInCompare(product.id)
                   ? 'border-orange-500 bg-orange-50 text-orange-500'
