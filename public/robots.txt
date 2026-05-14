@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /admin/
+Disallow: /hesabim
+Disallow: /sepet
+Disallow: /odeme
+Disallow: /giris
+Disallow: /kayit
+Disallow: /api/
+
+Sitemap: https://adalyasolar.com/sitemap.xml
