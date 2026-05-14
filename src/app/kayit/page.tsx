@@ -6,11 +6,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, Mail, Lock, User, Phone, CheckCircle, Gift } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import GoogleLoginButton from '@/components/GoogleLoginButton';
+import { useLang } from '@/context/LanguageContext';
 
 function RegisterPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { register, googleLogin, isLoading } = useAuth();
+  const { t, lang } = useLang();
   const [referralCode, setReferralCode] = useState('');
 
   useEffect(() => {
@@ -31,12 +33,12 @@ function RegisterPageContent() {
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!form.name.trim() || form.name.trim().length < 2) errs.name = 'Ad soyad en az 2 karakter olmalıdır.';
-    if (!form.email.includes('@')) errs.email = 'Geçerli bir e-posta girin.';
-    if (form.phone.replace(/\D/g, '').length < 10) errs.phone = 'Geçerli bir telefon numarası girin.';
-    if (form.password.length < 6) errs.password = 'Şifre en az 6 karakter olmalıdır.';
-    if (form.password !== form.confirmPassword) errs.confirmPassword = 'Şifreler eşleşmiyor.';
-    if (!agree) errs.agree = 'Devam etmek için koşulları kabul etmelisiniz.';
+    if (!form.name.trim() || form.name.trim().length < 2) errs.name = lang === 'en' ? 'Name must be at least 2 characters.' : 'Ad soyad en az 2 karakter olmalıdır.';
+    if (!form.email.includes('@')) errs.email = lang === 'en' ? 'Enter a valid email address.' : 'Geçerli bir e-posta girin.';
+    if (form.phone.replace(/\D/g, '').length < 10) errs.phone = lang === 'en' ? 'Enter a valid phone number.' : 'Geçerli bir telefon numarası girin.';
+    if (form.password.length < 6) errs.password = lang === 'en' ? 'Password must be at least 6 characters.' : 'Şifre en az 6 karakter olmalıdır.';
+    if (form.password !== form.confirmPassword) errs.confirmPassword = lang === 'en' ? 'Passwords do not match.' : 'Şifreler eşleşmiyor.';
+    if (!agree) errs.agree = lang === 'en' ? 'You must accept the terms to continue.' : 'Devam etmek için koşulları kabul etmelisiniz.';
     return errs;
   };
 
@@ -55,9 +57,9 @@ function RegisterPageContent() {
   const passwordStrength = () => {
     const p = form.password;
     if (!p) return null;
-    if (p.length < 6) return { label: 'Zayıf', color: 'bg-red-500', width: '33%' };
-    if (p.length < 10 || !/[A-Z]/.test(p) || !/\d/.test(p)) return { label: 'Orta', color: 'bg-orange-400', width: '66%' };
-    return { label: 'Güçlü', color: 'bg-green-500', width: '100%' };
+    if (p.length < 6) return { label: lang === 'en' ? 'Weak' : 'Zayıf', color: 'bg-red-500', width: '33%' };
+    if (p.length < 10 || !/[A-Z]/.test(p) || !/\d/.test(p)) return { label: lang === 'en' ? 'Medium' : 'Orta', color: 'bg-orange-400', width: '66%' };
+    return { label: lang === 'en' ? 'Strong' : 'Güçlü', color: 'bg-green-500', width: '100%' };
   };
   const strength = passwordStrength();
 
@@ -68,22 +70,22 @@ function RegisterPageContent() {
           <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <span className="text-white text-3xl font-extrabold">A</span>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Hesap Oluşturun</h1>
-          <p className="text-gray-500 text-sm mt-1">Ücretsiz kayıt olun, avantajlardan yararlanın</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">{t('registerTitle')}</h1>
+          <p className="text-gray-500 text-sm mt-1">{t('registerSubtitle')}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 block mb-1.5">Ad Soyad</label>
+              <label className="text-sm font-semibold text-gray-700 block mb-1.5">{t('name')}</label>
               <div className="relative">
                 <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   value={form.name}
                   onChange={set('name')}
-                  placeholder="Adınız Soyadınız"
+                  placeholder={lang === 'en' ? 'Your Full Name' : 'Adınız Soyadınız'}
                   className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all ${errors.name ? 'border-red-400' : 'border-gray-200'}`}
                 />
               </div>
@@ -92,7 +94,7 @@ function RegisterPageContent() {
 
             {/* Email */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 block mb-1.5">E-posta Adresi</label>
+              <label className="text-sm font-semibold text-gray-700 block mb-1.5">{t('email')}</label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -108,7 +110,7 @@ function RegisterPageContent() {
 
             {/* Phone */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 block mb-1.5">Telefon Numarası</label>
+              <label className="text-sm font-semibold text-gray-700 block mb-1.5">{t('phone')}</label>
               <div className="relative">
                 <Phone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -124,7 +126,7 @@ function RegisterPageContent() {
 
             {/* Password */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 block mb-1.5">Şifre</label>
+              <label className="text-sm font-semibold text-gray-700 block mb-1.5">{t('password')}</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -143,7 +145,7 @@ function RegisterPageContent() {
                   <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div className={`h-full ${strength.color} transition-all`} style={{ width: strength.width }} />
                   </div>
-                  <p className={`text-xs mt-0.5 ${strength.color.replace('bg-', 'text-')}`}>{strength.label} şifre</p>
+                  <p className={`text-xs mt-0.5 ${strength.color.replace('bg-', 'text-')}`}>{strength.label} {lang === 'en' ? 'password' : 'şifre'}</p>
                 </div>
               )}
               {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
@@ -151,7 +153,7 @@ function RegisterPageContent() {
 
             {/* Confirm Password */}
             <div>
-              <label className="text-sm font-semibold text-gray-700 block mb-1.5">Şifre Tekrar</label>
+              <label className="text-sm font-semibold text-gray-700 block mb-1.5">{t('passwordConfirm')}</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -178,10 +180,10 @@ function RegisterPageContent() {
                   className="accent-orange-500 mt-0.5"
                 />
                 <span className="text-sm text-gray-600">
-                  <Link href="/kullanim-kosullari" className="text-orange-500 hover:underline">Kullanım Koşulları</Link>
-                  {' '}ve{' '}
-                  <Link href="/gizlilik-politikasi" className="text-orange-500 hover:underline">Gizlilik Politikası</Link>
-                  &apos;nı okudum ve kabul ediyorum.
+                  <Link href="/kullanim-kosullari" className="text-orange-500 hover:underline">{t('termsLink')}</Link>
+                  {' '}{lang === 'en' ? 'and' : 've'}{' '}
+                  <Link href="/gizlilik-politikasi" className="text-orange-500 hover:underline">{t('privacyLink')}</Link>
+                  {lang === 'en' ? ` — ${t('agreeTerms')}` : `'nı okudum ve kabul ediyorum.`}
                 </span>
               </label>
               {errors.agree && <p className="text-xs text-red-500 mt-1">{errors.agree}</p>}
@@ -195,7 +197,7 @@ function RegisterPageContent() {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                'Kayıt Ol'
+                t('register')
               )}
             </button>
           </form>
@@ -203,14 +205,14 @@ function RegisterPageContent() {
           {referralCode && (
             <div className="mt-4 flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 text-sm text-orange-700">
               <Gift size={16} className="shrink-0" />
-              <span>Davet koduyla kayıt oluyorsunuz. Kayıt sonrası <strong>50 puan</strong> kazanacaksınız!</span>
+              <span>{lang === 'en' ? <>You are registering with a referral code. You will earn <strong>50 points</strong> after registration!</> : <>Davet koduyla kayıt oluyorsunuz. Kayıt sonrası <strong>50 puan</strong> kazanacaksınız!</>}</span>
             </div>
           )}
 
           <div className="relative my-6">
             <hr className="border-gray-200" />
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-xs text-gray-400">
-              veya
+              {t('orContinueWith')}
             </span>
           </div>
 
@@ -222,9 +224,9 @@ function RegisterPageContent() {
           />
 
           <p className="text-center text-sm text-gray-500 mt-5">
-            Zaten hesabınız var mı?{' '}
+            {t('haveAccount')}{' '}
             <Link href="/giris" className="text-orange-500 font-semibold hover:text-orange-600">
-              Giriş Yap
+              {t('login')}
             </Link>
           </p>
         </div>

@@ -19,6 +19,7 @@ import FlashSaleCountdown from '@/components/FlashSaleCountdown';
 import { ThumbsUp } from 'lucide-react';
 import { toProduct, slugToProductId } from '@/lib/productMapper';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
+import { useLang } from '@/context/LanguageContext';
 
 interface Props {
   slug: string;
@@ -29,6 +30,7 @@ export default function ProductDetailClient({ slug }: Props) {
   const { addToCart } = useCart();
   const { user } = useAuth();
   const { isFavorite, toggle: toggleFav } = useFavorites();
+  const { t, lang } = useLang();
   const { ids: recentIds, track } = useRecentlyViewed();
   const [initFav, setInitFav] = useState<boolean | null>(null);
 
@@ -163,7 +165,7 @@ export default function ProductDetailClient({ slug }: Props) {
 
   const handleSubmitReview = async () => {
     if (!user) return;
-    if (!reviewForm.comment.trim()) { setReviewError('Lütfen bir yorum yazın.'); return; }
+    if (!reviewForm.comment.trim()) { setReviewError(lang === 'en' ? 'Please write a comment.' : 'Lütfen bir yorum yazın.'); return; }
     setSubmittingReview(true);
     setReviewError('');
     try {
@@ -191,7 +193,7 @@ export default function ProductDetailClient({ slug }: Props) {
       setReviewForm({ rating: 5, comment: '' });
       setReviewPhotos([]);
     } catch (e: unknown) {
-      setReviewError(e instanceof Error ? e.message : 'Yorum gönderilemedi.');
+      setReviewError(e instanceof Error ? e.message : (lang === 'en' ? 'Could not submit review.' : 'Yorum gönderilemedi.'));
     } finally {
       setSubmittingReview(false);
     }
@@ -281,9 +283,9 @@ export default function ProductDetailClient({ slug }: Props) {
     <main className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <div className="flex items-center gap-1 text-sm text-gray-500 mb-6 flex-wrap">
-        <Link href="/" className="hover:text-orange-500">Ana Sayfa</Link>
+        <Link href="/" className="hover:text-orange-500">{lang === 'en' ? 'Home' : 'Ana Sayfa'}</Link>
         <ChevronRight size={14} />
-        <Link href="/urunler" className="hover:text-orange-500">Ürünler</Link>
+        <Link href="/urunler" className="hover:text-orange-500">{lang === 'en' ? 'Products' : 'Ürünler'}</Link>
         <ChevronRight size={14} />
         <Link href={`/urunler?kategori=${product.category}`} className="hover:text-orange-500">
           {category?.name}
@@ -315,7 +317,7 @@ export default function ProductDetailClient({ slug }: Props) {
             )}
             {product.isNew && (
               <span className="absolute top-3 right-3 bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                YENİ
+                {lang === 'en' ? 'NEW' : 'YENİ'}
               </span>
             )}
             {product.images.length > 1 && (
@@ -384,7 +386,7 @@ export default function ProductDetailClient({ slug }: Props) {
               ))}
             </div>
             <span className="text-sm font-semibold text-gray-700">{product.rating}</span>
-            <span className="text-sm text-gray-400">({product.reviewCount} değerlendirme)</span>
+            <span className="text-sm text-gray-400">({product.reviewCount} {lang === 'en' ? 'reviews' : 'değerlendirme'})</span>
             <span className="flex items-center gap-1 text-sm text-gray-400 ml-2">
               <Heart size={14} className="fill-red-400 text-red-400" />
               {product.favoriteCount}
@@ -394,7 +396,7 @@ export default function ProductDetailClient({ slug }: Props) {
           {orderCount !== null && orderCount > 0 && (
             <p className="text-xs font-semibold text-green-700 bg-green-50 border border-green-100 rounded-full px-3 py-1 inline-flex items-center gap-1.5 mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block" />
-              Son 30 günde {orderCount} kişi satın aldı
+              {lang === 'en' ? `${orderCount} people bought this in the last 30 days` : `Son 30 günde ${orderCount} kişi satın aldı`}
             </p>
           )}
 
@@ -429,7 +431,7 @@ export default function ProductDetailClient({ slug }: Props) {
                 </span>
               )}
             </div>
-            <p className="text-xs text-gray-400 mt-1">KDV dahil fiyattır</p>
+            <p className="text-xs text-gray-400 mt-1">{t('vatIncluded')}</p>
             {/* Taksit bilgisi */}
             {(product.price + variantPriceAdjustment) >= 500 && (() => {
               const total = product.price + variantPriceAdjustment;
@@ -445,7 +447,7 @@ export default function ProductDetailClient({ slug }: Props) {
             {/* Toplu sipariş indirimi */}
             {product.volumeDiscounts && product.volumeDiscounts.length > 0 && (
               <div className="mt-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
-                <p className="text-xs font-bold text-blue-700 mb-2">Toplu Sipariş İndirimi</p>
+                <p className="text-xs font-bold text-blue-700 mb-2">{t('bulkDiscount')}</p>
                 <div className="flex flex-wrap gap-2">
                   {[...product.volumeDiscounts]
                     .sort((a, b) => a.minQty - b.minQty)
@@ -460,7 +462,7 @@ export default function ProductDetailClient({ slug }: Props) {
                               : 'bg-white text-blue-600 border border-blue-200'
                           }`}
                         >
-                          {tier.minQty}+ adet → %{tier.discountPct} indirim
+                          {lang === 'en' ? `${tier.minQty}+ units → ${tier.discountPct}% off` : `${tier.minQty}+ adet → %${tier.discountPct} indirim`}
                         </span>
                       );
                     })}
@@ -473,7 +475,9 @@ export default function ProductDetailClient({ slug }: Props) {
                   const discountedPrice = (product.price + variantPriceAdjustment) * (1 - activeTier.discountPct / 100);
                   return (
                     <p className="text-xs text-blue-700 mt-1.5 font-semibold">
-                      Birim fiyat: {discountedPrice.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺ (%{activeTier.discountPct} indirimli)
+                      {lang === 'en'
+                        ? `Unit price: ₺${discountedPrice.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} (${activeTier.discountPct}% off)`
+                        : `Birim fiyat: ${discountedPrice.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺ (%${activeTier.discountPct} indirimli)`}
                     </p>
                   );
                 })()}
@@ -510,7 +514,7 @@ export default function ProductDetailClient({ slug }: Props) {
                               ({v.priceAdjustment > 0 ? '+' : ''}{v.priceAdjustment.toLocaleString('tr-TR')}₺)
                             </span>
                           )}
-                          {outOfStock && <span className="ml-1 text-xs">(Tükendi)</span>}
+                          {outOfStock && <span className="ml-1 text-xs">({lang === 'en' ? 'Out of Stock' : 'Tükendi'})</span>}
                         </button>
                       );
                     })}
@@ -524,11 +528,11 @@ export default function ProductDetailClient({ slug }: Props) {
           <div className="flex items-center gap-2 mb-5">
             <Package size={16} className="text-green-600" />
             {product.stock > 10 ? (
-              <span className="text-green-600 font-semibold text-sm">Stokta Mevcut ({product.stock} adet)</span>
+              <span className="text-green-600 font-semibold text-sm">{lang === 'en' ? `In Stock (${product.stock} units)` : `Stokta Mevcut (${product.stock} adet)`}</span>
             ) : product.stock > 0 ? (
-              <span className="text-orange-500 font-semibold text-sm">Son {product.stock} adet!</span>
+              <span className="text-orange-500 font-semibold text-sm">{lang === 'en' ? `Only ${product.stock} left!` : `Son ${product.stock} adet!`}</span>
             ) : (
-              <span className="text-red-500 font-semibold text-sm">Stok Tükendi</span>
+              <span className="text-red-500 font-semibold text-sm">{t('outOfStock')}</span>
             )}
           </div>
 
@@ -550,14 +554,14 @@ export default function ProductDetailClient({ slug }: Props) {
                 added ? 'bg-green-500 text-white' : 'bg-orange-500 hover:bg-orange-600 text-white disabled:bg-gray-300'
               }`}
             >
-              {added ? (<><CheckCircle size={20} />Sepete Eklendi!</>) : (<><ShoppingCart size={20} />Sepete Ekle</>)}
+              {added ? (<><CheckCircle size={20} />{t('addedToCart')}</>) : (<><ShoppingCart size={20} />{t('addToCart')}</>)}
             </button>
           </div>
 
           {/* Stock notify form */}
           {product.stock === 0 && (
             <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-4">
-              <p className="text-sm font-semibold text-[#1B3A6B] mb-2">Stok geldiğinde haber ver</p>
+              <p className="text-sm font-semibold text-[#1B3A6B] mb-2">{t('notifyStock')}</p>
               {notifyStatus === 'done' ? (
                 <p className="text-sm text-green-600 font-medium flex items-center gap-1.5">
                   <CheckCircle size={15} /> {notifyMsg}
@@ -568,7 +572,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     type="email"
                     value={notifyEmail}
                     onChange={e => setNotifyEmail(e.target.value)}
-                    placeholder="E-posta adresiniz"
+                    placeholder={lang === 'en' ? 'Your email address' : 'E-posta adresiniz'}
                     className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
                   />
                   <button
@@ -584,7 +588,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     disabled={notifyStatus === 'loading'}
                     className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-semibold px-4 py-2 rounded-xl text-sm transition-colors whitespace-nowrap"
                   >
-                    {notifyStatus === 'loading' ? '...' : 'Haberdar Et'}
+                    {notifyStatus === 'loading' ? '...' : t('notifyMe')}
                   </button>
                 </div>
               )}
@@ -601,7 +605,7 @@ export default function ProductDetailClient({ slug }: Props) {
               }`}
             >
               <Heart size={16} className={isFavorite(product.id) ? 'fill-red-500' : ''} />
-              {isFavorite(product.id) ? 'Favorilerde' : 'Favorilere Ekle'}
+              {isFavorite(product.id) ? t('inFavorites') : t('addToFavorites')}
             </button>
             <div className="relative flex-1">
               <button
@@ -616,13 +620,13 @@ export default function ProductDetailClient({ slug }: Props) {
                 }}
                 className="w-full border-2 border-gray-200 hover:border-orange-400 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-orange-500 transition-colors"
               >
-                <Share2 size={16} />Paylaş
+                <Share2 size={16} />{t('share')}
               </button>
               {shareOpen && (
                 <div className="absolute bottom-full mb-2 left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg p-3 z-20">
-                  <p className="text-xs font-bold text-gray-500 mb-2">Paylaş</p>
+                  <p className="text-xs font-bold text-gray-500 mb-2">{t('share')}</p>
                   {[
-                    { label: 'WhatsApp', color: 'text-green-600', href: `https://wa.me/?text=${encodeURIComponent(`${product.name} — Adalya Solar'da incele! ${window.location.href}`)}` },
+                    { label: 'WhatsApp', color: 'text-green-600', href: `https://wa.me/?text=${encodeURIComponent(`${product.name} — ${lang === 'en' ? 'Check it on Adalya Solar!' : "Adalya Solar'da incele!"} ${window.location.href}`)}` },
                     { label: 'X (Twitter)', color: 'text-sky-500', href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(product.name)}&url=${encodeURIComponent(window.location.href)}` },
                     { label: 'Facebook', color: 'text-blue-600', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}` },
                   ].map(item => (
@@ -636,7 +640,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     onClick={() => { navigator.clipboard.writeText(window.location.href); setShareOpen(false); }}
                     className="block w-full text-left px-3 py-2 text-sm font-medium rounded-lg hover:bg-gray-50 text-gray-600"
                   >
-                    🔗 Bağlantıyı Kopyala
+                    🔗 {lang === 'en' ? 'Copy Link' : 'Bağlantıyı Kopyala'}
                   </button>
                 </div>
               )}
@@ -645,8 +649,8 @@ export default function ProductDetailClient({ slug }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             {[
-              { icon: <Shield size={16} className="text-orange-500" />, text: 'Orijinal Ürün Garantisi' },
-              { icon: <Truck size={16} className="text-orange-500" />, text: 'Ücretsiz Kargo (500₺ üzeri)' },
+              { icon: <Shield size={16} className="text-orange-500" />, text: t('whyWarrantyTitle') },
+              { icon: <Truck size={16} className="text-orange-500" />, text: lang === 'en' ? 'Free Shipping (over ₺500)' : 'Ücretsiz Kargo (500₺ üzeri)' },
             ].map((item) => (
               <div key={item.text} className="flex items-center gap-2 bg-gray-50 rounded-xl p-3 text-xs text-gray-600">
                 {item.icon}{item.text}
@@ -675,20 +679,20 @@ export default function ProductDetailClient({ slug }: Props) {
             const payback = product.price > 0 ? (product.price / annualSavings).toFixed(1) : null;
             return (
               <div className="mt-4 bg-green-50 border border-green-200 rounded-2xl p-4">
-                <p className="text-xs font-bold text-green-700 mb-2">⚡ Tahmini Tasarruf Hesabı</p>
+                <p className="text-xs font-bold text-green-700 mb-2">{t('estimatedSavings')}</p>
                 <div className="grid grid-cols-2 gap-2 text-center">
                   <div className="bg-white rounded-xl p-2">
                     <p className="text-lg font-extrabold text-green-600">{annualKwh.toLocaleString('tr-TR')} kWh</p>
-                    <p className="text-[10px] text-gray-500">Yıllık üretim</p>
+                    <p className="text-[10px] text-gray-500">{t('annualProduction')}</p>
                   </div>
                   <div className="bg-white rounded-xl p-2">
                     <p className="text-lg font-extrabold text-green-600">₺{annualSavings.toLocaleString('tr-TR')}</p>
-                    <p className="text-[10px] text-gray-500">Yıllık tasarruf</p>
+                    <p className="text-[10px] text-gray-500">{t('annualSavings')}</p>
                   </div>
                 </div>
                 {payback && (
                   <p className="text-xs text-gray-500 mt-2 text-center">
-                    Kendini amorti süresi: <span className="font-bold text-green-700">{payback} yıl</span>
+                    {t('paybackPeriod')}: <span className="font-bold text-green-700">{payback} {t('years')}</span>
                     <span className="ml-1 text-gray-400">({ELECTRICITY_PRICE} ₺/kWh, günde {DAILY_HOURS} saat)</span>
                   </p>
                 )}
@@ -709,11 +713,11 @@ export default function ProductDetailClient({ slug }: Props) {
                 activeTab === tab ? 'border-orange-500 text-orange-500' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              {tab === 'description' && 'Ürün Açıklaması'}
-              {tab === 'specs' && 'Teknik Özellikler'}
-              {tab === 'reviews' && `Değerlendirmeler (${reviews.length})`}
-              {tab === 'qa' && `Soru & Cevap (${questions.length})`}
-              {tab === 'docs' && `Teknik Belgeler (${documents.length})`}
+              {tab === 'description' && t('description')}
+              {tab === 'specs' && t('specs')}
+              {tab === 'reviews' && `${t('reviews')} (${reviews.length})`}
+              {tab === 'qa' && `${t('qa')} (${questions.length})`}
+              {tab === 'docs' && `${t('documents')} (${documents.length})`}
             </button>
           ))}
         </div>
@@ -728,7 +732,7 @@ export default function ProductDetailClient({ slug }: Props) {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             {specEntries.length === 0 && certsArray.length === 0 ? (
               <div className="px-6 py-12 text-center text-gray-400 text-sm">
-                Bu ürün için henüz teknik özellik girilmemiştir.
+                {lang === 'en' ? 'No technical specifications have been entered for this product yet.' : 'Bu ürün için henüz teknik özellik girilmemiştir.'}
               </div>
             ) : (
               <>
@@ -738,7 +742,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     className="flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 font-semibold transition-colors"
                   >
                     <Download size={15} />
-                    Teknik Veri Sayfası İndir (PDF)
+                    {t('downloadSpecs')}
                   </button>
                 </div>
                 <table className="w-full text-sm">
@@ -751,7 +755,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     ))}
                     {certsArray.length > 0 && (
                       <tr className={specEntries.length % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                        <td className="px-6 py-3 font-semibold text-[#1B3A6B]">Sertifikalar</td>
+                        <td className="px-6 py-3 font-semibold text-[#1B3A6B]">{lang === 'en' ? 'Certificates' : 'Sertifikalar'}</td>
                         <td className="px-6 py-3">
                           <div className="flex flex-wrap gap-2">
                             {certsArray.map((cert) => (
@@ -772,9 +776,9 @@ export default function ProductDetailClient({ slug }: Props) {
           <div className="space-y-6">
             {user ? (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-base font-bold text-[#1B3A6B] mb-4">Değerlendirme Yaz</h3>
+                <h3 className="text-base font-bold text-[#1B3A6B] mb-4">{t('writeReview')}</h3>
                 <div className="mb-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">Puanınız</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-2">{t('yourRating')}</p>
                   <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button key={star} onClick={() => setReviewForm((p) => ({ ...p, rating: star }))}>
@@ -789,7 +793,7 @@ export default function ProductDetailClient({ slug }: Props) {
                 <textarea
                   value={reviewForm.comment}
                   onChange={(e) => setReviewForm((p) => ({ ...p, comment: e.target.value }))}
-                  placeholder="Ürün hakkında düşüncelerinizi paylaşın..."
+                  placeholder={t('reviewPlaceholder')}
                   rows={4}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none"
                 />
@@ -812,7 +816,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     onClick={() => photoInputRef.current?.click()}
                     className="text-sm text-gray-500 border border-dashed border-gray-300 hover:border-orange-400 hover:text-orange-500 px-4 py-2 rounded-xl transition-colors"
                   >
-                    📷 Fotoğraf Ekle (maks. 5)
+                    📷 {t('addPhoto')}
                   </button>
                   {reviewPhotos.length > 0 && (
                     <div className="flex gap-2 flex-wrap mt-2">
@@ -838,14 +842,14 @@ export default function ProductDetailClient({ slug }: Props) {
                   disabled={submittingReview || uploadingReviewPhotos}
                   className="mt-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors"
                 >
-                  {uploadingReviewPhotos ? 'Fotoğraflar yükleniyor...' : submittingReview ? 'Gönderiliyor...' : 'Değerlendirmeyi Gönder'}
+                  {uploadingReviewPhotos ? t('uploadingPhotos') : submittingReview ? t('submitting') : t('submitReview')}
                 </button>
               </div>
             ) : (
               <div className="bg-orange-50 border border-orange-100 rounded-2xl p-5 text-center">
-                <p className="text-sm text-gray-600 mb-3">Değerlendirme yapmak için giriş yapmanız gerekiyor.</p>
+                <p className="text-sm text-gray-600 mb-3">{t('loginToReview')}</p>
                 <Link href="/giris" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-colors">
-                  Giriş Yap
+                  {t('login')}
                 </Link>
               </div>
             )}
@@ -853,7 +857,7 @@ export default function ProductDetailClient({ slug }: Props) {
             {reviews.length === 0 ? (
               <div className="text-center py-10 text-gray-500">
                 <Star size={40} className="mx-auto mb-3 text-gray-300" />
-                <p>Henüz değerlendirme yok. İlk değerlendirmeyi sen yap!</p>
+                <p>{t('noReviews')}</p>
               </div>
             ) : (
               reviews.map((review) => (
@@ -884,7 +888,7 @@ export default function ProductDetailClient({ slug }: Props) {
                         <div className="flex gap-2 flex-wrap mb-3">
                           {photos.map((url, i) => (
                             <a key={i} href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5207'}${url}`} target="_blank" rel="noopener noreferrer" className="block w-16 h-16 rounded-lg overflow-hidden border border-gray-200 hover:opacity-90 transition-opacity">
-                              <img src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5207'}${url}`} alt={`Yorum fotoğrafı ${i + 1}`} className="w-full h-full object-cover" />
+                              <img src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5207'}${url}`} alt={`${lang === 'en' ? 'Review photo' : 'Yorum fotoğrafı'} ${i + 1}`} className="w-full h-full object-cover" />
                             </a>
                           ))}
                         </div>
@@ -895,7 +899,7 @@ export default function ProductDetailClient({ slug }: Props) {
 
                   {review.adminReply && (
                     <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-3">
-                      <p className="text-xs font-bold text-blue-700 mb-1">Satıcı Yanıtı</p>
+                      <p className="text-xs font-bold text-blue-700 mb-1">{t('sellerReply')}</p>
                       <p className="text-sm text-blue-800">{review.adminReply}</p>
                     </div>
                   )}
@@ -911,7 +915,7 @@ export default function ProductDetailClient({ slug }: Props) {
                       }`}
                     >
                       <ThumbsUp size={13} />
-                      Faydalı ({review.likeCount})
+                      {t('helpful')} ({review.likeCount})
                     </button>
                   </div>
                 </div>
@@ -926,14 +930,14 @@ export default function ProductDetailClient({ slug }: Props) {
             {/* Ask form */}
             {user ? (
               <div className="bg-orange-50 rounded-2xl p-5 border border-orange-100">
-                <h3 className="font-extrabold text-[#1B3A6B] mb-3 text-sm">Soru Sor</h3>
+                <h3 className="font-extrabold text-[#1B3A6B] mb-3 text-sm">{t('askQuestion')}</h3>
                 {questionError && (
                   <p className="text-red-500 text-sm mb-2">{questionError}</p>
                 )}
                 <textarea
                   value={questionText}
                   onChange={e => setQuestionText(e.target.value)}
-                  placeholder="Bu ürün hakkında merak ettiğinizi sorun..."
+                  placeholder={t('questionPlaceholder')}
                   rows={3}
                   className="w-full border border-orange-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none bg-white"
                 />
@@ -948,31 +952,31 @@ export default function ProductDetailClient({ slug }: Props) {
                       setQuestions(prev => [q, ...prev]);
                       setQuestionText('');
                     } catch (err: unknown) {
-                      setQuestionError(err instanceof Error ? err.message : 'Soru gönderilemedi.');
+                      setQuestionError(err instanceof Error ? err.message : (lang === 'en' ? 'Could not send question.' : 'Soru gönderilemedi.'));
                     } finally {
                       setSubmittingQuestion(false);
                     }
                   }}
                   className="mt-3 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-bold px-5 py-2 rounded-xl transition-colors"
                 >
-                  {submittingQuestion ? 'Gönderiliyor...' : 'Soruyu Gönder'}
+                  {submittingQuestion ? t('sending') : t('sendQuestion')}
                 </button>
               </div>
             ) : (
               <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100 text-center">
-                <p className="text-sm text-gray-500 mb-3">Soru sormak için giriş yapmanız gerekiyor.</p>
+                <p className="text-sm text-gray-500 mb-3">{t('loginToAsk')}</p>
                 <a href="/giris" className="inline-block bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-5 py-2 rounded-xl transition-colors">
-                  Giriş Yap
+                  {t('login')}
                 </a>
               </div>
             )}
 
             {/* Questions list */}
             {!questionsLoaded ? (
-              <p className="text-gray-400 text-sm text-center py-6">Yükleniyor...</p>
+              <p className="text-gray-400 text-sm text-center py-6">{t('loading')}</p>
             ) : questions.length === 0 ? (
               <div className="text-center py-10 text-gray-400">
-                <p className="text-sm">Henüz soru sorulmamış. İlk soruyu siz sorun!</p>
+                <p className="text-sm">{t('noQuestions')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -990,7 +994,7 @@ export default function ProductDetailClient({ slug }: Props) {
                     <p className="text-sm text-gray-800 font-medium mb-3">{q.question}</p>
                     {q.answer ? (
                       <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                        <p className="text-xs font-bold text-green-700 mb-1">Satıcı Yanıtı</p>
+                        <p className="text-xs font-bold text-green-700 mb-1">{t('sellerReply')}</p>
                         <p className="text-sm text-green-800 leading-relaxed">{q.answer}</p>
                         {q.answeredAt && (
                           <p className="text-xs text-green-500 mt-1">{new Date(q.answeredAt).toLocaleDateString('tr-TR')}</p>
@@ -998,7 +1002,7 @@ export default function ProductDetailClient({ slug }: Props) {
                       </div>
                     ) : (
                       <div className="bg-gray-50 rounded-xl px-4 py-3">
-                        <p className="text-xs text-gray-400 italic">Henüz yanıtlanmadı. En kısa sürede cevaplanacak.</p>
+                        <p className="text-xs text-gray-400 italic">{t('notAnswered')}</p>
                       </div>
                     )}
                   </div>
@@ -1010,7 +1014,7 @@ export default function ProductDetailClient({ slug }: Props) {
 
         {activeTab === 'docs' && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h3 className="text-sm font-bold text-[#1B3A6B] mb-4">Teknik Belgeler & Veri Sayfaları</h3>
+            <h3 className="text-sm font-bold text-[#1B3A6B] mb-4">{lang === 'en' ? 'Technical Documents & Data Sheets' : 'Teknik Belgeler & Veri Sayfaları'}</h3>
             <div className="space-y-3">
               {documents.map((doc) => {
                 const icons: Record<string, string> = { pdf: '📄', doc: '📝', docx: '📝', xls: '📊', xlsx: '📊', zip: '🗜️', dwg: '📐' };
@@ -1040,7 +1044,7 @@ export default function ProductDetailClient({ slug }: Props) {
 
       {related.length > 0 && (
         <section className="mb-12">
-          <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">Benzer Ürünler</h2>
+          <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">{t('relatedProducts')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {related.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>

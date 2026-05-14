@@ -6,12 +6,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import GoogleLoginButton from '@/components/GoogleLoginButton';
+import { useLang } from '@/context/LanguageContext';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/hesabim';
   const { login, googleLogin, isLoading } = useAuth();
+  const { t, lang } = useLang();
 
   const timeout = searchParams.get('timeout') === '1';
   const [email, setEmail] = useState('');
@@ -26,7 +28,7 @@ function LoginForm() {
     if (ok) {
       router.push(redirect);
     } else {
-      setError('E-posta veya şifre hatalı. Lütfen tekrar deneyin.');
+      setError(lang === 'en' ? 'Incorrect email or password. Please try again.' : 'E-posta veya şifre hatalı. Lütfen tekrar deneyin.');
     }
   };
 
@@ -38,15 +40,15 @@ function LoginForm() {
           <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <span className="text-white text-3xl font-extrabold">A</span>
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Tekrar Hoş Geldiniz!</h1>
-          <p className="text-gray-500 text-sm mt-1">Hesabınıza giriş yapın</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">{t('loginTitle')}</h1>
+          <p className="text-gray-500 text-sm mt-1">{t('loginSubtitle')}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           {timeout && (
             <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-sm px-4 py-3 rounded-xl mb-5">
               <AlertCircle size={16} className="shrink-0" />
-              Oturum süreniz doldu. Lütfen tekrar giriş yapın.
+              {lang === 'en' ? 'Your session has expired. Please sign in again.' : 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.'}
             </div>
           )}
           {error && (
@@ -59,7 +61,7 @@ function LoginForm() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="text-sm font-semibold text-gray-700 block mb-1.5">
-                E-posta Adresi
+                {t('email')}
               </label>
               <div className="relative">
                 <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -76,9 +78,9 @@ function LoginForm() {
 
             <div>
               <div className="flex justify-between mb-1.5">
-                <label className="text-sm font-semibold text-gray-700">Şifre</label>
+                <label className="text-sm font-semibold text-gray-700">{t('password')}</label>
                 <Link href="/sifremi-unuttum" className="text-xs text-orange-500 hover:text-orange-600">
-                  Şifremi Unuttum
+                  {t('forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
@@ -103,7 +105,7 @@ function LoginForm() {
 
             <div className="flex items-center gap-2">
               <input type="checkbox" id="remember" className="accent-orange-500" />
-              <label htmlFor="remember" className="text-sm text-gray-600">Beni hatırla</label>
+              <label htmlFor="remember" className="text-sm text-gray-600">{t('rememberMe')}</label>
             </div>
 
             <button
@@ -114,7 +116,7 @@ function LoginForm() {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                'Giriş Yap'
+                t('login')
               )}
             </button>
           </form>
@@ -122,7 +124,7 @@ function LoginForm() {
           <div className="relative my-6">
             <hr className="border-gray-200" />
             <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-xs text-gray-400">
-              veya
+              {t('orContinueWith')}
             </span>
           </div>
 
@@ -130,24 +132,24 @@ function LoginForm() {
             onToken={async (idToken) => {
               const ok = await googleLogin(idToken);
               if (ok) router.push(redirect);
-              else setError('Google ile giriş başarısız. Lütfen tekrar deneyin.');
+              else setError(lang === 'en' ? 'Google sign-in failed. Please try again.' : 'Google ile giriş başarısız. Lütfen tekrar deneyin.');
             }}
           />
 
           <p className="text-center text-sm text-gray-500 mt-5">
-            Hesabınız yok mu?{' '}
+            {t('noAccount')}{' '}
             <Link href="/kayit" className="text-orange-500 font-semibold hover:text-orange-600">
-              Kayıt Ol
+              {t('register')}
             </Link>
           </p>
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          Giriş yaparak{' '}
-          <Link href="/kullanim-kosullari" className="underline hover:text-orange-500">Kullanım Koşulları</Link>
-          {' '}ve{' '}
-          <Link href="/gizlilik-politikasi" className="underline hover:text-orange-500">Gizlilik Politikası</Link>
-          &apos;nı kabul etmiş olursunuz.
+          {lang === 'en' ? 'By signing in you agree to our' : 'Giriş yaparak'}{' '}
+          <Link href="/kullanim-kosullari" className="underline hover:text-orange-500">{t('termsLink')}</Link>
+          {' '}{lang === 'en' ? 'and' : 've'}{' '}
+          <Link href="/gizlilik-politikasi" className="underline hover:text-orange-500">{t('privacyLink')}</Link>
+          {lang === 'en' ? '.' : `'nı kabul etmiş olursunuz.`}
         </p>
       </div>
     </div>
@@ -156,7 +158,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Yükleniyor...</div>}>
+    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
       <LoginForm />
     </Suspense>
   );

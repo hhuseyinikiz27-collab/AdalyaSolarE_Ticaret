@@ -7,8 +7,10 @@ import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, Tag, Shield, Truck, Chec
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
+import { useLang } from '@/context/LanguageContext';
 
 export default function CartPage() {
+  const { t, lang } = useLang();
   const { items, totalItems, totalPrice, coupon, discount, finalPrice, updateQuantity, removeFromCart, clearCart, setCoupon } = useCart();
   const { user } = useAuth();
   const [couponInput, setCouponInput] = useState('');
@@ -116,23 +118,23 @@ export default function CartPage() {
     return (
       <main className="max-w-7xl mx-auto px-4 py-20 text-center">
         <ShoppingCart size={80} className="mx-auto text-gray-200 mb-6" />
-        <h2 className="text-2xl font-bold text-gray-700 mb-2">Sepetiniz Boş</h2>
-        <p className="text-gray-500 mb-8">Harika ürünleri keşfetmek için alışverişe başlayın.</p>
+        <h2 className="text-2xl font-bold text-gray-700 mb-2">{t('emptyCart')}</h2>
+        <p className="text-gray-500 mb-8">{t('emptyCartDesc')}</p>
         <Link
           href="/urunler"
           className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3 rounded-xl transition-colors"
         >
           <ShoppingCart size={18} />
-          Alışverişe Başla
+          {t('continueShopping')}
         </Link>
       </main>
     );
   }
 
   const cartSteps = [
-    { label: 'Sepet', icon: ShoppingCart },
-    { label: 'Sipariş Onayı', icon: MapPin },
-    { label: 'Ödeme', icon: CreditCard },
+    { label: t('myCart'), icon: ShoppingCart },
+    { label: lang === 'en' ? 'Order Review' : 'Sipariş Onayı', icon: MapPin },
+    { label: lang === 'en' ? 'Payment' : 'Ödeme', icon: CreditCard },
   ];
 
   return (
@@ -167,15 +169,15 @@ export default function CartPage() {
 
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-extrabold text-[#1B3A6B]">
-          Sepetim
-          <span className="ml-2 text-base font-normal text-gray-400">({totalItems} ürün)</span>
+          {t('myCart')}
+          <span className="ml-2 text-base font-normal text-gray-400">({totalItems} {lang === 'en' ? 'items' : 'ürün'})</span>
         </h1>
         <button
           onClick={clearCart}
           className="text-red-500 hover:text-red-600 text-sm flex items-center gap-1 transition-colors"
         >
           <Trash2 size={14} />
-          Sepeti Temizle
+          {lang === 'en' ? 'Clear Cart' : 'Sepeti Temizle'}
         </button>
       </div>
 
@@ -274,7 +276,7 @@ export default function CartPage() {
                       value={couponInput}
                       onChange={e => setCouponInput(e.target.value.toUpperCase())}
                       onKeyDown={e => { if (e.key === 'Enter') handleApplyCoupon(); }}
-                      placeholder="İndirim kuponu giriniz..."
+                      placeholder={lang === 'en' ? 'Enter coupon code...' : 'İndirim kuponu giriniz...'}
                       className="flex-1 py-2.5 text-sm outline-none"
                     />
                   </div>
@@ -283,7 +285,7 @@ export default function CartPage() {
                     disabled={couponLoading || !couponInput.trim()}
                     className="bg-[#1B3A6B] hover:bg-[#2d5282] disabled:bg-gray-300 text-white font-semibold px-5 rounded-xl transition-colors text-sm"
                   >
-                    {couponLoading ? '...' : 'Uygula'}
+                    {couponLoading ? '...' : t('apply')}
                   </button>
                 </div>
                 {couponError && <p className="text-red-500 text-xs px-1">{couponError}</p>}
@@ -312,7 +314,7 @@ export default function CartPage() {
                       value={giftCardInput}
                       onChange={e => setGiftCardInput(e.target.value.toUpperCase())}
                       onKeyDown={e => { if (e.key === 'Enter') handleApplyGiftCard(); }}
-                      placeholder="Hediye kartı kodu..."
+                      placeholder={lang === 'en' ? 'Gift card code...' : 'Hediye kartı kodu...'}
                       className="flex-1 py-2.5 text-sm outline-none font-mono"
                     />
                   </div>
@@ -321,7 +323,7 @@ export default function CartPage() {
                     disabled={giftCardLoading || !giftCardInput.trim()}
                     className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-semibold px-5 rounded-xl transition-colors text-sm"
                   >
-                    {giftCardLoading ? '...' : 'Uygula'}
+                    {giftCardLoading ? '...' : t('apply')}
                   </button>
                 </div>
                 {giftCardError && <p className="text-red-500 text-xs px-1">{giftCardError}</p>}
@@ -333,41 +335,43 @@ export default function CartPage() {
         {/* Order Summary */}
         <div className="lg:w-80 shrink-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-24">
-            <h2 className="font-bold text-[#1B3A6B] text-lg mb-4">Sipariş Özeti</h2>
+            <h2 className="font-bold text-[#1B3A6B] text-lg mb-4">{lang === 'en' ? 'Order Summary' : 'Sipariş Özeti'}</h2>
 
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Ürünler ({totalItems} adet)</span>
+                <span className="text-gray-500">{lang === 'en' ? `Items (${totalItems})` : `Ürünler (${totalItems} adet)`}</span>
                 <span className="font-medium">{totalPrice.toLocaleString('tr-TR')} ₺</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-green-600 font-medium">Kupon İndirimi ({coupon?.code})</span>
+                  <span className="text-green-600 font-medium">{lang === 'en' ? `Coupon (${coupon?.code})` : `Kupon İndirimi (${coupon?.code})`}</span>
                   <span className="text-green-600 font-semibold">-{discount.toLocaleString('tr-TR')} ₺</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Kargo</span>
+                <span className="text-gray-500">{t('shipping')}</span>
                 {kargo === 0 ? (
-                  <span className="text-green-600 font-semibold">Ücretsiz</span>
+                  <span className="text-green-600 font-semibold">{t('freeShipping')}</span>
                 ) : (
                   <span className="font-medium">{kargo} ₺</span>
                 )}
               </div>
               {kargo > 0 && (
                 <p className="text-xs text-orange-500 bg-orange-50 rounded-lg p-2">
-                  🚚 {(shippingFree - finalPrice).toLocaleString('tr-TR')} ₺ daha ekle, kargo ücretsiz olsun!
+                  🚚 {lang === 'en'
+                    ? `Add ₺${(shippingFree - finalPrice).toLocaleString('tr-TR')} more for free shipping!`
+                    : `${(shippingFree - finalPrice).toLocaleString('tr-TR')} ₺ daha ekle, kargo ücretsiz olsun!`}
                 </p>
               )}
               {loyaltyDiscount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-purple-600 font-medium">Puan İndirimi</span>
+                  <span className="text-purple-600 font-medium">{lang === 'en' ? 'Points Discount' : 'Puan İndirimi'}</span>
                   <span className="text-purple-600 font-semibold">-{loyaltyDiscount.toLocaleString('tr-TR')} ₺</span>
                 </div>
               )}
               {giftCardDiscount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-orange-600 font-medium">Hediye Kartı ({giftCardCode})</span>
+                  <span className="text-orange-600 font-medium">{lang === 'en' ? `Gift Card (${giftCardCode})` : `Hediye Kartı (${giftCardCode})`}</span>
                   <span className="text-orange-600 font-semibold">-{giftCardDiscount.toLocaleString('tr-TR')} ₺</span>
                 </div>
               )}
@@ -377,7 +381,7 @@ export default function CartPage() {
             {user && loyaltyPoints >= 100 && (
               <div className="bg-purple-50 border border-purple-200 rounded-xl px-4 py-3 mb-4">
                 <p className="text-xs font-bold text-purple-700 mb-2">
-                  {loyaltyPoints} puan = {Math.floor(loyaltyPoints / 100) * 10} ₺ indirim
+                  {lang === 'en' ? `${loyaltyPoints} pts = ₺${Math.floor(loyaltyPoints / 100) * 10} discount` : `${loyaltyPoints} puan = ${Math.floor(loyaltyPoints / 100) * 10} ₺ indirim`}
                 </p>
                 {loyaltyDiscount > 0 ? (
                   <button
@@ -393,7 +397,7 @@ export default function CartPage() {
                     disabled={loyaltyLoading}
                     className="text-xs text-purple-600 underline"
                   >
-                    Puanı kaldır
+                    {lang === 'en' ? 'Remove points' : 'Puanı kaldır'}
                   </button>
                 ) : (
                   <button
@@ -410,7 +414,7 @@ export default function CartPage() {
                     disabled={loyaltyLoading}
                     className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 text-white text-xs font-semibold py-2 rounded-lg transition-colors"
                   >
-                    {loyaltyLoading ? '...' : 'Tüm Puanlarımı Kullan'}
+                    {loyaltyLoading ? '...' : (lang === 'en' ? 'Use All My Points' : 'Tüm Puanlarımı Kullan')}
                   </button>
                 )}
               </div>
@@ -418,10 +422,10 @@ export default function CartPage() {
 
             <div className="border-t pt-3 mb-5">
               <div className="flex justify-between font-extrabold text-[#1B3A6B] text-lg">
-                <span>Genel Toplam</span>
+                <span>{t('total')}</span>
                 <span>{genel.toLocaleString('tr-TR')} ₺</span>
               </div>
-              <p className="text-xs text-gray-400 mt-1">KDV dahildir</p>
+              <p className="text-xs text-gray-400 mt-1">{lang === 'en' ? 'VAT included' : 'KDV dahildir'}</p>
             </div>
 
             {user ? (
@@ -429,7 +433,7 @@ export default function CartPage() {
                 href="/odeme"
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
               >
-                Ödemeye Geç
+                {t('checkout')}
                 <ArrowRight size={18} />
               </Link>
             ) : (
@@ -438,14 +442,14 @@ export default function CartPage() {
                   href="/giris?redirect=/odeme"
                   className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
                 >
-                  Giriş Yap & Ödeme
+                  {lang === 'en' ? 'Sign In & Pay' : 'Giriş Yap & Ödeme'}
                   <ArrowRight size={18} />
                 </Link>
                 <Link
                   href="/odeme"
                   className="w-full border-2 border-gray-200 hover:border-orange-400 text-gray-600 font-semibold py-3 rounded-xl flex items-center justify-center text-sm transition-colors"
                 >
-                  Üye Olmadan Devam
+                  {lang === 'en' ? 'Continue as Guest' : 'Üye Olmadan Devam'}
                 </Link>
               </div>
             )}
@@ -454,11 +458,11 @@ export default function CartPage() {
             <div className="mt-4 space-y-2">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Shield size={14} className="text-green-500 shrink-0" />
-                SSL ile güvenli ödeme
+                {lang === 'en' ? 'Secure payment with SSL' : 'SSL ile güvenli ödeme'}
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Truck size={14} className="text-green-500 shrink-0" />
-                Sigortalı kargo ile teslimat
+                {lang === 'en' ? 'Insured delivery' : 'Sigortalı kargo ile teslimat'}
               </div>
             </div>
           </div>
@@ -468,7 +472,7 @@ export default function CartPage() {
             href="/urunler"
             className="mt-4 w-full border-2 border-gray-200 hover:border-orange-400 text-gray-600 hover:text-orange-500 font-semibold py-3 rounded-xl flex items-center justify-center transition-colors text-sm"
           >
-            Alışverişe Devam Et
+            {t('continueShopping')}
           </Link>
         </div>
       </div>
