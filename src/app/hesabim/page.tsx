@@ -1907,7 +1907,7 @@ function AccountPageContent() {
               </div>
 
           {/* Warranty Tab */}
-          {activeTab === 'garanti' && (
+          {(activeTab as string) === 'garanti' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-[#1B3A6B]">Garantilerim</h2>

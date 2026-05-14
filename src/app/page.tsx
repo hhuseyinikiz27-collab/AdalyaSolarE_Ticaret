@@ -2,13 +2,28 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight, Shield, Truck, Headphones, Award, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronRight, Phone, Mail } from 'lucide-react';
 import { categories as staticCategories } from '@/data/products';
 import { FeaturedProductsSection, NewProductsSection, RecentlyViewedSection } from '@/components/HomeProductSections';
+import HeroSlider from '@/components/HeroSlider';
+import HomeStats from '@/components/HomeStats';
 import { useLang } from '@/context/LanguageContext';
 
 type CatItem = { slug: string; name: string; icon: string; description: string };
+
+const whyFeatures = [
+  { icon: '🛠️', title: 'Mühendislik Odaklı Yaklaşım', desc: 'Her ürün teknik standartlara göre seçilir. Verimlilikten ödün vermeden en doğru çözümü sunuyoruz.' },
+  { icon: '🔑', title: 'Anahtar Teslim Projeler', desc: 'Projenizi bütünüyle üstleniyoruz. Siz sadece kapıyı teslim alın, gerisini biz halledelim.' },
+  { icon: '📈', title: 'Yüksek Verimlilik Garantisi', desc: 'Doğru ekipman seçimi ve sistem tasarımıyla %90+ verimlilik oranı hedefliyoruz.' },
+  { icon: '🤝', title: 'Uzun Vadeli Teknik Destek', desc: 'Kurulum sonrası bakım ve destek hizmetleriyle yatırımınızın değerini koruyoruz.' },
+];
+
+const whyStats = [
+  { num: '4-6', unit: ' yıl', label: 'Geri Ödeme' },
+  { num: '25', unit: ' yıl', label: 'Panel Garantisi' },
+  { num: '%90', unit: '+', label: 'Verimlilik' },
+  { num: '0 ₺', unit: '', label: '1. Yıl Bakım' },
+];
 
 export default function Home() {
   const { t } = useLang();
@@ -22,86 +37,13 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  const whyItems = [
-    { icon: <Shield className="text-orange-500" size={36} />, title: t('whyWarrantyTitle'), desc: t('whyWarrantyDesc') },
-    { icon: <Truck className="text-orange-500" size={36} />, title: t('whyDeliveryTitle'), desc: t('whyDeliveryDesc') },
-    { icon: <Headphones className="text-orange-500" size={36} />, title: t('whySupportTitle'), desc: t('whySupportDesc') },
-    { icon: <Award className="text-orange-500" size={36} />, title: t('whyPriceTitle'), desc: t('whyPriceDesc') },
-  ];
-
-  const stats: [string, string][] = [
-    ['10.000+', t('statInstallations')],
-    ['500+', t('statBrands')],
-    ['%98', t('statSatisfaction')],
-    ['25 Yıl', t('statWarranty')],
-  ];
-
   return (
     <main>
-      {/* Hero */}
-      <section className="relative bg-gradient-to-br from-[#1B3A6B] via-[#2d5282] to-[#1B3A6B] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-96 h-96 bg-orange-400 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-20 w-64 h-64 bg-orange-300 rounded-full blur-2xl" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col lg:flex-row items-center gap-12 relative z-10">
-          <div className="flex-1 text-center lg:text-left">
-            <span className="inline-block bg-orange-500/20 border border-orange-400/40 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
-              {t('heroBadge')}
-            </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
-              {t('heroTitle1')}
-              <span className="block text-orange-400">{t('heroTitle2')}</span>
-            </h1>
-            <p className="text-gray-300 text-lg mb-8 max-w-xl mx-auto lg:mx-0">
-              {t('heroSubtitle')}
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <Link
-                href="/urunler"
-                className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3.5 rounded-xl flex items-center gap-2 transition-colors text-lg"
-              >
-                {t('exploreProducts')}
-                <ArrowRight size={20} />
-              </Link>
-              <Link
-                href="https://adalyasolar.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-2 border-white/30 hover:border-orange-400 text-white font-bold px-8 py-3.5 rounded-xl transition-colors text-lg"
-              >
-                {t('freeConsultancy')}
-              </Link>
-            </div>
+      {/* Hero Slider */}
+      <HeroSlider />
 
-            {/* Stats */}
-            <div className="flex gap-8 mt-12 justify-center lg:justify-start">
-              {stats.map(([val, label]) => (
-                <div key={label} className="text-center">
-                  <p className="text-2xl font-extrabold text-orange-400">{val}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center">
-            <div className="relative w-72 h-72 sm:w-96 sm:h-96">
-              <Image
-                src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600&h=600&fit=crop"
-                alt="Solar Panel"
-                fill
-                className="object-cover rounded-2xl shadow-2xl"
-                sizes="(max-width: 768px) 288px, 384px"
-              />
-              <div className="absolute -bottom-4 -right-4 bg-orange-500 text-white p-4 rounded-xl shadow-lg">
-                <p className="text-xs font-medium">{t('monthlySaving')}</p>
-                <p className="text-2xl font-extrabold">2.500 ₺</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Stats */}
+      <HomeStats />
 
       {/* Categories */}
       <section className="max-w-7xl mx-auto px-4 py-16">
@@ -123,7 +65,7 @@ export default function Home() {
                 {cat.name}
               </h3>
               <p className="text-xs text-gray-400 mt-2 leading-relaxed hidden sm:block">
-                {(cat.description || '').slice(0, 50)}{cat.description?.length > 50 ? '...' : ''}
+                {(cat.description || '').slice(0, 50)}{(cat.description?.length ?? 0) > 50 ? '...' : ''}
               </p>
             </Link>
           ))}
@@ -133,19 +75,62 @@ export default function Home() {
       {/* Featured Products */}
       <FeaturedProductsSection />
 
-      {/* Why Us */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <h2 className="text-2xl font-extrabold text-[#1B3A6B] text-center mb-12">
-          {t('whyUs')}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {whyItems.map((item) => (
-            <div key={item.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-              <div className="flex justify-center mb-4">{item.icon}</div>
-              <h3 className="font-bold text-[#1B3A6B] mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+      {/* Why Us — dark theme */}
+      <section className="bg-[#0d1f3d] py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-14 items-center">
+            {/* Left */}
+            <div>
+              <span className="inline-block border border-orange-400/50 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4 bg-orange-400/10">
+                Neden Adalya Solar?
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+                Enerjinizi Gidere Değil,<br />
+                <span style={{ color: '#FFB347' }}>Yatırıma</span> Dönüştürün
+              </h2>
+              <p className="text-white/55 mb-8">
+                Elektrik maliyetlerinizi sabitleyen, uzun vadede kazanç sağlayan anahtar teslim çatı GES projeleri sunuyoruz.
+              </p>
+              <div className="flex flex-col gap-4">
+                {whyFeatures.map(({ icon, title, desc }) => (
+                  <div key={title} className="flex items-start gap-4 bg-white/5 hover:bg-white/8 border border-white/10 rounded-2xl p-4 transition-colors">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-xl shrink-0">
+                      {icon}
+                    </div>
+                    <div>
+                      <h6 className="font-bold text-white mb-0.5">{title}</h6>
+                      <p className="text-sm text-white/50 leading-relaxed">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+
+            {/* Right */}
+            <div
+              className="rounded-2xl p-6 lg:p-8"
+              style={{ background: 'linear-gradient(135deg,rgba(247,148,29,.12),rgba(247,148,29,.03))', border: '1px solid rgba(247,148,29,.22)' }}
+            >
+              <h4 className="text-xl font-extrabold text-white mb-2">Yatırımınız Ne Zaman Geri Döner?</h4>
+              <p className="text-white/55 mb-6">Ortalama bir villa projesi için geri ödeme süresi 4–6 yıl. Sonrasında 25 yıl boyunca tam kâr.</p>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {whyStats.map(({ num, unit, label }) => (
+                  <div key={label} className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                    <div className="text-2xl font-extrabold text-orange-400">
+                      {num}<span className="text-lg text-white/50">{unit}</span>
+                    </div>
+                    <div className="text-xs text-white/40 mt-1">{label}</div>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/hesaplayici"
+                className="block w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl text-center transition-colors"
+              >
+                Hesaplama Yaptır →
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -173,19 +158,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Banner */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-3xl p-10 text-center text-white">
-          <h2 className="text-3xl font-extrabold mb-3">{t('ctaTitle')}</h2>
-          <p className="text-orange-100 mb-6 max-w-xl mx-auto">{t('ctaDesc')}</p>
-          <Link
-            href="https://adalyasolar.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-white text-orange-600 font-bold px-8 py-3 rounded-xl hover:bg-orange-50 transition-colors"
-          >
-            {t('ctaBtn')}
-          </Link>
+      {/* CTA Banner — source style */}
+      <section className="py-8 max-w-7xl mx-auto px-4 pb-16">
+        <div className="rounded-3xl p-10 lg:p-14" style={{ background: 'linear-gradient(135deg,#1B2D5E,#2a4a8a)' }}>
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <span className="inline-block border border-white/30 text-white/80 text-sm font-semibold px-4 py-1.5 rounded-full mb-4 bg-white/10">
+                Hemen Başlayın
+              </span>
+              <h2 className="text-3xl font-extrabold text-white mb-3">
+                Güneş Enerjisine<br />
+                <span style={{ color: '#FFD166' }}>Geçmenin</span> Tam Zamanı
+              </h2>
+              <p className="text-white/60">
+                Ücretsiz keşif hizmetimizden yararlanın. Uzmanlarımız sisteminizi tasarlasın, siz sadece tasarruf edin.
+              </p>
+            </div>
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/iletisim"
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl text-center transition-colors flex items-center justify-center gap-2"
+              >
+                <Phone size={18} />
+                Ücretsiz Keşif İste
+              </Link>
+              <a
+                href="mailto:info@adalyasolar.com"
+                className="border-2 border-white/30 hover:border-orange-400 text-white font-bold py-4 rounded-xl text-center transition-colors flex items-center justify-center gap-2"
+              >
+                <Mail size={18} />
+                info@adalyasolar.com
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </main>

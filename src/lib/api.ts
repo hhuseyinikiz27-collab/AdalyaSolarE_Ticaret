@@ -971,7 +971,7 @@ export const api = {
     create: (data: { fullName: string; email: string; phone: string; companyName?: string; city: string; projectType: string; systemSize: string; roof: string; monthlyBill?: number; note?: string }) =>
       request<{ id: number; message: string }>('/api/quote', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...((() => { const t = typeof window !== 'undefined' ? localStorage.getItem('token') : null; return t ? { Authorization: `Bearer ${t}` } : {}; })()) },
+        headers: { 'Content-Type': 'application/json', ...((() => { const t = typeof window !== 'undefined' ? localStorage.getItem('token') : null; return t ? { Authorization: `Bearer ${t}` } : {}; })()) } as HeadersInit,
         body: JSON.stringify(data),
       }),
     getMy: () => adminRequest<{ id: number; projectType: string; systemSize: string; city: string; status: string; adminNote: string | null; createdAt: string }[]>('/api/quote/my'),
@@ -990,7 +990,7 @@ export const api = {
     create: (data: { fullName: string; email: string; phone: string; address: string; city: string; installationType: string; systemSize: string; note?: string }) =>
       request<{ id: number; message: string }>('/api/installation', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...((() => { const t = typeof window !== 'undefined' ? localStorage.getItem('token') : null; return t ? { Authorization: `Bearer ${t}` } : {}; })()) },
+        headers: { 'Content-Type': 'application/json', ...((() => { const t = typeof window !== 'undefined' ? localStorage.getItem('token') : null; return t ? { Authorization: `Bearer ${t}` } : {}; })()) } as HeadersInit,
         body: JSON.stringify(data),
       }),
     getMy: () => adminRequest<{ id: number; installationType: string; systemSize: string; city: string; status: string; adminNote: string | null; createdAt: string }[]>('/api/installation/my'),
@@ -1009,7 +1009,7 @@ export const api = {
     create: (data: { companyName: string; contactName: string; email: string; phone: string; city: string; itemsJson: string; deliveryAddress: string; note?: string }) =>
       request<{ id: number; message: string }>('/api/bulk-order', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...((() => { const t = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null; return t ? { Authorization: `Bearer ${t}` } : {}; })()) },
+        headers: { 'Content-Type': 'application/json', ...((() => { const t = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null; return t ? { Authorization: `Bearer ${t}` } : {}; })()) } as HeadersInit,
         body: JSON.stringify(data),
       }),
     getMy: () => adminRequest<{ id: number; companyName: string; status: string; adminNote: string | null; createdAt: string }[]>('/api/bulk-order/my'),
