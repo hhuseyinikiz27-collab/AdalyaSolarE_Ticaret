@@ -109,11 +109,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const data = await api.auth.uploadPhoto(file);
       const photoUrl = data.photoUrl ? `${data.photoUrl}?t=${Date.now()}` : data.photoUrl;
-      const updated = { ...user!, photoUrl };
-      localStorage.setItem('auth_user', JSON.stringify(updated));
+      const base = user ?? { id: '', name: '', email: '', phone: '', role: '', photoUrl: '', addresses: [], orders: [] };
+      const updated = { ...base, photoUrl };
+      try {
+        localStorage.setItem('auth_user', JSON.stringify(updated));
+      } catch (e) {
+        console.error('localStorage error:', e);
+      }
       setUser(updated);
       return true;
-    } catch {
+    } catch (e) {
+      console.error('uploadPhoto error:', e);
       return false;
     }
   };
