@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         port: '5207',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'magaza.adalyasolar.com',
+        pathname: '/**',
+      },
     ],
   },
 };
