@@ -20,12 +20,12 @@ const cities = [
   { name: 'Bursa', hours: 4.2 },
   { name: 'İstanbul', hours: 4.0 },
   { name: 'Trabzon', hours: 3.5 },
-  { name: 'Other', hours: 4.5 },
+  { name: 'Diğer', hours: 4.5 },
 ];
 
 const panelTypes = [
-  { label: 'Economy (400W)', value: 'eco', watt: 400, pricePerKw: 18000 },
-  { label: 'Standard (450W)', value: 'std', watt: 450, pricePerKw: 22000 },
+  { label: 'Ekonomik (400W)', value: 'eco', watt: 400, pricePerKw: 18000 },
+  { label: 'Standart (450W)', value: 'std', watt: 450, pricePerKw: 22000 },
   { label: 'Premium (550W)', value: 'prm', watt: 550, pricePerKw: 28000 },
 ];
 
@@ -90,12 +90,12 @@ export default function CalculatorPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1B3A6B] via-[#2d5282] to-[#1B3A6B] text-white py-16 px-4 text-center">
         <span className="inline-block bg-orange-500/20 border border-orange-400/30 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-          Free Calculation
+          Ücretsiz Hesaplama
         </span>
-        <h1 className="text-4xl font-extrabold mb-3">Solar Panel Calculator</h1>
+        <h1 className="text-4xl font-extrabold mb-3">Güneş Enerjisi Hesaplayıcı</h1>
         <p className="text-gray-300 max-w-xl mx-auto text-sm leading-relaxed">
-          Enter your electricity bill and instantly calculate how many panels you need,
-          how much you will save, and how quickly your system will pay for itself.
+          Elektrik faturanızı girin, size kaç panel gerektiğini, ne kadar tasarruf edeceğinizi
+          ve sisteminizin kendini kaç yılda amorti edeceğini hemen hesaplayın.
         </p>
       </section>
 
@@ -107,13 +107,13 @@ export default function CalculatorPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-24">
               <h2 className="text-lg font-extrabold text-[#1B3A6B] mb-5 flex items-center gap-2">
                 <Calculator size={20} className="text-orange-500" />
-                Enter Your Details
+                Bilgilerinizi Girin
               </h2>
 
               {/* Bill */}
               <div className="mb-5">
                 <label className="text-sm font-semibold text-gray-700 block mb-2">
-                  Monthly Electricity Bill
+                  Aylık Elektrik Faturası
                 </label>
                 <div className="relative">
                   <input
@@ -140,15 +140,15 @@ export default function CalculatorPage() {
                   className="w-full mt-3 accent-orange-500"
                 />
                 <div className="flex justify-between text-xs text-gray-400 mt-1">
-                  <span>₺200</span>
-                  <span>₺100,000+</span>
+                  <span>200 ₺</span>
+                  <span>100.000+ ₺</span>
                 </div>
               </div>
 
               {/* City */}
               <div className="mb-5">
                 <label className="text-sm font-semibold text-gray-700 block mb-2">
-                  City / Region
+                  Şehir / Bölge
                 </label>
                 <select
                   value={cityIdx}
@@ -156,7 +156,7 @@ export default function CalculatorPage() {
                   className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 bg-white transition-all"
                 >
                   {cities.map((c, i) => (
-                    <option key={c.name} value={i}>{c.name} ({c.hours} hrs/day)</option>
+                    <option key={c.name} value={i}>{c.name} ({c.hours} saat/gün)</option>
                   ))}
                 </select>
               </div>
@@ -164,7 +164,7 @@ export default function CalculatorPage() {
               {/* Panel Type */}
               <div className="mb-6">
                 <label className="text-sm font-semibold text-gray-700 block mb-2">
-                  Panel Type
+                  Panel Tipi
                 </label>
                 <div className="space-y-2">
                   {panelTypes.map((p, i) => (
@@ -188,7 +188,7 @@ export default function CalculatorPage() {
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors text-base"
               >
                 <Zap size={18} />
-                Calculate
+                Hesapla
               </button>
 
               {calculated && (
@@ -197,7 +197,7 @@ export default function CalculatorPage() {
                   className="w-full mt-2 text-gray-400 hover:text-gray-600 text-sm flex items-center justify-center gap-1 py-2 transition-colors"
                 >
                   <RotateCcw size={14} />
-                  Reset
+                  Sıfırla
                 </button>
               )}
             </div>
@@ -210,22 +210,22 @@ export default function CalculatorPage() {
                 <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-5">
                   <Sun size={48} className="text-orange-400" />
                 </div>
-                <h3 className="text-xl font-bold text-[#1B3A6B] mb-2">Ready to Calculate</h3>
+                <h3 className="text-xl font-bold text-[#1B3A6B] mb-2">Hesaplamaya Hazır</h3>
                 <p className="text-gray-400 text-sm max-w-xs">
-                  Fill in the form on the left and click &quot;Calculate&quot;.
-                  Results will appear here.
+                  Sol taraftaki formu doldurun ve "Hesapla" butonuna tıklayın.
+                  Sonuçlar burada görünecek.
                 </p>
               </div>
             ) : (
               <div className="space-y-5">
                 {/* Summary Banner */}
                 <div className="bg-gradient-to-r from-[#1B3A6B] to-[#2d5282] rounded-2xl p-6 text-white">
-                  <p className="text-orange-300 text-sm font-semibold mb-1">Recommended System for {city.name}</p>
+                  <p className="text-orange-300 text-sm font-semibold mb-1">{city.name} için Tavsiye Edilen Sistem</p>
                   <div className="flex items-end gap-3">
                     <p className="text-5xl font-extrabold">{panelCount}</p>
                     <div className="pb-1">
-                      <p className="text-lg font-bold">Solar Panels</p>
-                      <p className="text-gray-300 text-sm">{panel.watt}W × {panelCount} = {systemKw} kWp system</p>
+                      <p className="text-lg font-bold">Güneş Paneli</p>
+                      <p className="text-gray-300 text-sm">{panel.watt}W × {panelCount} = {systemKw} kWp sistem</p>
                     </div>
                   </div>
                 </div>
@@ -234,30 +234,30 @@ export default function CalculatorPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <StatCard
                     icon={<TrendingDown size={22} className="text-green-600" />}
-                    label="Monthly Savings"
+                    label="Aylık Tasarruf"
                     value={`${Math.round(bill).toLocaleString('tr-TR')} ₺`}
-                    sub="full bill amount"
+                    sub="fatura tutarının tamamı"
                     color="bg-green-100"
                   />
                   <StatCard
                     icon={<Zap size={22} className="text-orange-500" />}
-                    label="Annual Savings"
+                    label="Yıllık Tasarruf"
                     value={`${annualSavings.toLocaleString('tr-TR')} ₺`}
-                    sub={`${Math.round(monthlyKwh * 12).toLocaleString('tr-TR')} kWh/year`}
+                    sub={`${Math.round(monthlyKwh * 12).toLocaleString('tr-TR')} kWh/yıl`}
                     color="bg-orange-100"
                   />
                   <StatCard
                     icon={<Sun size={22} className="text-yellow-500" />}
-                    label="Estimated System Cost"
+                    label="Tahmini Sistem Maliyeti"
                     value={`${systemCost.toLocaleString('tr-TR')} ₺`}
-                    sub="estimated incl. installation"
+                    sub="kurulum dahil tahmini"
                     color="bg-yellow-100"
                   />
                   <StatCard
                     icon={<Leaf size={22} className="text-emerald-600" />}
-                    label="CO₂ Reduction"
+                    label="CO₂ Azaltımı"
                     value={`${annualCo2} kg`}
-                    sub={`≈ equivalent to planting ${trees} trees`}
+                    sub={`≈ ${trees} ağaç dikmeye eşdeğer`}
                     color="bg-emerald-100"
                   />
                 </div>
@@ -265,8 +265,8 @@ export default function CalculatorPage() {
                 {/* Payback */}
                 <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="font-bold text-[#1B3A6B]">Payback Period</p>
-                    <span className="text-2xl font-extrabold text-orange-500">{payback} years</span>
+                    <p className="font-bold text-[#1B3A6B]">Amortisman Süresi</p>
+                    <span className="text-2xl font-extrabold text-orange-500">{payback} yıl</span>
                   </div>
                   <div className="w-full bg-orange-200 rounded-full h-3">
                     <div
@@ -275,21 +275,20 @@ export default function CalculatorPage() {
                     />
                   </div>
                   <div className="flex justify-between text-xs text-gray-500 mt-1.5">
-                    <span>0 years</span>
-                    <span>Panel lifespan: 25 years</span>
+                    <span>0 yıl</span>
+                    <span>Panel ömrü: 25 yıl</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Your system pays for itself in {payback} years, generating a total profit of{' '}
-                    <strong>{((25 - payback) * annualSavings).toLocaleString('tr-TR')} ₺</strong> over the remaining{' '}
-                    <strong>{Math.round(25 - payback)} years</strong>.
+                    Sisteminiz kendini {payback} yılda amorti eder, kalan <strong>{Math.round(25 - payback)} yıl</strong> boyunca
+                    toplamda <strong>{((25 - payback) * annualSavings).toLocaleString('tr-TR')} ₺</strong> kazanç sağlar.
                   </p>
                 </div>
 
                 {/* Disclaimer */}
                 <p className="text-xs text-gray-400 leading-relaxed">
-                  * Calculations are based on an average electricity price of {ELECTRICITY_PRICE} ₺/kWh, {city.hours} hours/day of sunshine,
-                  and {Math.round(SYSTEM_EFFICIENCY * 100)}% system efficiency.
-                  Actual values may vary depending on installation conditions.
+                  * Hesaplamalar ortalama elektrik fiyatı ({ELECTRICITY_PRICE} ₺/kWh), {city.hours} saat/gün güneşlenme
+                  ve %{Math.round(SYSTEM_EFFICIENCY * 100)} sistem verimliliği baz alınarak yapılmıştır.
+                  Gerçek değerler kurulum koşullarına göre değişebilir.
                 </p>
 
                 {/* CTA */}
@@ -298,14 +297,14 @@ export default function CalculatorPage() {
                     href="/urunler?kategori=gunes-panelleri"
                     className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
                   >
-                    Browse Panels
+                    Panelleri İncele
                     <ArrowRight size={16} />
                   </Link>
                   <Link
                     href="/iletisim"
                     className="flex-1 border-2 border-[#1B3A6B] text-[#1B3A6B] hover:bg-[#1B3A6B] hover:text-white font-bold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-colors text-sm"
                   >
-                    Get Expert Advice
+                    Uzman Görüşü Al
                   </Link>
                 </div>
 
@@ -314,7 +313,7 @@ export default function CalculatorPage() {
                   <div>
                     <h3 className="text-base font-extrabold text-[#1B3A6B] mb-3 flex items-center gap-2">
                       <Sun size={18} className="text-orange-500" />
-                      Products That Suit You
+                      Size Uygun Ürünler
                     </h3>
                     <div className="space-y-3">
                       {suggestedProducts.map((p) => (
@@ -338,7 +337,7 @@ export default function CalculatorPage() {
                           </div>
                           <div className="text-right shrink-0">
                             <p className="text-sm font-extrabold text-[#1B3A6B]">{p.price.toLocaleString('tr-TR')} ₺</p>
-                            <p className="text-xs text-orange-500 font-semibold">View →</p>
+                            <p className="text-xs text-orange-500 font-semibold">İncele →</p>
                           </div>
                         </Link>
                       ))}

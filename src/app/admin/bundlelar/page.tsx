@@ -89,7 +89,7 @@ export default function AdminBundles() {
 
   const handleSave = async () => {
     if (!form.name.trim() || !form.bundlePrice || form.items.length < 2) {
-      setError('Please enter a name, price, and add at least 2 products.');
+      setError('Lütfen isim, fiyat ve en az 2 ürün ekleyin.');
       return;
     }
     setSaving(true);
@@ -110,14 +110,14 @@ export default function AdminBundles() {
       setShowForm(false);
       load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not save.');
+      setError(e instanceof Error ? e.message : 'Kaydedilemedi.');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this bundle?')) return;
+    if (!confirm('Bu bundle\'ı silmek istiyor musunuz?')) return;
     await api.bundles.delete(id);
     load();
   };
@@ -137,37 +137,37 @@ export default function AdminBundles() {
         <div>
           <h1 className="text-2xl font-extrabold text-[#1B3A6B] flex items-center gap-2">
             <Layers size={24} className="text-orange-500" />
-            Bundle / Kit Management
+            Bundle / Kit Yönetimi
           </h1>
-          <p className="text-sm text-gray-400 mt-1">Sell multiple products together as a discounted package</p>
+          <p className="text-sm text-gray-400 mt-1">Birden fazla ürünü paket halinde indirimli satın</p>
         </div>
         <button
           onClick={openCreate}
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors"
         >
-          <Plus size={16} /> New Bundle
+          <Plus size={16} /> Yeni Bundle
         </button>
       </div>
 
       {/* Form */}
       {showForm && (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-          <h2 className="font-bold text-[#1B3A6B] mb-5">{editId ? 'Edit Bundle' : 'Create New Bundle'}</h2>
+          <h2 className="font-bold text-[#1B3A6B] mb-5">{editId ? 'Bundle Düzenle' : 'Yeni Bundle Oluştur'}</h2>
 
           {error && <p className="text-red-500 text-sm mb-4 bg-red-50 px-4 py-2 rounded-xl">{error}</p>}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Bundle Name *</label>
+              <label className="text-sm font-semibold text-gray-600 block mb-1">Bundle Adı *</label>
               <input
                 value={form.name}
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                placeholder="Solar Energy Starter Kit"
+                placeholder="Güneş Enerji Başlangıç Paketi"
                 className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400"
               />
             </div>
             <div>
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Bundle Price (₺) *</label>
+              <label className="text-sm font-semibold text-gray-600 block mb-1">Bundle Fiyatı (₺) *</label>
               <input
                 type="number"
                 value={form.bundlePrice}
@@ -177,18 +177,18 @@ export default function AdminBundles() {
               />
               {originalTotal > 0 && bundlePrice > 0 && (
                 <p className={`text-xs mt-1 ${savingPct > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                  Original price: {originalTotal.toLocaleString('tr-TR')} ₺
-                  {savingPct > 0 ? ` · ${savingPct}% savings` : ' · Price is higher than original!'}
+                  Normal fiyat: {originalTotal.toLocaleString('tr-TR')} ₺
+                  {savingPct > 0 ? ` · %${savingPct} tasarruf` : ' · Fiyat orijinalden yüksek!'}
                 </p>
               )}
             </div>
             <div className="md:col-span-2">
-              <label className="text-sm font-semibold text-gray-600 block mb-1">Description</label>
+              <label className="text-sm font-semibold text-gray-600 block mb-1">Açıklama</label>
               <textarea
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 rows={2}
-                placeholder="Get started with home solar energy installation with this kit..."
+                placeholder="Bu paket ile ev güneş enerjisi kurulumuna başlayın..."
                 className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400 resize-none"
               />
             </div>
@@ -196,22 +196,22 @@ export default function AdminBundles() {
 
           <div className="flex items-center gap-2 mb-4">
             <input type="checkbox" id="isActive" checked={form.isActive} onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))} className="rounded" />
-            <label htmlFor="isActive" className="text-sm font-semibold text-gray-600">Active (show on site)</label>
+            <label htmlFor="isActive" className="text-sm font-semibold text-gray-600">Aktif (sitede göster)</label>
           </div>
 
           {/* Product search */}
           <div className="mb-4">
-            <label className="text-sm font-semibold text-gray-600 block mb-1">Add Products *</label>
+            <label className="text-sm font-semibold text-gray-600 block mb-1">Ürün Ekle *</label>
             <input
               value={productSearch}
               onChange={e => setProductSearch(e.target.value)}
-              placeholder="Search by product name..."
+              placeholder="Ürün adı ile ara..."
               className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400 mb-2"
             />
             {productSearch.length > 0 && (
               <div className="border border-gray-200 rounded-xl overflow-hidden">
                 {filteredProducts.length === 0 ? (
-                  <p className="text-sm text-gray-400 p-3">No products found.</p>
+                  <p className="text-sm text-gray-400 p-3">Ürün bulunamadı.</p>
                 ) : (
                   filteredProducts.map(p => (
                     <button
@@ -262,7 +262,7 @@ export default function AdminBundles() {
               onClick={() => setShowForm(false)}
               className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl text-sm hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              İptal
             </button>
             <button
               onClick={handleSave}
@@ -270,7 +270,7 @@ export default function AdminBundles() {
               className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
-              {editId ? 'Update' : 'Create'}
+              {editId ? 'Güncelle' : 'Oluştur'}
             </button>
           </div>
         </div>
@@ -284,7 +284,7 @@ export default function AdminBundles() {
       ) : bundles.length === 0 ? (
         <div className="text-center py-20 text-gray-400 bg-white rounded-2xl">
           <Layers size={40} className="mx-auto mb-3 text-gray-200" />
-          <p>No bundles created yet.</p>
+          <p>Henüz bundle oluşturulmadı.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -296,8 +296,8 @@ export default function AdminBundles() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-bold text-[#1B3A6B]">{b.name}</h3>
-                      {!b.isActive && <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Inactive</span>}
-                      {discount > 0 && <span className="text-xs bg-green-100 text-green-600 font-bold px-2 py-0.5 rounded-full">{discount}% Off</span>}
+                      {!b.isActive && <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Pasif</span>}
+                      {discount > 0 && <span className="text-xs bg-green-100 text-green-600 font-bold px-2 py-0.5 rounded-full">%{discount} İndirim</span>}
                     </div>
                     {b.description && <p className="text-sm text-gray-500 mb-2">{b.description}</p>}
                     <div className="flex flex-wrap gap-2 mb-3">

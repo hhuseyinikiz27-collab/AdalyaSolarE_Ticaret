@@ -28,7 +28,7 @@ function LoginForm() {
     if (ok) {
       router.push(redirect);
     } else {
-      setError(lang === 'en' ? 'Incorrect email or password. Please try again.' : 'Incorrect email or password. Please try again.');
+      setError(lang === 'en' ? 'Incorrect email or password. Please try again.' : 'E-posta veya şifre hatalı. Lütfen tekrar deneyin.');
     }
   };
 
@@ -48,7 +48,7 @@ function LoginForm() {
           {timeout && (
             <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-sm px-4 py-3 rounded-xl mb-5">
               <AlertCircle size={16} className="shrink-0" />
-              {lang === 'en' ? 'Your session has expired. Please sign in again.' : 'Your session has expired. Please sign in again.'}
+              {lang === 'en' ? 'Your session has expired. Please sign in again.' : 'Oturum süreniz doldu. Lütfen tekrar giriş yapın.'}
             </div>
           )}
           {error && (
@@ -70,7 +70,7 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="example@email.com"
+                  placeholder="ornek@email.com"
                   className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                 />
               </div>
@@ -132,7 +132,7 @@ function LoginForm() {
             onToken={async (idToken) => {
               const ok = await googleLogin(idToken);
               if (ok) router.push(redirect);
-              else setError(lang === 'en' ? 'Google sign-in failed. Please try again.' : 'Google sign-in failed. Please try again.');
+              else setError(lang === 'en' ? 'Google sign-in failed. Please try again.' : 'Google ile giriş başarısız. Lütfen tekrar deneyin.');
             }}
           />
 
@@ -145,11 +145,11 @@ function LoginForm() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          {lang === 'en' ? 'By signing in you agree to our' : 'By signing in you agree to our'}{' '}
+          {lang === 'en' ? 'By signing in you agree to our' : 'Giriş yaparak'}{' '}
           <Link href="/kullanim-kosullari" className="underline hover:text-orange-500">{t('termsLink')}</Link>
-          {' '}{lang === 'en' ? 'and' : 'and'}{' '}
+          {' '}{lang === 'en' ? 'and' : 've'}{' '}
           <Link href="/gizlilik-politikasi" className="underline hover:text-orange-500">{t('privacyLink')}</Link>
-          {lang === 'en' ? '.' : '.'}
+          {lang === 'en' ? '.' : `'nı kabul etmiş olursunuz.`}
         </p>
       </div>
     </div>

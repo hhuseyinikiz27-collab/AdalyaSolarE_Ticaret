@@ -109,7 +109,7 @@ export default function CheckoutPage() {
 
   const handleSaveNewAddress = async () => {
     if (!newAddr.title.trim() || !newAddr.fullName.trim() || !newAddr.phone.trim() || !newAddr.city.trim() || !newAddr.district.trim() || !newAddr.street.trim()) {
-      setAddrError('Please fill in the required fields.');
+      setAddrError('Lütfen zorunlu alanları doldurun.');
       return;
     }
     setSavingAddr(true);
@@ -121,22 +121,22 @@ export default function CheckoutPage() {
       setShowNewAddress(false);
       setNewAddr({ title: '', fullName: '', phone: '', city: '', district: '', neighborhood: '', street: '', isDefault: false });
     } catch {
-      setAddrError('Address could not be saved.');
+      setAddrError('Adres kaydedilemedi.');
     } finally {
       setSavingAddr(false);
     }
   };
 
   const handlePlaceOrder = async () => {
-    if (!selectedAddressId) { setError(showNewAddress ? 'Please click "Save & Use Address" first.' : 'Please select a delivery address.'); return; }
+    if (!selectedAddressId) { setError(showNewAddress ? 'Lütfen önce "Adresi Kaydet ve Kullan" butonuna basın.' : 'Lütfen bir teslimat adresi seçin.'); return; }
 
-    // Card validation
+    // Kart validasyonu
     if (selectedCardId === 'new') {
       const digits = cardForm.number.replace(/\s/g, '');
-      if (digits.length < 16) { setCardFormError('Enter a valid card number.'); return; }
-      if (!cardForm.holder.trim()) { setCardFormError('Enter the name on the card.'); return; }
-      if (cardForm.expiry.length < 5) { setCardFormError('Enter a valid expiry date.'); return; }
-      if (cardForm.cvv.length < 3) { setCardFormError('CVV must be at least 3 digits.'); return; }
+      if (digits.length < 16) { setCardFormError('Geçerli bir kart numarası girin.'); return; }
+      if (!cardForm.holder.trim()) { setCardFormError('Kart üzerindeki ismi girin.'); return; }
+      if (cardForm.expiry.length < 5) { setCardFormError('Geçerli bir son kullanma tarihi girin.'); return; }
+      if (cardForm.cvv.length < 3) { setCardFormError('CVV en az 3 haneli olmalıdır.'); return; }
     }
     setCardFormError('');
 
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
     setPlacing(true);
     setError('');
     try {
-      // Save new card if requested
+      // Yeni kart kaydedilmek isteniyorsa kaydet
       if (selectedCardId === 'new' && saveCard) {
         const digits = cardForm.number.replace(/\s/g, '');
         const [em, ey] = cardForm.expiry.split('/');
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
       }
 
       const invoiceNote = invoiceType === 'kurumsal'
-        ? `[CORPORATE INVOICE]\nCompany: ${companyName}\nTax No: ${taxNumber}\nTax Office: ${taxOffice}${note ? `\n\n${note}` : ''}`
+        ? `[KURUMSAL FATURA]\nŞirket: ${companyName}\nVergi No: ${taxNumber}\nVergi Dairesi: ${taxOffice}${note ? `\n\n${note}` : ''}`
         : note;
 
       const shippingAddress = `${addr.street}, ${addr.neighborhood}, ${addr.district} / ${addr.city}`;
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
         loyaltyDiscount: loyaltyDiscount > 0 ? loyaltyDiscount : undefined,
       });
 
-      // Payment process — continues in demo mode if provider is not configured
+      // Ödeme işlemi — provider yapılandırılmamışsa demo modda devam eder
       const payResult = await processPayment(result.id, {
         amount: genel,
         customer: {
@@ -183,7 +183,7 @@ export default function CheckoutPage() {
           surname: user?.name.split(' ').slice(1).join(' ') ?? '',
           email:   user?.email ?? '',
           phone:   addr.phone,
-          ip:      '0.0.0.0', // Server Action retrieves the real IP automatically
+          ip:      '0.0.0.0', // Server Action gerçek IP'yi otomatik alır
         },
         billingAddress: {
           fullName: addr.fullName,
@@ -199,7 +199,7 @@ export default function CheckoutPage() {
       });
 
       if (payResult.success) {
-        // Demo mode or payment approved
+        // Demo mod veya ödeme onaylandı
         clearCart();
         localStorage.removeItem('appliedGiftCard');
         localStorage.removeItem('appliedLoyalty');
@@ -233,26 +233,26 @@ export default function CheckoutPage() {
         localStorage.removeItem('appliedLoyalty');
         setPaymentGate({ type: 'paytr', url: payResult.paymentPageUrl });
       } else {
-        setError(payResult.errorMessage ?? 'Payment could not be initiated. Please try again.');
+        setError(payResult.errorMessage ?? 'Ödeme başlatılamadı. Lütfen tekrar deneyin.');
       }
     } catch (e: unknown) {
       const raw = e instanceof Error ? e.message : '';
       const lower = raw.toLowerCase();
       if (lower.includes('engel') || lower.includes('ban') || lower.includes('spam') || lower.includes('bekleyin') || lower.includes('çok fazla')) {
-        setError(raw || 'Too many order attempts. Please wait a moment and try again.');
+        setError(raw || 'Çok fazla sipariş işlemi gerçekleştirildi. Lütfen bir süre bekleyip tekrar deneyin.');
       } else {
-        setError(raw || 'Order could not be placed. Please try again.');
+        setError(raw || 'Sipariş oluşturulamadı. Lütfen tekrar deneyin.');
       }
     } finally {
       setPlacing(false);
     }
   };
 
-  // Iyzico checkout form or PayTR iframe
+  // İyzico checkout formu veya PayTR iframe
   if (paymentGate) {
     return (
       <main className="max-w-2xl mx-auto px-4 py-12">
-        <h1 className="text-xl font-extrabold text-[#1B3A6B] mb-6 text-center">Checkout</h1>
+        <h1 className="text-xl font-extrabold text-[#1B3A6B] mb-6 text-center">Ödeme</h1>
         {paymentGate.type === 'iyzico' && (
           <div
             className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4"
@@ -267,13 +267,13 @@ export default function CheckoutPage() {
               height="600"
               frameBorder="0"
               scrolling="no"
-              title="Secure Payment"
+              title="Güvenli Ödeme"
             />
           </div>
         )}
         <p className="text-center text-xs text-gray-400 mt-4 flex items-center justify-center gap-1">
           <Shield size={12} className="text-green-500" />
-          Secure payment page protected with 256-bit SSL
+          256-bit SSL ile korunan güvenli ödeme sayfası
         </p>
       </main>
     );
@@ -286,16 +286,16 @@ export default function CheckoutPage() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
             <CheckCircle size={40} className="text-green-500" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-2">Your Order Has Been Placed!</h1>
-          <p className="text-gray-500 mb-1">Order No: <span className="font-bold text-[#1B3A6B]">#{success.id}</span></p>
-          <p className="text-gray-500 mb-6">Total: <span className="font-bold text-orange-500">{success.total.toLocaleString('tr-TR')} ₺</span></p>
-          <p className="text-sm text-gray-400 mb-8">Your order is being prepared. You can check your account for tracking.</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-2">Siparişiniz Alındı!</h1>
+          <p className="text-gray-500 mb-1">Sipariş No: <span className="font-bold text-[#1B3A6B]">#{success.id}</span></p>
+          <p className="text-gray-500 mb-6">Toplam: <span className="font-bold text-orange-500">{success.total.toLocaleString('tr-TR')} ₺</span></p>
+          <p className="text-sm text-gray-400 mb-8">Siparişiniz hazırlanmaya başlandı. Takip için hesabınızı kontrol edebilirsiniz.</p>
           <div className="flex flex-col gap-3">
             <Link href="/hesabim?tab=siparisler" className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition-colors">
-              View My Orders
+              Siparişlerimi Gör
             </Link>
             <Link href="/urunler" className="border-2 border-gray-200 hover:border-orange-400 text-gray-600 font-semibold py-3 rounded-xl transition-colors text-sm">
-              Continue Shopping
+              Alışverişe Devam Et
             </Link>
           </div>
         </div>
@@ -304,9 +304,9 @@ export default function CheckoutPage() {
   }
 
   const steps = [
-    { label: 'Cart', href: '/sepet', icon: ShoppingCart },
-    { label: 'Order Review', href: '/odeme', icon: MapPin },
-    { label: 'Payment', href: '/odeme', icon: CreditCard },
+    { label: 'Sepet', href: '/sepet', icon: ShoppingCart },
+    { label: 'Sipariş Onayı', href: '/odeme', icon: MapPin },
+    { label: 'Ödeme', href: '/odeme', icon: CreditCard },
   ];
 
   return (
@@ -339,7 +339,7 @@ export default function CheckoutPage() {
         })}
       </div>
 
-      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-6">Order Review</h1>
+      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-6">Sipariş Onayı</h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left */}
@@ -348,7 +348,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-bold text-[#1B3A6B] mb-4 flex items-center gap-2">
               <MapPin size={18} className="text-orange-500" />
-              Delivery Address
+              Teslimat Adresi
             </h2>
 
             <div className="space-y-3">
@@ -370,7 +370,7 @@ export default function CheckoutPage() {
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-[#1B3A6B] text-sm">{addr.title}</p>
                       {addr.isDefault && (
-                        <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Default</span>
+                        <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Varsayılan</span>
                       )}
                     </div>
                     <p className="text-sm text-gray-600">{addr.fullName} · {addr.phone}</p>
@@ -379,53 +379,53 @@ export default function CheckoutPage() {
                 </label>
               ))}
 
-              {/* Add New Address option */}
+              {/* Yeni Adres Ekle seçeneği */}
               <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${showNewAddress ? 'border-orange-400 bg-orange-50' : 'border-gray-100 hover:border-gray-200'}`}>
                 <input type="radio" name="address" checked={showNewAddress} onChange={() => { setShowNewAddress(true); setSelectedAddressId(null); }} className="accent-orange-500" />
                 <div className="flex items-center gap-2">
                   <Plus size={14} className="text-gray-500" />
-                  <span className="text-sm font-semibold text-gray-700">Add New Address</span>
+                  <span className="text-sm font-semibold text-gray-700">Yeni Adres Ekle</span>
                 </div>
               </label>
 
-              {/* Inline address form */}
+              {/* Inline adres formu */}
               {showNewAddress && (
                 <div className="bg-gray-50 rounded-xl p-4 space-y-3 border border-gray-100">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-gray-600 block mb-1">Address Title *</label>
-                      <input type="text" placeholder="Home, Work..." value={newAddr.title} onChange={(e) => setNewAddr(p => ({ ...p, title: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
+                      <label className="text-xs font-semibold text-gray-600 block mb-1">Adres Başlığı *</label>
+                      <input type="text" placeholder="Ev, İş..." value={newAddr.title} onChange={(e) => setNewAddr(p => ({ ...p, title: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-gray-600 block mb-1">Full Name *</label>
-                      <input type="text" placeholder="Full Name" value={newAddr.fullName} onChange={(e) => setNewAddr(p => ({ ...p, fullName: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
+                      <label className="text-xs font-semibold text-gray-600 block mb-1">Ad Soyad *</label>
+                      <input type="text" placeholder="Ad Soyad" value={newAddr.fullName} onChange={(e) => setNewAddr(p => ({ ...p, fullName: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Phone *</label>
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Telefon *</label>
                     <input type="tel" placeholder="05XX XXX XX XX" value={newAddr.phone} onChange={(e) => setNewAddr(p => ({ ...p, phone: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-gray-600 block mb-1">City *</label>
-                      <input type="text" placeholder="Istanbul" value={newAddr.city} onChange={(e) => setNewAddr(p => ({ ...p, city: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
+                      <label className="text-xs font-semibold text-gray-600 block mb-1">İl *</label>
+                      <input type="text" placeholder="İstanbul" value={newAddr.city} onChange={(e) => setNewAddr(p => ({ ...p, city: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-gray-600 block mb-1">District *</label>
-                      <input type="text" placeholder="Kadikoy" value={newAddr.district} onChange={(e) => setNewAddr(p => ({ ...p, district: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
+                      <label className="text-xs font-semibold text-gray-600 block mb-1">İlçe *</label>
+                      <input type="text" placeholder="Kadıköy" value={newAddr.district} onChange={(e) => setNewAddr(p => ({ ...p, district: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Neighborhood</label>
-                    <input type="text" placeholder="Neighborhood name" value={newAddr.neighborhood} onChange={(e) => setNewAddr(p => ({ ...p, neighborhood: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Mahalle</label>
+                    <input type="text" placeholder="Moda Mahallesi" value={newAddr.neighborhood} onChange={(e) => setNewAddr(p => ({ ...p, neighborhood: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Street Address *</label>
-                    <input type="text" placeholder="Street, door no, apartment no..." value={newAddr.street} onChange={(e) => setNewAddr(p => ({ ...p, street: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Açık Adres *</label>
+                    <input type="text" placeholder="Sokak, kapı no, daire no..." value={newAddr.street} onChange={(e) => setNewAddr(p => ({ ...p, street: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white" />
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={newAddr.isDefault} onChange={(e) => setNewAddr(p => ({ ...p, isDefault: e.target.checked }))} className="accent-orange-500" />
-                    <span className="text-sm text-gray-700">Save as default address</span>
+                    <span className="text-sm text-gray-700">Varsayılan adres olarak kaydet</span>
                   </label>
                   {addrError && <p className="text-red-500 text-xs">{addrError}</p>}
                   <button
@@ -433,13 +433,13 @@ export default function CheckoutPage() {
                     disabled={savingAddr}
                     className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
                   >
-                    {savingAddr ? 'Saving...' : 'Save & Use Address'}
+                    {savingAddr ? 'Kaydediliyor...' : 'Adresi Kaydet ve Kullan'}
                   </button>
                 </div>
               )}
 
               {addresses.length === 0 && !showNewAddress && (
-                <p className="text-xs text-gray-400 text-center py-2">No saved addresses. Add a new address above.</p>
+                <p className="text-xs text-gray-400 text-center py-2">Kayıtlı adresiniz yok. Yukarıdan yeni adres ekleyin.</p>
               )}
             </div>
           </div>
@@ -448,47 +448,47 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-bold text-[#1B3A6B] mb-4 flex items-center gap-2">
               <CreditCard size={18} className="text-orange-500" />
-              Invoice Type
+              Fatura Türü
             </h2>
             <div className="flex gap-4 mb-4">
               {(['bireysel', 'kurumsal'] as const).map((type) => (
                 <label key={type} className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 cursor-pointer flex-1 transition-colors ${invoiceType === type ? 'border-orange-400 bg-orange-50' : 'border-gray-200 hover:border-gray-300'}`}>
                   <input type="radio" name="invoiceType" value={type} checked={invoiceType === type} onChange={() => setInvoiceType(type)} className="accent-orange-500" />
-                  <span className="font-semibold text-sm capitalize text-[#1B3A6B]">{type === 'bireysel' ? 'Individual' : 'Corporate'}</span>
+                  <span className="font-semibold text-sm capitalize text-[#1B3A6B]">{type === 'bireysel' ? 'Bireysel' : 'Kurumsal'}</span>
                 </label>
               ))}
             </div>
             {invoiceType === 'kurumsal' && (
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-600 block mb-1">Company Name *</label>
+                  <label className="text-xs font-semibold text-gray-600 block mb-1">Şirket Adı *</label>
                   <input
                     type="text"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    placeholder="Enter company name"
+                    placeholder="Şirket adını girin"
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Tax Number *</label>
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Vergi Numarası *</label>
                     <input
                       type="text"
                       value={taxNumber}
                       onChange={(e) => setTaxNumber(e.target.value.replace(/\D/g, ''))}
-                      placeholder="10-digit tax number"
+                      placeholder="10 haneli vergi no"
                       maxLength={11}
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Tax Office *</label>
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Vergi Dairesi *</label>
                     <input
                       type="text"
                       value={taxOffice}
                       onChange={(e) => setTaxOffice(e.target.value)}
-                      placeholder="Tax office name"
+                      placeholder="Vergi dairesi adı"
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400"
                     />
                   </div>
@@ -499,11 +499,11 @@ export default function CheckoutPage() {
 
           {/* Order Note */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-            <h2 className="font-bold text-[#1B3A6B] mb-3">Order Note <span className="text-gray-400 font-normal text-sm">(optional)</span></h2>
+            <h2 className="font-bold text-[#1B3A6B] mb-3">Sipariş Notu <span className="text-gray-400 font-normal text-sm">(isteğe bağlı)</span></h2>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="If you have any notes about delivery or the product, you can write them here..."
+              placeholder="Teslimat veya ürünle ilgili bir notunuz varsa yazabilirsiniz..."
               rows={3}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none"
             />
@@ -513,7 +513,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-bold text-[#1B3A6B] mb-4 flex items-center gap-2">
               <CreditCard size={18} className="text-orange-500" />
-              Payment Method
+              Ödeme Yöntemi
             </h2>
 
             <div className="space-y-3">
@@ -525,7 +525,7 @@ export default function CheckoutPage() {
                     <div className="flex items-center gap-2">
                       <span className={`text-xs font-bold px-2 py-0.5 rounded ${card.cardType === 'Visa' ? 'bg-blue-100 text-blue-700' : card.cardType === 'Mastercard' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>{card.cardType}</span>
                       <span className="text-sm font-semibold text-[#1B3A6B]">**** **** **** {card.last4}</span>
-                      {card.isDefault && <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Default</span>}
+                      {card.isDefault && <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Varsayılan</span>}
                     </div>
                     <p className="text-xs text-gray-500 mt-0.5">{card.cardHolderName} · {card.expiryMonth}/{card.expiryYear}</p>
                   </div>
@@ -537,7 +537,7 @@ export default function CheckoutPage() {
                 <input type="radio" name="card" checked={selectedCardId === 'new'} onChange={() => setSelectedCardId('new')} className="accent-orange-500" />
                 <div className="flex items-center gap-2">
                   <Plus size={14} className="text-gray-500" />
-                  <span className="text-sm font-semibold text-gray-700">Pay with New Card</span>
+                  <span className="text-sm font-semibold text-gray-700">Yeni Kart ile Öde</span>
                 </div>
               </label>
 
@@ -545,7 +545,7 @@ export default function CheckoutPage() {
               {selectedCardId === 'new' && (
                 <div className="bg-gray-50 rounded-xl p-4 space-y-3 border border-gray-100">
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Card Number</label>
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Kart Numarası</label>
                     <input
                       type="text"
                       inputMode="numeric"
@@ -556,10 +556,10 @@ export default function CheckoutPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-600 block mb-1">Name on Card</label>
+                    <label className="text-xs font-semibold text-gray-600 block mb-1">Kart Üzerindeki İsim</label>
                     <input
                       type="text"
-                      placeholder="FULL NAME"
+                      placeholder="AD SOYAD"
                       value={cardForm.holder}
                       onChange={(e) => setCardForm((p) => ({ ...p, holder: e.target.value.toUpperCase() }))}
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 bg-white uppercase"
@@ -567,11 +567,11 @@ export default function CheckoutPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-gray-600 block mb-1">Expiry Date</label>
+                      <label className="text-xs font-semibold text-gray-600 block mb-1">Son Kullanma</label>
                       <input
                         type="text"
                         inputMode="numeric"
-                        placeholder="MM/YY"
+                        placeholder="AA/YY"
                         value={cardForm.expiry}
                         onChange={(e) => setCardForm((p) => ({ ...p, expiry: formatExpiry(e.target.value) }))}
                         className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 bg-white"
@@ -592,7 +592,7 @@ export default function CheckoutPage() {
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={saveCard} onChange={(e) => setSaveCard(e.target.checked)} className="accent-orange-500" />
-                    <span className="text-sm text-gray-700">Save this card</span>
+                    <span className="text-sm text-gray-700">Bu kartı kaydet</span>
                   </label>
                   {cardFormError && <p className="text-red-500 text-xs">{cardFormError}</p>}
                 </div>
@@ -604,7 +604,7 @@ export default function CheckoutPage() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 className="font-bold text-[#1B3A6B] mb-4 flex items-center gap-2">
               <ShoppingCart size={18} className="text-orange-500" />
-              Products ({items.length})
+              Ürünler ({items.length})
             </h2>
             <div className="space-y-3">
               {items.map(({ product, quantity }) => {
@@ -616,7 +616,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-[#1B3A6B] line-clamp-1">{product.name}</p>
-                      <p className="text-xs text-gray-400">{quantity} pcs × {product.price.toLocaleString('tr-TR')} ₺</p>
+                      <p className="text-xs text-gray-400">{quantity} adet × {product.price.toLocaleString('tr-TR')} ₺</p>
                     </div>
                     <p className="font-bold text-[#1B3A6B] text-sm shrink-0">{(product.price * quantity).toLocaleString('tr-TR')} ₺</p>
                   </div>
@@ -629,35 +629,35 @@ export default function CheckoutPage() {
         {/* Right - Summary */}
         <div className="lg:w-80 shrink-0">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sticky top-24">
-            <h2 className="font-bold text-[#1B3A6B] text-lg mb-4">Order Summary</h2>
+            <h2 className="font-bold text-[#1B3A6B] text-lg mb-4">Sipariş Özeti</h2>
 
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Subtotal</span>
+                <span className="text-gray-500">Ürünler Toplamı</span>
                 <span className="font-medium">{totalPrice.toLocaleString('tr-TR')} ₺</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-green-600 font-medium">Coupon ({coupon?.code})</span>
+                  <span className="text-green-600 font-medium">Kupon ({coupon?.code})</span>
                   <span className="text-green-600 font-semibold">-{discount.toLocaleString('tr-TR')} ₺</span>
                 </div>
               )}
               {loyaltyDiscount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-purple-600 font-medium">Points Discount</span>
+                  <span className="text-purple-600 font-medium">Puan İndirimi</span>
                   <span className="text-purple-600 font-semibold">-{loyaltyDiscount.toLocaleString('tr-TR')} ₺</span>
                 </div>
               )}
               {giftCardDiscount > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-orange-600 font-medium">Gift Card ({giftCardCode})</span>
+                  <span className="text-orange-600 font-medium">Hediye Kartı ({giftCardCode})</span>
                   <span className="text-orange-600 font-semibold">-{giftCardDiscount.toLocaleString('tr-TR')} ₺</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Shipping</span>
+                <span className="text-gray-500">Kargo</span>
                 {kargo === 0
-                  ? <span className="text-green-600 font-semibold">Free</span>
+                  ? <span className="text-green-600 font-semibold">Ücretsiz</span>
                   : <span className="font-medium">{kargo} ₺</span>
                 }
               </div>
@@ -665,15 +665,15 @@ export default function CheckoutPage() {
 
             <div className="border-t pt-3 mb-5">
               <div className="flex justify-between font-extrabold text-[#1B3A6B] text-lg">
-                <span>Total</span>
+                <span>Genel Toplam</span>
                 <span>{genel.toLocaleString('tr-TR')} ₺</span>
               </div>
-              <p className="text-xs text-gray-400 mt-1">VAT included</p>
+              <p className="text-xs text-gray-400 mt-1">KDV dahildir</p>
               {genel >= 500 && (() => {
                 const inst = genel >= 5000 ? 12 : genel >= 2000 ? 6 : 3;
                 return (
                   <p className="text-xs text-green-700 font-semibold mt-2 bg-green-50 px-3 py-1.5 rounded-lg">
-                    {(genel / inst).toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺/month × {inst} installments
+                    Aylık {(genel / inst).toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺ × {inst} taksit
                   </p>
                 );
               })()}
@@ -690,19 +690,19 @@ export default function CheckoutPage() {
               disabled={placing || (!selectedAddressId && !showNewAddress)}
               className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors"
             >
-              {placing ? 'Placing Order...' : (
-                <><CheckCircle size={18} />Complete Order</>
+              {placing ? 'Sipariş Oluşturuluyor...' : (
+                <><CheckCircle size={18} />Siparişi Onayla</>
               )}
             </button>
 
             <div className="mt-4 space-y-2">
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Shield size={14} className="text-green-500 shrink-0" />
-                Secure order
+                Güvenli sipariş
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 <Truck size={14} className="text-green-500 shrink-0" />
-                Insured shipping delivery
+                Sigortalı kargo ile teslimat
               </div>
             </div>
           </div>

@@ -28,10 +28,10 @@ interface ProductLine {
 }
 
 const WHY_US = [
-  { icon: Building2, title: 'Corporate Experience', desc: 'Over 500 corporate projects completed' },
-  { icon: Users, title: 'Dedicated Account Manager', desc: 'A dedicated expert always by your side' },
-  { icon: Zap, title: 'Fast Delivery', desc: 'Priority shipping on high-volume orders' },
-  { icon: FileText, title: 'Invoice & Contract', desc: 'VAT invoice, e-invoice, and bulk contract options' },
+  { icon: Building2, title: 'Kurumsal Tecrübe', desc: '500\'den fazla kurumsal proje tamamlandı' },
+  { icon: Users, title: 'Özel Hesap Yöneticisi', desc: 'Size özel bir uzman her zaman yanınızda' },
+  { icon: Zap, title: 'Hızlı Teslimat', desc: 'Büyük hacimli siparişlerde öncelikli sevkiyat' },
+  { icon: FileText, title: 'Fatura & Sözleşme', desc: 'KDV\'li fatura, e-fatura ve toplu sözleşme imkânı' },
 ];
 
 export default function KurumsalPage() {
@@ -74,25 +74,25 @@ export default function KurumsalPage() {
     e.preventDefault();
     const validLines = lines.filter((l) => l.product.trim());
     if (validLines.length === 0) {
-      setError('Please add at least one product.');
+      setError('Lütfen en az bir ürün ekleyin.');
       return;
     }
     setLoading(true);
     setError('');
 
     const productList = validLines
-      .map((l) => `• ${l.product} — Qty: ${l.quantity || '?'}${l.note ? ` (${l.note})` : ''}`)
+      .map((l) => `• ${l.product} — Adet: ${l.quantity || '?'}${l.note ? ` (${l.note})` : ''}`)
       .join('\n');
 
     const message = [
-      `Company: ${form.companyName}`,
-      `Tax No: ${form.taxNumber || 'Not specified'}`,
-      `Contact: ${form.contactName}`,
-      `Delivery Address: ${form.deliveryAddress || 'Not specified'}`,
+      `Firma: ${form.companyName}`,
+      `Vergi No: ${form.taxNumber || 'Belirtilmedi'}`,
+      `Yetkili: ${form.contactName}`,
+      `Teslimat Adresi: ${form.deliveryAddress || 'Belirtilmedi'}`,
       '',
-      'Requested Products:',
+      'Talep Edilen Ürünler:',
       productList,
-      form.note ? `\nAdditional Notes: ${form.note}` : '',
+      form.note ? `\nEk Notlar: ${form.note}` : '',
     ].join('\n');
 
     try {
@@ -100,12 +100,12 @@ export default function KurumsalPage() {
         name: form.contactName,
         email: form.email,
         phone: form.phone,
-        subject: 'Corporate Bulk Order Request',
+        subject: 'Kurumsal Toplu Sipariş Talebi',
         message,
       });
       setSent(true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
+      setError(err instanceof Error ? err.message : 'Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setLoading(false);
     }
@@ -119,12 +119,12 @@ export default function KurumsalPage() {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle size={40} className="text-green-500" />
           </div>
-          <h2 className="text-2xl font-extrabold text-[#1B3A6B] mb-3">Your Request Has Been Received!</h2>
+          <h2 className="text-2xl font-extrabold text-[#1B3A6B] mb-3">Talebiniz Alındı!</h2>
           <p className="text-gray-500 mb-2">
-            Our corporate sales team will contact you within <strong>1 business day</strong>.
+            Kurumsal satış ekibimiz en geç <strong>1 iş günü</strong> içinde sizinle iletişime geçecektir.
           </p>
           <p className="text-gray-400 text-sm mb-8">
-            For urgent requests, you can call us at <strong>{siteInfo['site.phone'] || '0850 346 78 90'}</strong>.
+            Acil talepler için <strong>{siteInfo['site.phone'] || '0850 346 78 90'}</strong> numaralı hattımızı arayabilirsiniz.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <button
@@ -135,10 +135,10 @@ export default function KurumsalPage() {
               }}
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2.5 rounded-xl transition-colors text-sm"
             >
-              Submit New Request
+              Yeni Talep Gönder
             </button>
             <Link href="/urunler" className="border-2 border-gray-200 hover:border-orange-400 text-gray-600 hover:text-orange-500 font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm">
-              Product Catalog
+              Ürün Kataloğu
             </Link>
           </div>
         </div>
@@ -168,13 +168,13 @@ export default function KurumsalPage() {
         <div id="form" className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Sidebar info */}
           <div>
-            <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-4">How It Works?</h2>
+            <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-4">Nasıl Çalışır?</h2>
             <ol className="space-y-4">
               {[
-                'Fill out the form and list the products you need.',
-                'Our expert team will call you within 1 business day.',
-                'A price quote and delivery plan tailored to your company will be prepared.',
-                'After agreement, a turnkey service is provided.',
+                'Formu doldurun ve ihtiyaç duyduğunuz ürünleri listeleyin.',
+                'Uzman ekibimiz en geç 1 iş günü içinde sizi arar.',
+                'Firma bilgilerinize özel fiyat teklifi ve teslimat planı hazırlanır.',
+                'Anlaşma sağlandıktan sonra anahtar teslim hizmet sunulur.',
               ].map((step, i) => (
                 <li key={i} className="flex gap-3">
                   <div className="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5">
@@ -186,7 +186,7 @@ export default function KurumsalPage() {
             </ol>
 
             <div className="mt-8 bg-[#1B3A6B] rounded-2xl p-5 text-white">
-              <p className="font-bold mb-3">Direct Contact</p>
+              <p className="font-bold mb-3">Doğrudan İletişim</p>
               {(siteInfo['site.phone'] || '0850 346 78 90') && (
                 <a
                   href={`tel:+9${(siteInfo['site.phone'] || '0850 346 78 90').replace(/\s/g, '')}`}
@@ -208,26 +208,26 @@ export default function KurumsalPage() {
 
           {/* Form */}
           <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">Bulk Order Request</h2>
+            <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">Toplu Sipariş Talebi</h2>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Company info */}
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Company Information</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Firma Bilgileri</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Company Name *</label>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Firma Adı *</label>
                     <input
                       type="text"
                       required
                       value={form.companyName}
                       onChange={set('companyName')}
-                      placeholder="Example Inc."
+                      placeholder="Örnek A.Ş."
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Tax Number</label>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Vergi Numarası</label>
                     <input
                       type="text"
                       value={form.taxNumber}
@@ -241,32 +241,32 @@ export default function KurumsalPage() {
 
               {/* Contact info */}
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Contact Information</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">İletişim Bilgileri</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Contact Person *</label>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Yetkili Kişi *</label>
                     <input
                       type="text"
                       required
                       value={form.contactName}
                       onChange={set('contactName')}
-                      placeholder="Full Name"
+                      placeholder="Ad Soyad"
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Email *</label>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">E-posta *</label>
                     <input
                       type="email"
                       required
                       value={form.email}
                       onChange={set('email')}
-                      placeholder="example@company.com"
+                      placeholder="ornek@firma.com"
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Phone *</label>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1.5">Telefon *</label>
                     <input
                       type="tel"
                       required
@@ -281,37 +281,37 @@ export default function KurumsalPage() {
 
               {/* Product lines */}
               <div>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Requested Products</p>
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Talep Edilen Ürünler</p>
                 <div className="space-y-3">
                   {lines.map((line, idx) => (
                     <div key={line.id} className="grid grid-cols-12 gap-2 items-start">
                       <div className="col-span-5">
-                        {idx === 0 && <label className="text-xs font-semibold text-gray-500 block mb-1">Product / Model</label>}
+                        {idx === 0 && <label className="text-xs font-semibold text-gray-500 block mb-1">Ürün / Model</label>}
                         <input
                           type="text"
                           value={line.product}
                           onChange={(e) => setLine(line.id, 'product', e.target.value)}
-                          placeholder="e.g.: JA Solar 550W Panel"
+                          placeholder="Örn: JA Solar 550W Panel"
                           className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 transition-colors"
                         />
                       </div>
                       <div className="col-span-3">
-                        {idx === 0 && <label className="text-xs font-semibold text-gray-500 block mb-1">Quantity</label>}
+                        {idx === 0 && <label className="text-xs font-semibold text-gray-500 block mb-1">Miktar</label>}
                         <input
                           type="text"
                           value={line.quantity}
                           onChange={(e) => setLine(line.id, 'quantity', e.target.value)}
-                          placeholder="10 units"
+                          placeholder="10 adet"
                           className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 transition-colors"
                         />
                       </div>
                       <div className="col-span-3">
-                        {idx === 0 && <label className="text-xs font-semibold text-gray-500 block mb-1">Note</label>}
+                        {idx === 0 && <label className="text-xs font-semibold text-gray-500 block mb-1">Not</label>}
                         <input
                           type="text"
                           value={line.note}
                           onChange={(e) => setLine(line.id, 'note', e.target.value)}
-                          placeholder="Optional"
+                          placeholder="Opsiyonel"
                           className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 transition-colors"
                         />
                       </div>
@@ -335,28 +335,28 @@ export default function KurumsalPage() {
                   className="mt-3 flex items-center gap-1.5 text-orange-500 hover:text-orange-600 text-sm font-semibold transition-colors"
                 >
                   <Plus size={16} />
-                  Add Product
+                  Ürün Ekle
                 </button>
               </div>
 
               {/* Delivery + Note */}
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Delivery Address</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Teslimat Adresi</label>
                 <input
                   type="text"
                   value={form.deliveryAddress}
                   onChange={set('deliveryAddress')}
-                  placeholder="City, district or full address"
+                  placeholder="Şehir, ilçe veya tam adres"
                   className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Additional Notes</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Ek Notlar</label>
                 <textarea
                   rows={3}
                   value={form.note}
                   onChange={set('note')}
-                  placeholder="Special requirements, preferred brands, delivery date, etc."
+                  placeholder="Özel gereksinimler, tercih edilen markalar, teslimat tarihi vb."
                   className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all resize-none"
                 />
               </div>
@@ -375,7 +375,7 @@ export default function KurumsalPage() {
                 ) : (
                   <>
                     <Send size={17} />
-                    Submit Quote Request
+                    Teklif Talebi Gönder
                   </>
                 )}
               </button>
@@ -392,22 +392,22 @@ function HeroSection() {
     <section className="bg-gradient-to-br from-[#1B3A6B] via-[#2d5282] to-[#1B3A6B] text-white py-16 px-4">
       <div className="max-w-4xl mx-auto text-center">
         <span className="inline-block bg-orange-500/20 border border-orange-400/30 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-          Corporate Solutions
+          Kurumsal Çözümler
         </span>
-        <h1 className="text-4xl font-extrabold mb-3">Bulk Orders &amp; B2B Services</h1>
+        <h1 className="text-4xl font-extrabold mb-3">Toplu Sipariş & B2B Hizmetleri</h1>
         <p className="text-gray-300 max-w-2xl mx-auto text-sm leading-relaxed mb-6">
-          We offer special pricing, priority shipping, and turnkey project support
-          for companies, construction firms, energy investors, and corporate clients.
+          Firmalar, inşaat şirketleri, enerji yatırımcıları ve kurumsal müşteriler için
+          özel fiyat, öncelikli sevkiyat ve anahtar teslim proje desteği sunuyoruz.
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <button
             onClick={() => document.getElementById('form')?.scrollIntoView({ behavior: 'smooth' })}
             className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2.5 rounded-xl transition-colors text-sm flex items-center gap-2 shadow-lg"
           >
-            Get a Quote Now <ChevronRight size={16} />
+            Hemen Teklif Al <ChevronRight size={16} />
           </button>
           <Link href="/urunler" className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm">
-            Product Catalog
+            Ürün Kataloğu
           </Link>
         </div>
       </div>

@@ -254,8 +254,8 @@ export default function ProductDetailClient({ slug }: Props) {
     if (!w) return;
     const certs = certsArray.join(', ');
     const rows = specEntries.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
-    w.document.write(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
-      <title>${product.name} — Technical Data</title>
+    w.document.write(`<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8">
+      <title>${product.name} — Teknik Veri</title>
       <style>
         body{font-family:Arial,sans-serif;padding:32px;color:#111;max-width:700px;margin:0 auto}
         h1{color:#1B3A6B;font-size:20px;margin-bottom:4px}
@@ -271,8 +271,8 @@ export default function ProductDetailClient({ slug }: Props) {
       <div class="brand">${product.brand}</div>
       <h1>${product.name}</h1>
       <table>${rows}</table>
-      ${certs ? `<div class="certs"><strong>Certificates:</strong> ${certs}</div>` : ''}
-      <div class="footer">Adalya Solar Energy · adalyasolar.com · Price: ₺${product.price.toLocaleString('tr-TR')}</div>
+      ${certs ? `<div class="certs"><strong>Sertifikalar:</strong> ${certs}</div>` : ''}
+      <div class="footer">Adalya Solar Enerji · adalyasolar.com · Fiyat: ${product.price.toLocaleString('tr-TR')} ₺</div>
       </body></html>`);
     w.document.close();
     w.focus();
@@ -439,7 +439,7 @@ export default function ProductDetailClient({ slug }: Props) {
               const monthly = total / installments;
               return (
                 <p className="text-xs text-green-700 font-semibold mt-2 bg-green-50 px-3 py-1.5 rounded-lg inline-block">
-                  {installments} installments starting from ₺{monthly.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}/month
+                  Aylık {monthly.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺&apos;den başlayan {installments} taksit imkânı
                 </p>
               );
             })()}
@@ -693,7 +693,7 @@ export default function ProductDetailClient({ slug }: Props) {
                 {payback && (
                   <p className="text-xs text-gray-500 mt-2 text-center">
                     {t('paybackPeriod')}: <span className="font-bold text-green-700">{payback} {t('years')}</span>
-                    <span className="ml-1 text-gray-400">({ELECTRICITY_PRICE} ₺/kWh, {DAILY_HOURS} hrs/day)</span>
+                    <span className="ml-1 text-gray-400">({ELECTRICITY_PRICE} ₺/kWh, günde {DAILY_HOURS} saat)</span>
                   </p>
                 )}
               </div>
@@ -869,7 +869,7 @@ export default function ProductDetailClient({ slug }: Props) {
                       </div>
                       <div>
                         <p className="font-semibold text-gray-800 text-sm">{review.userName}</p>
-                        <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString('en-US')}</p>
+                        <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString('tr-TR')}</p>
                       </div>
                     </div>
                     <div className="flex">
@@ -988,7 +988,7 @@ export default function ProductDetailClient({ slug }: Props) {
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-gray-800 text-sm">{q.userName}</p>
-                        <p className="text-xs text-gray-400">{new Date(q.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                        <p className="text-xs text-gray-400">{new Date(q.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                       </div>
                     </div>
                     <p className="text-sm text-gray-800 font-medium mb-3">{q.question}</p>
@@ -997,7 +997,7 @@ export default function ProductDetailClient({ slug }: Props) {
                         <p className="text-xs font-bold text-green-700 mb-1">{t('sellerReply')}</p>
                         <p className="text-sm text-green-800 leading-relaxed">{q.answer}</p>
                         {q.answeredAt && (
-                          <p className="text-xs text-green-500 mt-1">{new Date(q.answeredAt).toLocaleDateString('en-US')}</p>
+                          <p className="text-xs text-green-500 mt-1">{new Date(q.answeredAt).toLocaleDateString('tr-TR')}</p>
                         )}
                       </div>
                     ) : (
@@ -1053,7 +1053,7 @@ export default function ProductDetailClient({ slug }: Props) {
 
       {recentProducts.length > 0 && (
         <section>
-          <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">Recently Viewed</h2>
+          <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">Son Baktıklarınız</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {recentProducts.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>

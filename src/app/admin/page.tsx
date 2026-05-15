@@ -8,13 +8,13 @@ import {
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
 
 const PERIOD_OPTIONS = [
-  { label: '1 Month',  value: 1 },
-  { label: '2 Months', value: 2 },
-  { label: '6 Months', value: 6 },
-  { label: '1 Year',   value: 12 },
+  { label: '1 Ay',  value: 1 },
+  { label: '2 Ay',  value: 2 },
+  { label: '6 Ay',  value: 6 },
+  { label: '1 Yıl', value: 12 },
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,9 +26,9 @@ function MonthlyTooltip({ active, payload, label }: any) {
       {payload.map((p: { name: string; value: number; color: string }) => (
         <div key={p.name} className="flex items-center gap-2 mb-1">
           <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: p.color }} />
-          <span className="text-gray-500">{p.name === 'gelir' ? 'Revenue:' : 'Orders:'}</span>
+          <span className="text-gray-500">{p.name === 'gelir' ? 'Gelir:' : 'Sipariş:'}</span>
           <span className="font-semibold text-gray-800">
-            {p.name === 'gelir' ? `${Number(p.value).toLocaleString('tr-TR')} ₺` : `${p.value} pcs`}
+            {p.name === 'gelir' ? `${Number(p.value).toLocaleString('tr-TR')} ₺` : `${p.value} adet`}
           </span>
         </div>
       ))}
@@ -48,16 +48,16 @@ function DailyTooltip({ active, payload, label }: any) {
         <div className="flex items-center justify-between gap-4 mb-1">
           <span className="flex items-center gap-1.5 text-gray-500">
             <span className="w-2.5 h-2.5 rounded-full bg-[#1B3A6B] inline-block" />
-            Orders
+            Sipariş
           </span>
-          <span className="font-bold text-[#1B3A6B]">{siparis.value} pcs</span>
+          <span className="font-bold text-[#1B3A6B]">{siparis.value} adet</span>
         </div>
       )}
       {gelir && (
         <div className="flex items-center justify-between gap-4">
           <span className="flex items-center gap-1.5 text-gray-500">
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" />
-            Revenue
+            Ciro
           </span>
           <span className="font-bold text-orange-500">{Number(gelir.value).toLocaleString('tr-TR')} ₺</span>
         </div>
@@ -120,20 +120,20 @@ export default function AdminDashboard() {
     : monthly.reduce((s, m) => s + m.count, 0);
 
   const cards = stats ? [
-    { label: 'Total Products',   value: stats.totalProducts,                               icon: Package,       gradient: 'from-blue-500 to-blue-600' },
-    { label: 'Total Users',      value: stats.totalUsers,                                  icon: Users,         gradient: 'from-emerald-500 to-emerald-600' },
-    { label: 'Total Orders',     value: stats.totalOrders,                                 icon: ShoppingCart,  gradient: 'from-orange-500 to-orange-600' },
-    { label: 'Total Revenue',    value: `${stats.totalRevenue.toLocaleString('tr-TR')} ₺`, icon: TrendingUp,    gradient: 'from-violet-500 to-violet-600' },
-    { label: 'Total Reviews',    value: stats.totalReviews,                                icon: MessageSquare, gradient: 'from-pink-500 to-pink-600' },
-    { label: 'Total Favorites',  value: stats.totalFavorites,                              icon: Heart,         gradient: 'from-red-500 to-red-600' },
-    { label: 'Total Likes',      value: stats.totalLikes,                                  icon: ThumbsUp,      gradient: 'from-indigo-500 to-indigo-600' },
+    { label: 'Toplam Ürün',       value: stats.totalProducts,                               icon: Package,       gradient: 'from-blue-500 to-blue-600' },
+    { label: 'Toplam Kullanıcı',  value: stats.totalUsers,                                  icon: Users,         gradient: 'from-emerald-500 to-emerald-600' },
+    { label: 'Toplam Sipariş',    value: stats.totalOrders,                                 icon: ShoppingCart,  gradient: 'from-orange-500 to-orange-600' },
+    { label: 'Toplam Gelir',      value: `${stats.totalRevenue.toLocaleString('tr-TR')} ₺`, icon: TrendingUp,    gradient: 'from-violet-500 to-violet-600' },
+    { label: 'Toplam Yorum',      value: stats.totalReviews,                                icon: MessageSquare, gradient: 'from-pink-500 to-pink-600' },
+    { label: 'Toplam Favorileme', value: stats.totalFavorites,                              icon: Heart,         gradient: 'from-red-500 to-red-600' },
+    { label: 'Toplam Beğeni',     value: stats.totalLikes,                                  icon: ThumbsUp,      gradient: 'from-indigo-500 to-indigo-600' },
   ] : [];
 
   return (
     <div className="p-8 space-y-8">
       <div>
         <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Dashboard</h1>
-        <p className="text-sm text-gray-400 mt-1">Welcome to the Adalya Solar admin panel</p>
+        <p className="text-sm text-gray-400 mt-1">Adalya Solar yönetim paneline hoş geldiniz</p>
       </div>
 
       {/* Stat Cards */}
@@ -163,9 +163,9 @@ export default function AdminDashboard() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
           <div>
-            <h2 className="text-base font-bold text-[#1B3A6B]">Revenue &amp; Orders Chart</h2>
+            <h2 className="text-base font-bold text-[#1B3A6B]">Gelir &amp; Sipariş Grafiği</h2>
             <p className="text-xs text-gray-400 mt-0.5">
-              {isDaily ? 'Last 30 days — each day separately' : `${PERIOD_OPTIONS.find(p => p.value === period)?.label} — monthly summary`}
+              {isDaily ? 'Son 30 gün — her gün ayrı ayrı' : `${PERIOD_OPTIONS.find(p => p.value === period)?.label} — aylık özet`}
             </p>
           </div>
 
@@ -187,12 +187,12 @@ export default function AdminDashboard() {
 
           <div className="flex items-center gap-3">
             <div className="text-center">
-              <p className="text-xs text-gray-400">Period Revenue</p>
+              <p className="text-xs text-gray-400">Dönem Geliri</p>
               <p className="text-lg font-extrabold text-[#1B3A6B]">{totalRevenue.toLocaleString('tr-TR')} ₺</p>
             </div>
             <div className="w-px h-8 bg-gray-100" />
             <div className="text-center">
-              <p className="text-xs text-gray-400">Period Orders</p>
+              <p className="text-xs text-gray-400">Dönem Siparişi</p>
               <p className="text-lg font-extrabold text-[#1B3A6B]">{totalOrders}</p>
             </div>
           </div>
@@ -205,14 +205,14 @@ export default function AdminDashboard() {
         ) : chartData.length === 0 ? (
           <div className="h-64 flex flex-col items-center justify-center text-gray-400 text-sm gap-2">
             <span className="text-3xl">📭</span>
-            No order data found for this period.
+            Bu dönemde sipariş verisi bulunamadı.
           </div>
         ) : isDaily ? (
-          /* ── DAILY VIEW ── */
+          /* ── GÜNLÜK GÖRÜNÜM ── */
           <div>
             <div className="flex items-center gap-5 mb-3 text-xs text-gray-500">
-              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#1B3A6B] inline-block" />Order Count</span>
-              <span className="flex items-center gap-1.5"><span className="w-6 h-0.5 bg-orange-500 inline-block rounded-full" />Revenue (₺)</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-[#1B3A6B] inline-block" />Sipariş Adedi</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 h-0.5 bg-orange-500 inline-block rounded-full" />Ciro (₺)</span>
             </div>
             <ResponsiveContainer width="100%" height={260}>
               <ComposedChart data={chartData} margin={{ top: 4, right: 24, left: 0, bottom: 0 }}>
@@ -232,13 +232,13 @@ export default function AdminDashboard() {
               </ComposedChart>
             </ResponsiveContainer>
 
-            {/* Top 5 days */}
+            {/* En yüksek 5 gün */}
             {daily.length > 0 && (() => {
               const top5 = [...daily].sort((a, b) => b.revenue - a.revenue).slice(0, 5);
               const maxRev = top5[0].revenue;
               return (
                 <div className="mt-5 border-t pt-4">
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Top 5 Days by Revenue</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">En Yüksek Cirolu 5 Gün</p>
                   <div className="space-y-2">
                     {top5.map(d => {
                       const label = new Date(d.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', timeZone: 'UTC' });
@@ -249,7 +249,7 @@ export default function AdminDashboard() {
                             <div className="h-2 bg-orange-400 rounded-full transition-all" style={{ width: `${maxRev > 0 ? (d.revenue / maxRev) * 100 : 0}%` }} />
                           </div>
                           <span className="text-xs font-bold text-[#1B3A6B] w-24 text-right shrink-0">{d.revenue.toLocaleString('tr-TR')} ₺</span>
-                          <span className="text-xs text-gray-400 w-16 text-right shrink-0">{d.count} orders</span>
+                          <span className="text-xs text-gray-400 w-16 text-right shrink-0">{d.count} sipariş</span>
                         </div>
                       );
                     })}
@@ -259,11 +259,11 @@ export default function AdminDashboard() {
             })()}
           </div>
         ) : (
-          /* ── MONTHLY VIEW ── */
+          /* ── AYLIK GÖRÜNÜM ── */
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             <div className="xl:col-span-2">
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" />Revenue (₺)
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" />Gelir (₺)
               </p>
               <ResponsiveContainer width="100%" height={220}>
                 <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
@@ -285,7 +285,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#1B3A6B] inline-block" />Order Count
+                <span className="w-2.5 h-2.5 rounded-full bg-[#1B3A6B] inline-block" />Sipariş Adedi
               </p>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>

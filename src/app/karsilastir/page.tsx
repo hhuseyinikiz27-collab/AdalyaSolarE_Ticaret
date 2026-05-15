@@ -7,8 +7,8 @@ import { X, ShoppingCart, GitCompare } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 
 const specLabels: Record<string, string> = {
-  boyutlar: 'Dimensions', agirlik: 'Weight', garantiSuresi: 'Warranty',
-  kullanomru: 'Lifespan', uretimYili: 'Production Year', calismaScakligi: 'Operating Temperature',
+  boyutlar: 'Boyutlar', agirlik: 'Ağırlık', garantiSuresi: 'Garanti',
+  kullanomru: 'Kullanım Ömrü', uretimYili: 'Üretim Yılı', calismaScakligi: 'Çalışma Sıcaklığı',
 };
 
 export default function ComparePage() {
@@ -19,10 +19,10 @@ export default function ComparePage() {
     return (
       <main className="max-w-4xl mx-auto px-4 py-20 text-center">
         <GitCompare size={60} className="mx-auto text-gray-200 mb-4" />
-        <h2 className="text-xl font-bold text-gray-700 mb-2">Comparison List is Empty</h2>
-        <p className="text-gray-500 mb-6">Click the compare button on the product listing page to add products.</p>
+        <h2 className="text-xl font-bold text-gray-700 mb-2">Karşılaştırma Listesi Boş</h2>
+        <p className="text-gray-500 mb-6">Ürün listesinde karşılaştır butonuna tıklayarak ürün ekleyin.</p>
         <Link href="/urunler" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
-          Go to Products
+          Ürünlere Git
         </Link>
       </main>
     );
@@ -33,15 +33,15 @@ export default function ComparePage() {
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Product Comparison</h1>
-        <button onClick={clear} className="text-sm text-red-400 hover:text-red-600 font-semibold">Clear List</button>
+        <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Ürün Karşılaştırma</h1>
+        <button onClick={clear} className="text-sm text-red-400 hover:text-red-600 font-semibold">Listeyi Temizle</button>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr>
-              <td className="w-40 p-3 text-sm font-bold text-gray-400 uppercase">Feature</td>
+              <td className="w-40 p-3 text-sm font-bold text-gray-400 uppercase">Özellik</td>
               {items.map(p => (
                 <td key={p.id} className="p-3 min-w-[220px]">
                   <div className="bg-white rounded-2xl border border-gray-100 p-4 relative">
@@ -61,7 +61,7 @@ export default function ComparePage() {
                       disabled={p.stock === 0}
                       className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-semibold py-2 rounded-xl text-sm flex items-center justify-center gap-2 transition-colors"
                     >
-                      <ShoppingCart size={14} />Add to Cart
+                      <ShoppingCart size={14} />Sepete Ekle
                     </button>
                   </div>
                 </td>
@@ -70,10 +70,10 @@ export default function ComparePage() {
           </thead>
           <tbody>
             {[
-              { key: 'price', label: 'Price', render: (p: typeof items[0]) => `${p.price.toLocaleString('tr-TR')} ₺` },
-              { key: 'brand', label: 'Brand', render: (p: typeof items[0]) => p.brand },
-              { key: 'stock', label: 'Stock', render: (p: typeof items[0]) => p.stock > 0 ? <span className="text-green-600 font-semibold">In Stock ({p.stock})</span> : <span className="text-red-500 font-semibold">Out of Stock</span> },
-              { key: 'rating', label: 'Rating', render: (p: typeof items[0]) => `${p.rating} / 5` },
+              { key: 'price', label: 'Fiyat', render: (p: typeof items[0]) => `${p.price.toLocaleString('tr-TR')} ₺` },
+              { key: 'brand', label: 'Marka', render: (p: typeof items[0]) => p.brand },
+              { key: 'stock', label: 'Stok', render: (p: typeof items[0]) => p.stock > 0 ? <span className="text-green-600 font-semibold">Mevcut ({p.stock})</span> : <span className="text-red-500 font-semibold">Tükendi</span> },
+              { key: 'rating', label: 'Puan', render: (p: typeof items[0]) => `${p.rating} / 5` },
             ].map(row => (
               <tr key={row.key} className="border-t border-gray-100">
                 <td className="p-3 text-sm font-semibold text-gray-500">{row.label}</td>

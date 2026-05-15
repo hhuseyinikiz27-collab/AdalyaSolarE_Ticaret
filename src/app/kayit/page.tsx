@@ -33,12 +33,12 @@ function RegisterPageContent() {
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!form.name.trim() || form.name.trim().length < 2) errs.name = lang === 'en' ? 'Name must be at least 2 characters.' : 'Name must be at least 2 characters.';
-    if (!form.email.includes('@')) errs.email = lang === 'en' ? 'Enter a valid email address.' : 'Enter a valid email address.';
-    if (form.phone.replace(/\D/g, '').length < 10) errs.phone = lang === 'en' ? 'Enter a valid phone number.' : 'Enter a valid phone number.';
-    if (form.password.length < 6) errs.password = lang === 'en' ? 'Password must be at least 6 characters.' : 'Password must be at least 6 characters.';
-    if (form.password !== form.confirmPassword) errs.confirmPassword = lang === 'en' ? 'Passwords do not match.' : 'Passwords do not match.';
-    if (!agree) errs.agree = lang === 'en' ? 'You must accept the terms to continue.' : 'You must accept the terms to continue.';
+    if (!form.name.trim() || form.name.trim().length < 2) errs.name = lang === 'en' ? 'Name must be at least 2 characters.' : 'Ad soyad en az 2 karakter olmalıdır.';
+    if (!form.email.includes('@')) errs.email = lang === 'en' ? 'Enter a valid email address.' : 'Geçerli bir e-posta girin.';
+    if (form.phone.replace(/\D/g, '').length < 10) errs.phone = lang === 'en' ? 'Enter a valid phone number.' : 'Geçerli bir telefon numarası girin.';
+    if (form.password.length < 6) errs.password = lang === 'en' ? 'Password must be at least 6 characters.' : 'Şifre en az 6 karakter olmalıdır.';
+    if (form.password !== form.confirmPassword) errs.confirmPassword = lang === 'en' ? 'Passwords do not match.' : 'Şifreler eşleşmiyor.';
+    if (!agree) errs.agree = lang === 'en' ? 'You must accept the terms to continue.' : 'Devam etmek için koşulları kabul etmelisiniz.';
     return errs;
   };
 
@@ -57,9 +57,9 @@ function RegisterPageContent() {
   const passwordStrength = () => {
     const p = form.password;
     if (!p) return null;
-    if (p.length < 6) return { label: lang === 'en' ? 'Weak' : 'Weak', color: 'bg-red-500', width: '33%' };
-    if (p.length < 10 || !/[A-Z]/.test(p) || !/\d/.test(p)) return { label: lang === 'en' ? 'Medium' : 'Medium', color: 'bg-orange-400', width: '66%' };
-    return { label: lang === 'en' ? 'Strong' : 'Strong', color: 'bg-green-500', width: '100%' };
+    if (p.length < 6) return { label: lang === 'en' ? 'Weak' : 'Zayıf', color: 'bg-red-500', width: '33%' };
+    if (p.length < 10 || !/[A-Z]/.test(p) || !/\d/.test(p)) return { label: lang === 'en' ? 'Medium' : 'Orta', color: 'bg-orange-400', width: '66%' };
+    return { label: lang === 'en' ? 'Strong' : 'Güçlü', color: 'bg-green-500', width: '100%' };
   };
   const strength = passwordStrength();
 
@@ -85,7 +85,7 @@ function RegisterPageContent() {
                   type="text"
                   value={form.name}
                   onChange={set('name')}
-                  placeholder={lang === 'en' ? 'Your Full Name' : 'Your Full Name'}
+                  placeholder={lang === 'en' ? 'Your Full Name' : 'Adınız Soyadınız'}
                   className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all ${errors.name ? 'border-red-400' : 'border-gray-200'}`}
                 />
               </div>
@@ -101,7 +101,7 @@ function RegisterPageContent() {
                   type="email"
                   value={form.email}
                   onChange={set('email')}
-                  placeholder="example@email.com"
+                  placeholder="ornek@email.com"
                   className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all ${errors.email ? 'border-red-400' : 'border-gray-200'}`}
                 />
               </div>
@@ -145,7 +145,7 @@ function RegisterPageContent() {
                   <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div className={`h-full ${strength.color} transition-all`} style={{ width: strength.width }} />
                   </div>
-                  <p className={`text-xs mt-0.5 ${strength.color.replace('bg-', 'text-')}`}>{strength.label} {lang === 'en' ? 'password' : 'password'}</p>
+                  <p className={`text-xs mt-0.5 ${strength.color.replace('bg-', 'text-')}`}>{strength.label} {lang === 'en' ? 'password' : 'şifre'}</p>
                 </div>
               )}
               {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
@@ -181,9 +181,9 @@ function RegisterPageContent() {
                 />
                 <span className="text-sm text-gray-600">
                   <Link href="/kullanim-kosullari" className="text-orange-500 hover:underline">{t('termsLink')}</Link>
-                  {' '}{lang === 'en' ? 'and' : 'and'}{' '}
+                  {' '}{lang === 'en' ? 'and' : 've'}{' '}
                   <Link href="/gizlilik-politikasi" className="text-orange-500 hover:underline">{t('privacyLink')}</Link>
-                  {lang === 'en' ? ` — ${t('agreeTerms')}` : ` — ${t('agreeTerms')}`}
+                  {lang === 'en' ? ` — ${t('agreeTerms')}` : `'nı okudum ve kabul ediyorum.`}
                 </span>
               </label>
               {errors.agree && <p className="text-xs text-red-500 mt-1">{errors.agree}</p>}
@@ -205,7 +205,7 @@ function RegisterPageContent() {
           {referralCode && (
             <div className="mt-4 flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 text-sm text-orange-700">
               <Gift size={16} className="shrink-0" />
-              <span>{lang === 'en' ? <>You are registering with a referral code. You will earn <strong>50 points</strong> after registration!</> : <>You are registering with a referral code. You will earn <strong>50 points</strong> after registration!</>}</span>
+              <span>{lang === 'en' ? <>You are registering with a referral code. You will earn <strong>50 points</strong> after registration!</> : <>Davet koduyla kayıt oluyorsunuz. Kayıt sonrası <strong>50 puan</strong> kazanacaksınız!</>}</span>
             </div>
           )}
 

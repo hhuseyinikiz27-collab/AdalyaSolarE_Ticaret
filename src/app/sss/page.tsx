@@ -1,86 +1,86 @@
 import Link from 'next/link';
 import { ChevronDown, HelpCircle, ChevronRight } from 'lucide-react';
 
-export const metadata = { title: 'Frequently Asked Questions | Adalya Solar Energy' };
+export const metadata = { title: 'Sıkça Sorulan Sorular | Adalya Solar Enerji' };
 
 const faqs = [
   {
-    category: 'Installation & Projects',
+    category: 'Kurulum & Proje',
     items: [
       {
-        q: 'How long does solar energy system installation take?',
-        a: 'Residential systems (5-10 kWp) are generally completed within 1-3 business days. Commercial and industrial projects may take 1-4 weeks depending on system size. TEDAŞ grid connection application approval varies between 15-45 days depending on the region.',
+        q: 'Güneş enerjisi sistemi kurulumu ne kadar sürer?',
+        a: 'Konut tipi sistemler (5-10 kWp) genellikle 1-3 iş günü içinde tamamlanır. Ticari ve endüstriyel projeler sistemin büyüklüğüne göre 1-4 hafta sürebilir. TEDAŞ bağlantı başvuru onayı ise bölgeye göre 15-45 gün arasında değişmektedir.',
       },
       {
-        q: 'How many solar panels do I need?',
-        a: 'The number of panels depends on your monthly electricity consumption, roof orientation, and the number of sunshine hours in your region. You can calculate the estimated number of panels using our Energy Calculator. For an average household, 5-15 panels are generally sufficient.',
+        q: 'Kaç güneş paneli gerekiyor?',
+        a: 'Panel sayısı aylık elektrik tüketiminize, çatı yönüne ve bölgenizdeki güneşlenme saatine bağlıdır. Enerji Hesaplayıcımızı kullanarak tahmini panel sayısını hesaplayabilirsiniz. Ortalama bir konut için 5-15 panel genellikle yeterlidir.',
       },
       {
-        q: 'Which roof orientations are suitable?',
-        a: 'The most efficient orientation is south, followed by southwest and southeast. A 30-35 degree tilt facing south is ideal. East-west orientations can also be used but yield decreases by 10-20%. On flat roofs, mounting at the optimal angle is possible.',
+        q: 'Hangi yöne bakan çatılar uygun?',
+        a: 'En verimli yön güney, ardından güneybatı ve güneydoğudur. Güney yönünde 30-35 derece eğim idealdir. Doğu-batı yönleri de kullanılabilir ancak verim %10-20 düşer. Düz çatılarda optimum açıda montaj yapılabilir.',
       },
       {
-        q: 'Can I install a solar energy system as a tenant?',
-        a: 'Tenants can install a system with the written consent of the property owner. In case of moving, the system can be dismantled or a transfer agreement can be made with the property owner. Adalya Solar also provides contract support throughout this process.',
+        q: 'Kiracı olarak güneş enerjisi sistemi kurabilir miyim?',
+        a: 'Kiracılar mülk sahibinin yazılı onayıyla sistem kurabilir. Taşınma durumunda sistem sökülebilir veya mülk sahibiyle devir anlaşması yapılabilir. Adalya Solar bu süreçte sözleşme desteği de sağlamaktadır.',
       },
     ],
   },
   {
-    category: 'Technical Questions',
+    category: 'Teknik Sorular',
     items: [
       {
-        q: 'Does the system work during a power outage?',
-        a: 'Standard on-grid (grid-tied) systems automatically shut down during a power outage for safety reasons. If you want to use electricity during an outage as well, you should choose a battery-backed hybrid system.',
+        q: 'Şebeke kesintisinde sistem çalışır mı?',
+        a: 'Standart on-grid (şebekeye bağlı) sistemler güvenlik nedeniyle şebeke kesintisinde otomatik olarak kapanır. Kesinti anında da elektrik kullanmak istiyorsanız batarya destekli hibrit sistem tercih etmelisiniz.',
       },
       {
-        q: 'How much does output drop in winter?',
-        a: 'Solar panels only work with light, not heat. In winter, production drops because sunshine hours are reduced; however, panels actually work more efficiently in cold weather. Even in winter months in regions like Antalya, significant production still occurs.',
+        q: 'Kış aylarında verim ne kadar düşer?',
+        a: 'Güneş panelleri yalnızca ışıkla çalışır, sıcakla değil. Kışın güneşlenme saatleri azaldığı için üretim düşer; ancak paneller aslında soğuk havada daha verimli çalışır. Antalya gibi bölgelerde kış aylarında bile önemli miktarda üretim gerçekleşir.',
       },
       {
-        q: 'Does the system work in low-light conditions (cloudy weather)?',
-        a: 'Yes, modern solar panels also produce energy in diffuse light. However, output drops by 10-40% compared to bright sunlight. High-performance low-light panels (TOPCon, HJT technology) provide an advantage in these conditions.',
+        q: 'Düşük ışık koşullarında (bulutlu hava) sistem çalışır mı?',
+        a: 'Evet, modern güneş panelleri diffüz ışıkta da üretim yapar. Ancak verim, parlak güneş altına kıyasla %10-40 arasında düşer. Düşük ışık performansı yüksek paneller (TOPCon, HJT teknolojisi) bu koşullarda avantaj sağlar.',
       },
       {
-        q: 'How long do solar panels last?',
-        a: 'Quality panels have a lifespan of 25-30 years and beyond. Most manufacturers offer a product warranty for the first 10 years and a power warranty for 25-30 years. The power warranty typically guarantees that at least 80% of original power will be maintained at year 25.',
+        q: 'Güneş panelleri ne kadar süre kullanılır?',
+        a: 'Kaliteli paneller 25-30 yıl ve üzeri kullanım ömrüne sahiptir. Çoğu üretici ilk 10 yıl için ürün garantisi, 25-30 yıl için güç garantisi sunar. Güç garantisi genellikle 25. yılda orijinal gücün en az %80\'inin korunacağını taahhüt eder.',
       },
     ],
   },
   {
-    category: 'Cost & Investment',
+    category: 'Maliyet & Yatırım',
     items: [
       {
-        q: 'How many years does the investment pay for itself?',
-        a: 'In Turkey, residential systems pay for themselves in an average of 4-7 years. This period varies depending on the sunshine in your city, your consumption amount, and your electricity tariff. Our Energy Calculator helps you calculate your payback period.',
+        q: 'Yatırım kendini kaç yılda amorti eder?',
+        a: 'Türkiye\'de konut sistemleri ortalama 4-7 yılda kendini amorti eder. Bu süre bulunduğunuz şehirdeki güneşlenme, tüketim miktarınız ve elektrik tarifenize göre değişir. Enerji Hesaplayıcımız amortisman sürenizi hesaplamanıza yardımcı olur.',
       },
       {
-        q: 'Are there government incentives or loan options?',
-        a: 'Under YEKDEM, surplus energy produced can be sold to the grid. KOSGEB energy efficiency supports are available for SMEs. Some banks offer special low-interest loans for solar energy projects. You can benefit from our free consultancy service for current incentives.',
+        q: 'Devlet teşviki veya kredi imkânı var mı?',
+        a: 'YEKDEM kapsamında ürettiğiniz fazla enerji şebekeye satılabilir. KOBİ\'ler için KOSGEB enerji verimliliği destekleri mevcuttur. Bazı bankalar güneş enerjisi projelerine özel düşük faizli kredi sunmaktadır. Güncel teşvikler için ücretsiz danışmanlık hizmetimizden yararlanabilirsiniz.',
       },
       {
-        q: 'Should I get insurance?',
-        a: 'Solar energy systems can be secured with an addendum to your home insurance or a separate installation insurance policy. We recommend getting insurance against risks such as storms, hail, and fire. Adalya Solar helps you submit the necessary documents to your insurance company after installation.',
+        q: 'Sigorta yaptırmalı mıyım?',
+        a: 'Güneş enerjisi sistemleri konut sigortanıza ek zeyil ile veya ayrı bir montaj sigortasıyla güvence altına alınabilir. Fırtına, dolu ve yangın gibi risklere karşı sigorta yaptırmanızı tavsiye ederiz. Adalya Solar kurulum sonrası gerekli belgeleri sigorta şirketinize iletmenize yardımcı olur.',
       },
       {
-        q: 'Is there a price advantage for bulk/corporate purchases?',
-        a: 'Yes. Special pricing is applied for systems of 5 kWp and above and for corporate purchases. You can submit your request through our Bulk Order and B2B form and receive a project-specific quote from our expert team.',
+        q: 'Toplu/kurumsal alımlarda fiyat avantajı var mı?',
+        a: 'Evet. 5 kWp ve üzeri sistemler ile kurumsal alımlarda özel fiyatlandırma uygulanmaktadır. Toplu Sipariş ve B2B formumuzdan talebinizi iletebilir, uzman ekibimizden projenize özel teklif alabilirsiniz.',
       },
     ],
   },
   {
-    category: 'Maintenance & Warranty',
+    category: 'Bakım & Garanti',
     items: [
       {
-        q: 'How often should panels be cleaned?',
-        a: 'Cleaning 2-3 times per year is recommended. If dust, bird droppings, and leaves accumulate on the surface, production can drop by 10-25%. You can clean with lukewarm water and a soft cloth in the early morning or late afternoon. Avoid chemical cleaners.',
+        q: 'Paneller ne sıklıkla temizlenmeli?',
+        a: 'Yılda 2-3 kez temizleme önerilir. Toz, kuş pisliği ve yaprak gibi kirler yüzeyde birikirse üretim %10-25 düşebilir. Sabahın erken saatlerinde veya akşamüstü ılık suyla ve yumuşak bezle temizlik yapabilirsiniz. Kimyasal temizleyicilerden kaçının.',
       },
       {
-        q: 'Who maintains the system?',
-        a: 'Adalya Solar offers an annual technical maintenance package for all systems it installs. Maintenance includes inverter updates, grounding measurements, cable inspection, and efficiency reports. A maintenance agreement can be added to your installation contract.',
+        q: 'Sistemi kim bakıyor?',
+        a: 'Adalya Solar tüm kurduğu sistemler için yıllık teknik bakım paketi sunmaktadır. Bakım kapsamında inverter güncelleme, topraklama ölçümü, kablo kontrolü ve verimlilik raporu yer alır. Bakım anlaşması kurulum sözleşmenize eklenebilir.',
       },
       {
-        q: 'What does the warranty cover?',
-        a: 'Product warranties vary by brand: Panels carry 10-15 years product warranty + 25-30 years power warranty; inverters 5-10 years. Workmanship and installation warranty is provided by Adalya Solar for 2 years. We provide all warranty documents in writing at the time of system delivery.',
+        q: 'Garanti kapsamı nedir?',
+        a: 'Ürün garantileri markaya göre değişir: Paneller 10-15 yıl ürün garantisi + 25-30 yıl güç garantisi; inverterler 5-10 yıl. İşçilik ve montaj garantisi Adalya Solar tarafından 2 yıl verilmektedir. Tüm garanti belgelerini sistemin tesliminde yazılı olarak sunuyoruz.',
       },
     ],
   },
@@ -92,25 +92,25 @@ export default function SSSPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1B3A6B] via-[#2d5282] to-[#1B3A6B] text-white py-16 px-4 text-center">
         <span className="inline-block bg-orange-500/20 border border-orange-400/30 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-          Help Center
+          Yardım Merkezi
         </span>
-        <h1 className="text-4xl font-extrabold mb-3">Frequently Asked Questions</h1>
+        <h1 className="text-4xl font-extrabold mb-3">Sıkça Sorulan Sorular</h1>
         <p className="text-gray-300 max-w-xl mx-auto text-sm leading-relaxed mb-6">
-          Everything you are curious about regarding solar energy systems is here.
-          Contact us for any questions you cannot find.
+          Güneş enerjisi sistemi hakkında merak ettiğiniz her şey burada.
+          Bulamadığınız sorunuz için bizimle iletişime geçin.
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link
             href="/iletisim"
             className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm flex items-center gap-2"
           >
-            Ask a Question <ChevronRight size={15} />
+            Soru Sor <ChevronRight size={15} />
           </Link>
           <Link
             href="/hesaplayici"
             className="bg-white/10 hover:bg-white/20 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
           >
-            Calculate Savings
+            Tasarruf Hesapla
           </Link>
         </div>
       </section>
@@ -150,28 +150,28 @@ export default function SSSPage() {
 
         {/* CTA */}
         <div className="bg-gradient-to-br from-[#1B3A6B] to-[#2d5282] rounded-2xl p-8 text-white text-center">
-          <h3 className="text-xl font-extrabold mb-2">Couldn&apos;t Find Your Question?</h3>
+          <h3 className="text-xl font-extrabold mb-2">Sorunuzu Bulamadınız mı?</h3>
           <p className="text-gray-300 text-sm mb-6">
-            Our expert team is ready to answer your questions weekdays from 09:00 - 18:00.
+            Uzman ekibimiz hafta içi 09:00 - 18:00 arasında sorularınızı yanıtlamaya hazır.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/iletisim"
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2.5 rounded-xl transition-colors text-sm"
             >
-              Contact Us
+              İletişime Geç
             </Link>
             <Link
               href="/kurumsal"
               className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
             >
-              Get a Corporate Quote
+              Kurumsal Teklif Al
             </Link>
             <Link
               href="/blog"
               className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
             >
-              Blog Guides
+              Blog Rehberleri
             </Link>
           </div>
         </div>

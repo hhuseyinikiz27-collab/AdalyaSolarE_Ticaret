@@ -38,7 +38,7 @@ export default function Logo({ height = 120, inverted = false }: LogoProps) {
             marginTop: 5,
           }}
         >
-          — ENERGY —
+          — ENERJİ —
         </span>
       </div>
     </div>

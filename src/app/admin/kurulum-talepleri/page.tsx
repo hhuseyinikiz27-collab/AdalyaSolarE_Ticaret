@@ -5,14 +5,14 @@ import { Wrench, ChevronDown, ChevronUp } from 'lucide-react';
 import { api, ApiInstallationRequest } from '@/lib/api';
 
 const STATUS_OPTIONS = [
-  { value: 'beklemede', label: 'Pending', color: 'text-amber-600 bg-amber-50 border-amber-200' },
-  { value: 'inceleniyor', label: 'Under Review', color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  { value: 'tamamlandi', label: 'Completed', color: 'text-green-600 bg-green-50 border-green-200' },
-  { value: 'reddedildi', label: 'Rejected', color: 'text-red-600 bg-red-50 border-red-200' },
+  { value: 'beklemede', label: 'Beklemede', color: 'text-amber-600 bg-amber-50 border-amber-200' },
+  { value: 'inceleniyor', label: 'İnceleniyor', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  { value: 'tamamlandi', label: 'Tamamlandı', color: 'text-green-600 bg-green-50 border-green-200' },
+  { value: 'reddedildi', label: 'Reddedildi', color: 'text-red-600 bg-red-50 border-red-200' },
 ];
 
 const TYPE_LABELS: Record<string, string> = {
-  konut: 'Residential', isyeri: 'Commercial', ciftlik: 'Farm / Agriculture', diger: 'Other',
+  konut: 'Konut', isyeri: 'İşyeri', ciftlik: 'Çiftlik / Tarım', diger: 'Diğer',
 };
 
 export default function AdminKurulumTalepleri() {
@@ -66,8 +66,8 @@ export default function AdminKurulumTalepleri() {
         <div className="flex items-center gap-3">
           <Wrench size={24} className="text-orange-500" />
           <div>
-            <h1 className="text-xl font-extrabold text-gray-900">Installation Requests</h1>
-            <p className="text-sm text-gray-500">{total} request{total !== 1 ? 's' : ''}</p>
+            <h1 className="text-xl font-extrabold text-gray-900">Kurulum Talepleri</h1>
+            <p className="text-sm text-gray-500">{total} talep</p>
           </div>
         </div>
         <select
@@ -75,7 +75,7 @@ export default function AdminKurulumTalepleri() {
           onChange={e => setFilterStatus(e.target.value)}
           className="border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
         >
-          <option value="">All</option>
+          <option value="">Tümü</option>
           {STATUS_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
       </div>
@@ -87,7 +87,7 @@ export default function AdminKurulumTalepleri() {
       ) : items.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center">
           <Wrench size={48} className="mx-auto text-gray-200 mb-4" />
-          <p className="text-gray-400">No installation requests found.</p>
+          <p className="text-gray-400">Kurulum talebi bulunamadı.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -113,21 +113,21 @@ export default function AdminKurulumTalepleri() {
               {expanded === item.id && (
                 <div className="px-4 pb-4 border-t border-gray-100 pt-4 space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-                    <div><p className="text-gray-400 text-xs">Phone</p><p className="font-semibold">{item.phone}</p></div>
-                    <div><p className="text-gray-400 text-xs">Email</p><p className="font-semibold">{item.email}</p></div>
-                    <div><p className="text-gray-400 text-xs">Address</p><p className="font-semibold">{item.address || '—'}</p></div>
-                    <div><p className="text-gray-400 text-xs">Installation Type</p><p className="font-semibold">{TYPE_LABELS[item.installationType] || item.installationType}</p></div>
-                    <div><p className="text-gray-400 text-xs">System Size</p><p className="font-semibold">{item.systemSize}</p></div>
+                    <div><p className="text-gray-400 text-xs">Telefon</p><p className="font-semibold">{item.phone}</p></div>
+                    <div><p className="text-gray-400 text-xs">E-posta</p><p className="font-semibold">{item.email}</p></div>
+                    <div><p className="text-gray-400 text-xs">Adres</p><p className="font-semibold">{item.address || '—'}</p></div>
+                    <div><p className="text-gray-400 text-xs">Kurulum Türü</p><p className="font-semibold">{TYPE_LABELS[item.installationType] || item.installationType}</p></div>
+                    <div><p className="text-gray-400 text-xs">Sistem Büyüklüğü</p><p className="font-semibold">{item.systemSize}</p></div>
                   </div>
                   {item.note && (
                     <div className="bg-gray-50 rounded-xl p-3 text-sm text-gray-700">
-                      <p className="text-xs font-semibold text-gray-400 mb-1">Customer Note</p>
+                      <p className="text-xs font-semibold text-gray-400 mb-1">Müşteri Notu</p>
                       {item.note}
                     </div>
                   )}
                   {item.adminNote && editId !== item.id && (
                     <div className="bg-blue-50 rounded-xl p-3 text-sm text-blue-700">
-                      <p className="text-xs font-semibold text-blue-400 mb-1">Admin Note</p>
+                      <p className="text-xs font-semibold text-blue-400 mb-1">Admin Notu</p>
                       {item.adminNote}
                     </div>
                   )}
@@ -149,19 +149,19 @@ export default function AdminKurulumTalepleri() {
                         rows={3}
                         value={editNote}
                         onChange={e => setEditNote(e.target.value)}
-                        placeholder="Admin note (a notification will be sent to the customer)"
+                        placeholder="Admin notu (müşteriye bildirim gönderilir)"
                         className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 resize-none"
                       />
                       <div className="flex gap-2">
-                        <button onClick={() => setEditId(null)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2 rounded-xl text-sm hover:bg-gray-50 transition-colors">Cancel</button>
+                        <button onClick={() => setEditId(null)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2 rounded-xl text-sm hover:bg-gray-50 transition-colors">İptal</button>
                         <button onClick={saveEdit} disabled={saving} className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2 rounded-xl text-sm transition-colors">
-                          {saving ? 'Saving...' : 'Save'}
+                          {saving ? 'Kaydediliyor...' : 'Kaydet'}
                         </button>
                       </div>
                     </div>
                   ) : (
                     <button onClick={() => openEdit(item)} className="bg-[#1B3A6B] hover:bg-[#162f5a] text-white font-semibold text-sm px-4 py-2 rounded-xl transition-colors">
-                      Update Status
+                      Durumu Güncelle
                     </button>
                   )}
                 </div>

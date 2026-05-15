@@ -13,23 +13,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const parts = slug.split('-');
   const id = parseInt(parts[parts.length - 1], 10);
 
-  if (isNaN(id)) return { title: 'Ürün | Adalya Solar Energy' };
+  if (isNaN(id)) return { title: 'Ürün | Adalya Solar Enerji' };
 
   try {
-    const res = await fetch(`${BASE}/api/products/${id}`, { cache: 'no-store' });
-    if (!res.ok) return { title: 'Ürün | Adalya Solar Energy' };
+    const res = await fetch(`${BASE}/api/products/${id}`, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return { title: 'Ürün | Adalya Solar Enerji' };
     const p = await res.json();
     return {
-      title: `${p.name} | Adalya Solar Energy`,
-      description: (p.description || '').slice(0, 160) || 'Adalya Solar Energy product details.',
+      title: `${p.name} | Adalya Solar Enerji`,
+      description: (p.description || '').slice(0, 160) || 'Adalya Solar Enerji ürün detayları.',
       openGraph: {
-        title: `${p.name} | Adalya Solar Energy`,
+        title: `${p.name} | Adalya Solar Enerji`,
         description: (p.description || '').slice(0, 160),
         images: p.imageUrl ? [`${BASE}${p.imageUrl.startsWith('/') ? '' : '/'}${p.imageUrl}`] : [],
       },
     };
   } catch {
-    return { title: 'Ürün | Adalya Solar Energy' };
+    return { title: 'Ürün | Adalya Solar Enerji' };
   }
 }
 
@@ -41,7 +41,7 @@ export default async function ProductDetailPage({ params }: Props) {
   let jsonLd: Record<string, unknown> | null = null;
   if (!isNaN(id)) {
     try {
-      const res = await fetch(`${BASE}/api/products/${id}`, { cache: 'no-store' });
+      const res = await fetch(`${BASE}/api/products/${id}`, { cache: 'no-store', signal: AbortSignal.timeout(5000) });
       if (res.ok) {
         const p = await res.json();
         const price = p.discountPrice ?? p.price;

@@ -37,14 +37,14 @@ export default function FlashSaleCountdown({ endsAt, price, originalPrice, size 
       <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
         <div className="flex items-center gap-2 mb-2">
           <Zap size={16} className="fill-red-500 text-red-500" />
-          <span className="text-red-600 font-bold text-sm">Flash Sale — {discount}% Off!</span>
+          <span className="text-red-600 font-bold text-sm">Flash İndirim — %{discount} İndirim!</span>
         </div>
         <div className="flex items-center gap-3 mb-2">
           <span className="text-2xl font-extrabold text-red-600">{price.toLocaleString('tr-TR')} ₺</span>
           <span className="text-sm text-gray-400 line-through">{originalPrice.toLocaleString('tr-TR')} ₺</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-gray-500 font-medium">Ends:</span>
+          <span className="text-xs text-gray-500 font-medium">Bitiş:</span>
           {[pad(remaining.h), pad(remaining.m), pad(remaining.s)].map((val, i) => (
             <span key={i} className="bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded">{val}</span>
           )).reduce<React.ReactNode[]>((acc, el, i) => i === 0 ? [el] : [...acc, <span key={`sep${i}`} className="text-red-400 font-bold text-xs">:</span>, el], [])}

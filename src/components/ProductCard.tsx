@@ -71,7 +71,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           {product.isNew && (
             <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-              NEW
+              {lang === 'en' ? 'NEW' : 'YENİ'}
             </span>
           )}
         </div>
@@ -132,7 +132,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.stock > 10
             ? <span className="text-green-600 font-medium">✓ {t('inStock')}</span>
             : product.stock > 0
-            ? <span className="text-orange-500 font-medium">⚠ Only {product.stock} {t('lastItems')}</span>
+            ? <span className="text-orange-500 font-medium">⚠ {lang === 'en' ? `Only ${product.stock} ${t('lastItems')}` : `Son ${product.stock} adet!`}</span>
             : <span className="text-red-500 font-medium">✗ {t('outOfStock')}</span>
           }
         </p>

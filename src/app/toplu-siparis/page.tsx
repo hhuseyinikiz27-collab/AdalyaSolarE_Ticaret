@@ -40,12 +40,12 @@ export default function TopluSiparisPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!companyName || !contactName || !email || !phone || !city || !deliveryAddress) {
-      setError('Please fill in all required fields.');
+      setError('Lütfen tüm zorunlu alanları doldurun.');
       return;
     }
     const validItems = items.filter(i => i.productName.trim());
     if (validItems.length === 0) {
-      setError('Please add at least one product.');
+      setError('En az bir ürün ekleyin.');
       return;
     }
 
@@ -68,7 +68,7 @@ export default function TopluSiparisPage() {
       });
       setSuccess(true);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred.');
+      setError(err instanceof Error ? err.message : 'Bir hata oluştu.');
     } finally {
       setSubmitting(false);
     }
@@ -81,11 +81,11 @@ export default function TopluSiparisPage() {
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Your Request Has Been Received!</h2>
-          <p className="text-gray-600 mb-6">Your bulk order request is under review. We will contact you as soon as possible.</p>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Talebiniz Alındı!</h2>
+          <p className="text-gray-600 mb-6">Toplu sipariş talebiniz incelemeye alındı. En kısa sürede sizinle iletişime geçeceğiz.</p>
           <div className="flex gap-3 justify-center">
-            <Link href="/" className="px-4 py-2 bg-[#1B3A6B] text-white rounded-lg text-sm font-medium hover:bg-[#152d54]">Home</Link>
-            <Link href="/urunler" className="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">Browse Products</Link>
+            <Link href="/" className="px-4 py-2 bg-[#1B3A6B] text-white rounded-lg text-sm font-medium hover:bg-[#152d54]">Ana Sayfa</Link>
+            <Link href="/urunler" className="px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">Ürünleri İncele</Link>
           </div>
         </div>
       </main>
@@ -100,38 +100,38 @@ export default function TopluSiparisPage() {
           <div className="w-14 h-14 bg-[#1B3A6B] rounded-2xl flex items-center justify-center mx-auto mb-3">
             <Building2 className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Bulk Order Form</h1>
-          <p className="text-gray-500 mt-2">Get a special price quote for corporate purchases. Our team will contact you as soon as possible.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Toplu Sipariş Formu</h1>
+          <p className="text-gray-500 mt-2">Kurumsal alımlar için özel fiyat teklifi alın. Ekibimiz en kısa sürede sizinle iletişime geçecektir.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Contact Info */}
           <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-            <h2 className="font-semibold text-gray-900 mb-4">Contact Information</h2>
+            <h2 className="font-semibold text-gray-900 mb-4">İletişim Bilgileri</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
-                <input value={companyName} onChange={e => setCompanyName(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="e.g.: ABC Energy Inc." />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Firma Adı *</label>
+                <input value={companyName} onChange={e => setCompanyName(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Örn: ABC Enerji A.Ş." />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Person *</label>
-                <input value={contactName} onChange={e => setContactName(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Full Name" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">İlgili Kişi *</label>
+                <input value={contactName} onChange={e => setContactName(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Ad Soyad" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="example@company.com" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">E-posta *</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="ornek@firma.com" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon *</label>
                 <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="05xx xxx xx xx" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
-                <input value={city} onChange={e => setCity(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Istanbul" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Şehir *</label>
+                <input value={city} onChange={e => setCity(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="İstanbul" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Address *</label>
-                <input value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Full address" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Teslimat Adresi *</label>
+                <input value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} required className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Tam adres" />
               </div>
             </div>
           </div>
@@ -139,9 +139,9 @@ export default function TopluSiparisPage() {
           {/* Products */}
           <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-gray-900">Product List</h2>
+              <h2 className="font-semibold text-gray-900">Ürün Listesi</h2>
               <button type="button" onClick={addItem} className="flex items-center gap-1 text-sm text-[#1B3A6B] font-medium hover:underline">
-                <Plus className="w-4 h-4" /> Add Product
+                <Plus className="w-4 h-4" /> Ürün Ekle
               </button>
             </div>
             <div className="space-y-3">
@@ -151,9 +151,9 @@ export default function TopluSiparisPage() {
                     {idx + 1}
                   </div>
                   <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <input value={item.productName} onChange={e => updateItem(item.id, 'productName', e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B] sm:col-span-1" placeholder="Product name / code" />
-                    <input type="number" min={1} value={item.quantity} onChange={e => updateItem(item.id, 'quantity', parseInt(e.target.value) || 1)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Quantity" />
-                    <input value={item.note} onChange={e => updateItem(item.id, 'note', e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Special request (optional)" />
+                    <input value={item.productName} onChange={e => updateItem(item.id, 'productName', e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B] sm:col-span-1" placeholder="Ürün adı / kodu" />
+                    <input type="number" min={1} value={item.quantity} onChange={e => updateItem(item.id, 'quantity', parseInt(e.target.value) || 1)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Adet" />
+                    <input value={item.note} onChange={e => updateItem(item.id, 'note', e.target.value)} className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Özel istek (opsiyonel)" />
                   </div>
                   {items.length > 1 && (
                     <button type="button" onClick={() => removeItem(item.id)} className="flex-shrink-0 mt-2 text-red-400 hover:text-red-600">
@@ -167,14 +167,14 @@ export default function TopluSiparisPage() {
 
           {/* Note */}
           <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Additional Notes</label>
-            <textarea value={note} onChange={e => setNote(e.target.value)} rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Delivery date, special requirements, etc..." />
+            <label className="block text-sm font-medium text-gray-700 mb-2">Ek Notlar</label>
+            <textarea value={note} onChange={e => setNote(e.target.value)} rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Teslimat tarihi, özel gereksinimler, vb..." />
           </div>
 
           {error && <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">{error}</div>}
 
           <button type="submit" disabled={submitting} className="w-full py-3 bg-[#1B3A6B] text-white rounded-xl font-semibold hover:bg-[#152d54] disabled:opacity-50 flex items-center justify-center gap-2">
-            {submitting ? <><div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> Submitting...</> : <><Package className="w-4 h-4" /> Request Quote</>}
+            {submitting ? <><div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" /> Gönderiliyor...</> : <><Package className="w-4 h-4" /> Teklif Talep Et</>}
           </button>
         </form>
       </div>

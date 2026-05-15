@@ -12,10 +12,10 @@ import { Product } from '@/types';
 import { toProduct } from '@/lib/productMapper';
 
 const sortOptions = [
-  { label: 'Featured', value: 'featured' },
-  { label: 'Price (Low to High)', value: 'price-asc' },
-  { label: 'Price (High to Low)', value: 'price-desc' },
-  { label: 'Newest', value: 'new' },
+  { label: 'Önerilen', value: 'featured' },
+  { label: 'Fiyat (Düşükten Yükseğe)', value: 'price-asc' },
+  { label: 'Fiyat (Yüksekten Düşüğe)', value: 'price-desc' },
+  { label: 'En Yeni', value: 'new' },
 ];
 
 function ProductsContent() {
@@ -42,8 +42,7 @@ function ProductsContent() {
     const loadAll = () => {
       api.products.getAll().then((data) => {
         setAllProducts(data.map(toProduct));
-        setLoading(false);
-      }).catch(() => {});
+      }).catch(() => {}).finally(() => setLoading(false));
       api.categories.getAll().then((data) => {
         if (data.length > 0) setCategories(data);
       }).catch(() => {});
@@ -131,7 +130,7 @@ function ProductsContent() {
   return (
     <main className="max-w-7xl mx-auto px-4 py-8">
       <div className="text-sm text-gray-500 mb-6">
-        <span>Home</span> / <span className="text-orange-500">Products</span>
+        <span>Ana Sayfa</span> / <span className="text-orange-500">Ürünler</span>
         {activeCategory && <span> / <span className="text-orange-500">{activeCategory.name}</span></span>}
       </div>
 
@@ -142,36 +141,36 @@ function ProductsContent() {
             <div className="flex items-center justify-between">
               <h2 className="font-bold text-[#1B3A6B] flex items-center gap-2">
                 <SlidersHorizontal size={18} />
-                Filters
+                Filtreler
               </h2>
               {hasActiveFilters && (
                 <button onClick={clearFilters} className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
-                  <X size={12} />Clear
+                  <X size={12} />Temizle
                 </button>
               )}
             </div>
 
-            {/* Search */}
+            {/* Arama */}
             <div>
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Search Products</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Ürün Ara</label>
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Product or brand..."
+                placeholder="Ürün veya marka..."
                 className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400"
               />
             </div>
 
-            {/* Category */}
+            {/* Kategori */}
             <div>
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Category</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Kategori</label>
               <div className="space-y-1">
                 <button
                   onClick={() => setSelectedCategory('all')}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === 'all' ? 'bg-orange-500 text-white font-semibold' : 'hover:bg-orange-50 text-gray-700'}`}
                 >
-                  All Categories
+                  Tüm Kategoriler
                 </button>
                 {categories.map(cat => (
                   <button
@@ -185,9 +184,9 @@ function ProductsContent() {
               </div>
             </div>
 
-            {/* Price Range */}
+            {/* Fiyat Aralığı */}
             <div>
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Price Range (₺)</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Fiyat Aralığı (₺)</label>
               <div className="flex gap-2 items-center">
                 <input
                   type="number"
@@ -209,10 +208,10 @@ function ProductsContent() {
               </div>
             </div>
 
-            {/* Brand */}
+            {/* Marka */}
             {brands.length > 0 && (
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Brand</label>
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Marka</label>
                 <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
                   {brands.map(brand => (
                     <label key={brand} className="flex items-center gap-2 cursor-pointer group">
@@ -229,14 +228,14 @@ function ProductsContent() {
               </div>
             )}
 
-            {/* Status */}
+            {/* Durum */}
             <div>
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Status</label>
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 block">Durum</label>
               <div className="space-y-1.5">
                 {[
-                  { label: 'In Stock', state: stockOnly, set: setStockOnly },
-                  { label: 'New Arrivals', state: newOnly, set: setNewOnly },
-                  { label: 'Featured', state: featuredOnly, set: setFeaturedOnly },
+                  { label: 'Stokta Var', state: stockOnly, set: setStockOnly },
+                  { label: 'Yeni Ürünler', state: newOnly, set: setNewOnly },
+                  { label: 'Öne Çıkanlar', state: featuredOnly, set: setFeaturedOnly },
                 ].map(({ label, state, set }) => (
                   <label key={label} className="flex items-center gap-2 cursor-pointer group">
                     <input
@@ -262,15 +261,15 @@ function ProductsContent() {
                 className="lg:hidden flex items-center gap-2 border border-gray-200 rounded-lg px-4 py-2 text-sm hover:border-orange-400 transition-colors"
               >
                 <SlidersHorizontal size={16} />
-                Filter
+                Filtrele
               </button>
               <p className="text-sm text-gray-500">
                 {search.trim() ? (
-                  <><span className="text-orange-500 font-medium">&ldquo;{search.trim()}&rdquo;</span> — <span className="font-semibold text-[#1B3A6B]">{filteredProducts.length}</span> products found</>
+                  <><span className="text-orange-500 font-medium">&ldquo;{search.trim()}&rdquo;</span> için <span className="font-semibold text-[#1B3A6B]">{filteredProducts.length}</span> ürün bulundu</>
                 ) : activeCategory ? (
-                  <><span className="text-orange-500 font-medium">{activeCategory.name}</span> — <span className="font-semibold text-[#1B3A6B]">{filteredProducts.length}</span> products found</>
+                  <><span className="text-orange-500 font-medium">{activeCategory.name}</span> kategorisinde <span className="font-semibold text-[#1B3A6B]">{filteredProducts.length}</span> ürün bulundu</>
                 ) : (
-                  <><span className="font-semibold text-[#1B3A6B]">{filteredProducts.length}</span> products found</>
+                  <><span className="font-semibold text-[#1B3A6B]">{filteredProducts.length}</span> ürün bulundu</>
                 )}
               </p>
             </div>
@@ -279,21 +278,21 @@ function ProductsContent() {
               <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setViewMode('grid')}
-                  title="Grid view"
+                  title="Grid görünümü"
                   className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-50'}`}
                 >
                   <LayoutGrid size={16} />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  title="List view"
+                  title="Liste görünümü"
                   className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-orange-500 text-white' : 'text-gray-400 hover:bg-gray-50'}`}
                 >
                   <List size={16} />
                 </button>
               </div>
 
-              <span className="text-sm text-gray-500 hidden sm:block">Sort:</span>
+              <span className="text-sm text-gray-500 hidden sm:block">Sırala:</span>
               <div className="relative">
                 <select
                   value={sortBy}
@@ -314,10 +313,10 @@ function ProductsContent() {
           ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20">
               <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-xl font-bold text-gray-700 mb-2">No products found</h3>
-              <p className="text-gray-500 mb-4">Try adjusting your filters and searching again</p>
+              <h3 className="text-xl font-bold text-gray-700 mb-2">Ürün bulunamadı</h3>
+              <p className="text-gray-500 mb-4">Filtrelerinizi değiştirerek tekrar deneyin</p>
               <button onClick={clearFilters} className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors">
-                Clear Filters
+                Filtreleri Temizle
               </button>
             </div>
           ) : viewMode === 'grid' ? (
@@ -337,7 +336,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+    <Suspense fallback={<div className="p-8 text-center">Yükleniyor...</div>}>
       <ProductsContent />
     </Suspense>
   );

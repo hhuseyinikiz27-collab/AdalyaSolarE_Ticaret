@@ -21,7 +21,7 @@ function FlashBadge({ endsAt }: { endsAt: string }) {
     const id = setInterval(() => setLabel(calc()), 1000);
     return () => clearInterval(id);
   }, [endsAt]);
-  if (!label) return <span className="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full font-medium">Flash Ended</span>;
+  if (!label) return <span className="bg-gray-100 text-gray-400 text-xs px-2 py-0.5 rounded-full font-medium">Flash Bitti</span>;
   return (
     <span className="inline-flex items-center gap-1 bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full font-bold">
       <Zap size={10} className="fill-red-500" />
@@ -50,28 +50,28 @@ export default function AdminProducts() {
   const [flashSaleEndsAt, setFlashSaleEndsAt] = useState('');
   const [warrantyMonths, setWarrantyMonths] = useState(24);
 
-  // Multiple photo management
+  // Çoklu fotoğraf yönetimi
   const [images, setImages] = useState<ApiProductImage[]>([]);
   const [urlInput, setUrlInput] = useState('');
   const [addingUrl, setAddingUrl] = useState(false);
   const [uploadingImg, setUploadingImg] = useState(false);
   const imgFileRef = useRef<HTMLInputElement>(null);
 
-  // Technical document management
+  // Teknik doküman yönetimi
   const [documents, setDocuments] = useState<ApiProductDocument[]>([]);
   const [docsOpen, setDocsOpen] = useState(false);
   const [docName, setDocName] = useState('');
   const [uploadingDoc, setUploadingDoc] = useState(false);
   const docFileRef = useRef<HTMLInputElement>(null);
 
-  // Variant management
+  // Varyant yönetimi
   const [variants, setVariants] = useState<ApiProductVariant[]>([]);
   const [variantsOpen, setVariantsOpen] = useState(false);
   const [variantForm, setVariantForm] = useState({ groupName: '', value: '', priceAdjustment: 0, stock: 0, isDefault: false, sortOrder: 0 });
   const [savingVariant, setSavingVariant] = useState(false);
   const [editingVariant, setEditingVariant] = useState<ApiProductVariant | null>(null);
 
-  // Legacy single-photo upload (from table row)
+  // Eski tek-fotoğraf yükleme (tablo satırından)
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploadingId, setUploadingId] = useState<number | null>(null);
   const [pendingImageId, setPendingImageId] = useState<number | null>(null);
@@ -89,7 +89,7 @@ export default function AdminProducts() {
     setLoadError('');
     api.admin.products.getAll()
       .then(setProducts)
-      .catch(e => setLoadError(e instanceof Error ? e.message : 'Failed to load products.'))
+      .catch(e => setLoadError(e instanceof Error ? e.message : 'Ürünler yüklenemedi.'))
       .finally(() => setLoading(false));
   };
 
@@ -106,13 +106,13 @@ export default function AdminProducts() {
       if (bulkForm.isFeatured !== '') payload.isFeatured = bulkForm.isFeatured === 'true';
       if (bulkForm.isNew !== '') payload.isNew = bulkForm.isNew === 'true';
       const res = await api.admin.products.bulkUpdate(payload);
-      setBulkMsg(`${res.updated} products updated.`);
+      setBulkMsg(`${res.updated} ürün güncellendi.`);
       setSelected(new Set());
       setBulkForm({ price: '', discountPrice: '', clearDiscount: false, stock: '', isFeatured: '', isNew: '' });
       load();
       setTimeout(() => setBulkModal(false), 1200);
     } catch (e: unknown) {
-      setBulkMsg(e instanceof Error ? e.message : 'An error occurred.');
+      setBulkMsg(e instanceof Error ? e.message : 'Hata oluştu.');
     } finally {
       setBulkSaving(false);
     }
@@ -127,7 +127,7 @@ export default function AdminProducts() {
     setEditing(p);
     setCreating(false);
     setForm({ name: p.name, description: p.description, price: p.price, discountPrice: p.discountPrice ?? '', category: p.category, brand: p.brand, stock: p.stock, isFeatured: p.isFeatured, isNew: p.isNew });
-    // Use API specs if available, otherwise read from localStorage
+    // API specs varsa kullan, yoksa localStorage'dan oku
     const apiSpecs = p.specs && Object.keys(p.specs).length > 0 ? p.specs : null;
     const localRaw = typeof window !== 'undefined' ? localStorage.getItem(`adalya_specs_${p.id}`) : null;
     const localSpecs: Record<string, string> = localRaw ? JSON.parse(localRaw) : {};
@@ -187,7 +187,7 @@ export default function AdminProducts() {
           flashSalePrice: flashPrice, flashSaleEndsAt: flashEnds, clearFlashSale,
           warrantyMonths,
         });
-        // If flash sale was newly set, send notification + email to users who favorited (handled by backend)
+        // Flash sale yeni ayarlandıysa favorileyenlere bildirim + email gönder (backend halleder)
         if (flashPrice && flashEnds) {
           api.admin.products.notifyFlashSale(editing.id, {
             flashPrice,
@@ -212,7 +212,7 @@ export default function AdminProducts() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    if (!confirm('Bu ürünü silmek istediğinize emin misiniz?')) return;
     await api.admin.products.delete(id);
     await load();
     await revalidateAfterProductChange();
@@ -271,13 +271,13 @@ export default function AdminProducts() {
       {loadError && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm mb-6 flex items-center justify-between">
           <span>{loadError}</span>
-          <button onClick={load} className="font-semibold underline ml-4">Try Again</button>
+          <button onClick={load} className="font-semibold underline ml-4">Tekrar Dene</button>
         </div>
       )}
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Product Management</h1>
+        <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Ürün Yönetimi</h1>
         <button onClick={openCreate} className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors">
-          <Plus size={18} /> New Product
+          <Plus size={18} /> Yeni Ürün
         </button>
       </div>
 
@@ -286,7 +286,7 @@ export default function AdminProducts() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b">
-              <h2 className="text-lg font-bold text-[#1B3A6B]">{creating ? 'Add New Product' : 'Edit Product'}</h2>
+              <h2 className="text-lg font-bold text-[#1B3A6B]">{creating ? 'Yeni Ürün Ekle' : 'Ürünü Düzenle'}</h2>
               <button onClick={() => { setEditing(null); setCreating(false); }} className="text-gray-400 hover:text-gray-600">
                 <X size={20} />
               </button>
@@ -294,51 +294,51 @@ export default function AdminProducts() {
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Product Name</label>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Ürün Adı</label>
                 <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400" />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Description</label>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Açıklama</label>
                 <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={4} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400 resize-none" />
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Price (₺)</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Fiyat (₺)</label>
                   <input type="number" value={form.price} onChange={e => setForm(f => ({ ...f, price: Number(e.target.value) }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Discounted Price (₺)</label>
-                  <input type="number" placeholder="Empty = no discount" value={form.discountPrice} onChange={e => setForm(f => ({ ...f, discountPrice: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400" />
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">İndirimli Fiyat (₺)</label>
+                  <input type="number" placeholder="Boş = indirim yok" value={form.discountPrice} onChange={e => setForm(f => ({ ...f, discountPrice: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400" />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Stock</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Stok</label>
                   <input type="number" value={form.stock} onChange={e => setForm(f => ({ ...f, stock: Number(e.target.value) }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Category</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Kategori</label>
                   <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400 bg-white">
                     {categories.map(c => <option key={c.slug} value={c.slug}>{c.icon} {c.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Brand</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">Marka</label>
                   <input value={form.brand} onChange={e => setForm(f => ({ ...f, brand: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400" />
                 </div>
               </div>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.isFeatured} onChange={e => setForm(f => ({ ...f, isFeatured: e.target.checked }))} className="w-4 h-4 accent-orange-500" />
-                  <span className="text-sm font-medium text-gray-700">Featured</span>
+                  <span className="text-sm font-medium text-gray-700">Öne Çıkan</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" checked={form.isNew} onChange={e => setForm(f => ({ ...f, isNew: e.target.checked }))} className="w-4 h-4 accent-orange-500" />
-                  <span className="text-sm font-medium text-gray-700">New</span>
+                  <span className="text-sm font-medium text-gray-700">Yeni</span>
                 </label>
               </div>
 
-              {/* Specifications */}
+              {/* Teknik özellikler */}
               <div className="border border-gray-200 rounded-xl overflow-hidden">
                 <button
                   type="button"
@@ -346,7 +346,7 @@ export default function AdminProducts() {
                   className="flex items-center justify-between w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-[#1B3A6B]">Specifications</span>
+                    <span className="text-sm font-bold text-[#1B3A6B]">Teknik Özellikler</span>
                     {specRows.length > 0 && (
                       <span className="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">
                         {specRows.length}
@@ -359,14 +359,14 @@ export default function AdminProducts() {
                 {specsOpen && (
                   <div className="p-4 space-y-3 bg-white">
                     {specRows.length === 0 && (
-                      <p className="text-sm text-gray-400 text-center py-2">No specifications added yet.</p>
+                      <p className="text-sm text-gray-400 text-center py-2">Henüz özellik eklenmedi.</p>
                     )}
 
-                    {/* Column headers */}
+                    {/* Kolon başlıkları */}
                     {specRows.length > 0 && (
                       <div className="flex gap-2 px-1">
-                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Specification Name</span>
-                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Value</span>
+                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Özellik Adı</span>
+                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Değer</span>
                         <span className="w-8" />
                       </div>
                     )}
@@ -376,13 +376,13 @@ export default function AdminProducts() {
                         <input
                           value={row.key}
                           onChange={e => setSpecRows(prev => prev.map((r, j) => j === i ? { ...r, key: e.target.value } : r))}
-                          placeholder="e.g.: Power"
+                          placeholder="örn: Güç"
                           className="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-orange-400 bg-gray-50 focus:bg-white transition-colors"
                         />
                         <input
                           value={row.value}
                           onChange={e => setSpecRows(prev => prev.map((r, j) => j === i ? { ...r, value: e.target.value } : r))}
-                          placeholder="e.g.: 400W"
+                          placeholder="örn: 400W"
                           className="flex-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm outline-none focus:border-orange-400 bg-gray-50 focus:bg-white transition-colors"
                         />
                         <button
@@ -400,13 +400,13 @@ export default function AdminProducts() {
                       onClick={() => setSpecRows(prev => [...prev, { key: '', value: '' }])}
                       className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-orange-200 hover:border-orange-400 text-orange-500 hover:text-orange-600 font-semibold text-sm py-2.5 rounded-lg transition-colors mt-1"
                     >
-                      <Plus size={15} /> Add Specification
+                      <Plus size={15} /> Özellik Ekle
                     </button>
                   </div>
                 )}
               </div>
 
-              {/* Volume Order Discount */}
+              {/* Toplu sipariş indirimi */}
               <div className="border border-gray-100 rounded-xl overflow-hidden">
                 <button
                   type="button"
@@ -414,10 +414,10 @@ export default function AdminProducts() {
                   className="flex items-center justify-between w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-[#1B3A6B]">Volume Order Discount</span>
+                    <span className="text-sm font-bold text-[#1B3A6B]">Toplu Sipariş İndirimi</span>
                     {volumeTiers.length > 0 && (
                       <span className="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-0.5 rounded-full">
-                        {volumeTiers.length} tiers
+                        {volumeTiers.length} kademeli
                       </span>
                     )}
                   </div>
@@ -427,12 +427,12 @@ export default function AdminProducts() {
                 {volumeOpen && (
                   <div className="p-4 space-y-3 bg-white">
                     {volumeTiers.length === 0 && (
-                      <p className="text-sm text-gray-400 text-center py-2">No discount tiers added yet.</p>
+                      <p className="text-sm text-gray-400 text-center py-2">Henüz indirim kademesi eklenmedi.</p>
                     )}
                     {volumeTiers.length > 0 && (
                       <div className="flex gap-2 px-1">
-                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Min. Qty</span>
-                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Discount %</span>
+                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">Min. Adet</span>
+                        <span className="flex-1 text-xs font-semibold text-gray-400 uppercase">İndirim %</span>
                         <span className="w-8" />
                       </div>
                     )}
@@ -469,7 +469,7 @@ export default function AdminProducts() {
                       onClick={() => setVolumeTiers(prev => [...prev, { minQty: 5, discountPct: 5 }])}
                       className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-blue-200 hover:border-blue-400 text-blue-500 hover:text-blue-600 font-semibold text-sm py-2.5 rounded-lg transition-colors mt-1"
                     >
-                      <Plus size={15} /> Add Tier
+                      <Plus size={15} /> Kademe Ekle
                     </button>
                   </div>
                 )}
@@ -478,20 +478,20 @@ export default function AdminProducts() {
               {/* Flash Sale */}
               {editing && (
                 <div className="border border-red-100 rounded-xl p-4 space-y-3 bg-red-50/30">
-                  <p className="text-sm font-bold text-red-600 flex items-center gap-1.5">⚡ Flash Sale</p>
+                  <p className="text-sm font-bold text-red-600 flex items-center gap-1.5">⚡ Flash İndirim</p>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-gray-500 block mb-1">Flash Price (₺)</label>
+                      <label className="text-xs font-semibold text-gray-500 block mb-1">Flash Fiyat (₺)</label>
                       <input
                         type="number"
                         value={flashSalePrice}
                         onChange={e => setFlashSalePrice(e.target.value)}
-                        placeholder="Leave empty to cancel"
+                        placeholder="Boş bırakırsan iptal edilir"
                         className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-red-400"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-gray-500 block mb-1">End Time</label>
+                      <label className="text-xs font-semibold text-gray-500 block mb-1">Bitiş Zamanı</label>
                       <input
                         type="datetime-local"
                         value={flashSaleEndsAt}
@@ -502,14 +502,14 @@ export default function AdminProducts() {
                   </div>
                   {flashSalePrice && (
                     <button type="button" onClick={() => { setFlashSalePrice(''); setFlashSaleEndsAt(''); }}
-                      className="text-xs text-red-500 hover:text-red-700 font-semibold">✕ Remove Flash Sale</button>
+                      className="text-xs text-red-500 hover:text-red-700 font-semibold">✕ Flash İndirimi Kaldır</button>
                   )}
                 </div>
               )}
 
-              {/* Warranty Period */}
+              {/* Garanti Süresi */}
               <div>
-                <label className="text-xs font-semibold text-gray-500 block mb-1">Warranty Period (Months)</label>
+                <label className="text-xs font-semibold text-gray-500 block mb-1">Garanti Süresi (Ay)</label>
                 <input
                   type="number"
                   value={warrantyMonths}
@@ -519,12 +519,12 @@ export default function AdminProducts() {
                 />
               </div>
 
-              {/* Photo management — edit mode only */}
+              {/* Fotoğraf yönetimi — sadece düzenleme modunda */}
               {editing && (
                 <div>
-                  <label className="text-xs font-semibold text-gray-500 uppercase mb-2 block">Product Images</label>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-2 block">Ürün Fotoğrafları</label>
 
-                  {/* Existing photos */}
+                  {/* Mevcut fotoğraflar */}
                   {images.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {images.map((img) => (
@@ -548,13 +548,13 @@ export default function AdminProducts() {
                     </div>
                   )}
 
-                  {/* Add by URL */}
+                  {/* URL ile ekle */}
                   <div className="flex gap-2 mb-2">
                     <input
                       type="url"
                       value={urlInput}
                       onChange={(e) => setUrlInput(e.target.value)}
-                      placeholder="https://... image URL"
+                      placeholder="https://... fotoğraf URL'si"
                       className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:border-orange-400"
                       onKeyDown={(e) => { if (e.key === 'Enter') handleAddUrl(); }}
                     />
@@ -564,28 +564,28 @@ export default function AdminProducts() {
                       className="flex items-center gap-1.5 bg-[#1B3A6B] hover:bg-[#152d54] disabled:bg-gray-300 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
                     >
                       <Link2 size={14} />
-                      {addingUrl ? '...' : 'Add'}
+                      {addingUrl ? '...' : 'Ekle'}
                     </button>
                   </div>
 
-                  {/* Upload file */}
+                  {/* Dosya yükle */}
                   <button
                     onClick={() => imgFileRef.current?.click()}
                     disabled={uploadingImg}
                     className="flex items-center gap-2 border border-dashed border-gray-300 hover:border-orange-400 text-gray-500 hover:text-orange-500 px-4 py-2 rounded-lg text-sm transition-colors w-full justify-center"
                   >
                     <Upload size={15} />
-                    {uploadingImg ? 'Uploading...' : 'Upload from Computer'}
+                    {uploadingImg ? 'Yükleniyor...' : 'Bilgisayardan Yükle'}
                   </button>
                   <input ref={imgFileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleImgUpload} />
 
                   {images.length === 0 && (
-                    <p className="text-xs text-gray-400 mt-2">No images yet. Enter a URL or upload a file.</p>
+                    <p className="text-xs text-gray-400 mt-2">Henüz fotoğraf yok. URL girin veya dosya yükleyin.</p>
                   )}
                 </div>
               )}
 
-              {/* Variant Management — edit mode only */}
+              {/* Varyant Yönetimi — sadece düzenleme modunda */}
               {editing && (
                 <div>
                   <button
@@ -595,7 +595,7 @@ export default function AdminProducts() {
                   >
                     <div className="flex items-center gap-2">
                       <Layers size={15} className="text-orange-500" />
-                      <span className="text-sm font-bold text-[#1B3A6B]">Variants</span>
+                      <span className="text-sm font-bold text-[#1B3A6B]">Varyantlar</span>
                       {variants.length > 0 && (
                         <span className="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">{variants.length}</span>
                       )}
@@ -605,7 +605,7 @@ export default function AdminProducts() {
 
                   {variantsOpen && (
                     <div className="mt-3 space-y-3">
-                      {/* Existing variants */}
+                      {/* Mevcut varyantlar */}
                       {variants.length > 0 && (
                         <div className="space-y-2">
                           {[...new Set(variants.map(v => v.groupName))].map(group => (
@@ -618,7 +618,7 @@ export default function AdminProducts() {
                                     {v.priceAdjustment !== 0 && (
                                       <span className="text-gray-400">({v.priceAdjustment > 0 ? '+' : ''}{v.priceAdjustment}₺)</span>
                                     )}
-                                    <span className="text-gray-400 ml-1">Stock: {v.stock}</span>
+                                    <span className="text-gray-400 ml-1">Stok: {v.stock}</span>
                                     {v.isDefault && <span className="text-orange-500 ml-1">★</span>}
                                     <button
                                       onClick={() => {
@@ -646,21 +646,21 @@ export default function AdminProducts() {
                         </div>
                       )}
 
-                      {/* New / edit form */}
+                      {/* Yeni/düzenleme formu */}
                       <div className="bg-gray-50 rounded-xl p-4 space-y-3">
-                        <p className="text-xs font-bold text-gray-500">{editingVariant ? 'Edit Variant' : 'Add New Variant'}</p>
+                        <p className="text-xs font-bold text-gray-500">{editingVariant ? 'Varyant Düzenle' : 'Yeni Varyant Ekle'}</p>
                         <div className="grid grid-cols-2 gap-2">
                           <div>
-                            <label className="text-xs text-gray-500 block mb-1">Group (e.g.: Power, Color)</label>
+                            <label className="text-xs text-gray-500 block mb-1">Grup (örn: Güç, Renk)</label>
                             <input
                               value={variantForm.groupName}
                               onChange={e => setVariantForm(p => ({ ...p, groupName: e.target.value }))}
                               className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-orange-400"
-                              placeholder="Power"
+                              placeholder="Güç"
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-gray-500 block mb-1">Value (e.g.: 300W)</label>
+                            <label className="text-xs text-gray-500 block mb-1">Değer (örn: 300W)</label>
                             <input
                               value={variantForm.value}
                               onChange={e => setVariantForm(p => ({ ...p, value: e.target.value }))}
@@ -669,7 +669,7 @@ export default function AdminProducts() {
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-gray-500 block mb-1">Price Adjustment (₺)</label>
+                            <label className="text-xs text-gray-500 block mb-1">Fiyat Farkı (₺)</label>
                             <input
                               type="number"
                               value={variantForm.priceAdjustment}
@@ -678,7 +678,7 @@ export default function AdminProducts() {
                             />
                           </div>
                           <div>
-                            <label className="text-xs text-gray-500 block mb-1">Stock</label>
+                            <label className="text-xs text-gray-500 block mb-1">Stok</label>
                             <input
                               type="number"
                               value={variantForm.stock}
@@ -689,7 +689,7 @@ export default function AdminProducts() {
                         </div>
                         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                           <input type="checkbox" checked={variantForm.isDefault} onChange={e => setVariantForm(p => ({ ...p, isDefault: e.target.checked }))} />
-                          Default option
+                          Varsayılan seçenek
                         </label>
                         <div className="flex gap-2">
                           {editingVariant && (
@@ -697,7 +697,7 @@ export default function AdminProducts() {
                               onClick={() => { setEditingVariant(null); setVariantForm({ groupName: '', value: '', priceAdjustment: 0, stock: 0, isDefault: false, sortOrder: 0 }); }}
                               className="flex-1 border border-gray-200 rounded-lg py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100"
                             >
-                              Cancel
+                              Vazgeç
                             </button>
                           )}
                           <button
@@ -721,7 +721,7 @@ export default function AdminProducts() {
                             }}
                             className="flex-1 bg-[#1B3A6B] hover:bg-[#2d5282] disabled:bg-gray-300 text-white rounded-lg py-2 text-xs font-semibold transition-colors"
                           >
-                            {savingVariant ? '...' : editingVariant ? 'Update' : 'Add'}
+                            {savingVariant ? '...' : editingVariant ? 'Güncelle' : 'Ekle'}
                           </button>
                         </div>
                       </div>
@@ -730,7 +730,7 @@ export default function AdminProducts() {
                 </div>
               )}
 
-              {/* Technical Document Management — edit mode only */}
+              {/* Teknik Doküman Yönetimi — sadece düzenleme modunda */}
               {editing && (
                 <div>
                   <button
@@ -740,7 +740,7 @@ export default function AdminProducts() {
                   >
                     <div className="flex items-center gap-2">
                       <FileText size={15} className="text-orange-500" />
-                      <span className="text-sm font-bold text-[#1B3A6B]">Technical Documents</span>
+                      <span className="text-sm font-bold text-[#1B3A6B]">Teknik Belgeler</span>
                       {documents.length > 0 && (
                         <span className="bg-orange-100 text-orange-600 text-xs font-bold px-2 py-0.5 rounded-full">{documents.length}</span>
                       )}
@@ -776,12 +776,12 @@ export default function AdminProducts() {
                       )}
 
                       <div className="bg-gray-50 rounded-xl p-4 space-y-3">
-                        <p className="text-xs font-bold text-gray-500">Upload New Document</p>
+                        <p className="text-xs font-bold text-gray-500">Yeni Belge Yükle</p>
                         <input
                           type="text"
                           value={docName}
                           onChange={e => setDocName(e.target.value)}
-                          placeholder="Document name (e.g.: Technical Data Sheet)"
+                          placeholder="Belge adı (örn: Teknik Veri Sayfası)"
                           className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs outline-none focus:border-orange-400"
                         />
                         <input
@@ -809,7 +809,7 @@ export default function AdminProducts() {
                           onClick={() => docFileRef.current?.click()}
                           className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-gray-300 hover:border-orange-400 rounded-lg py-2.5 text-xs font-semibold text-gray-500 hover:text-orange-500 transition-colors disabled:opacity-50"
                         >
-                          {uploadingDoc ? 'Uploading...' : <><Upload size={13} /> Upload PDF, DOC, XLS, ZIP, DWG</>}
+                          {uploadingDoc ? 'Yükleniyor...' : <><Upload size={13} /> PDF, DOC, XLS, ZIP, DWG yükle</>}
                         </button>
                       </div>
                     </div>
@@ -819,66 +819,66 @@ export default function AdminProducts() {
             </div>
 
             <div className="flex gap-3 p-6 border-t">
-              <button onClick={() => { setEditing(null); setCreating(false); }} className="flex-1 border border-gray-200 rounded-xl py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">Cancel</button>
+              <button onClick={() => { setEditing(null); setCreating(false); }} className="flex-1 border border-gray-200 rounded-xl py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">İptal</button>
               <button onClick={handleSave} disabled={saving} className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white rounded-xl py-2.5 text-sm font-semibold transition-colors flex items-center justify-center gap-2">
-                {saving ? 'Saving...' : <><Check size={16} /> Save</>}
+                {saving ? 'Kaydediliyor...' : <><Check size={16} /> Kaydet</>}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Legacy single-photo upload (table row) */}
+      {/* Eski tek-fotoğraf upload (tablo satırı) */}
       <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handleOldUpload} />
 
       {/* Bulk Edit Modal */}
       {bulkModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setBulkModal(false)}>
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold text-gray-900 mb-1">Bulk Edit</h3>
-            <p className="text-sm text-gray-500 mb-4">{selected.size} products selected. Empty fields will not be changed.</p>
+            <h3 className="text-lg font-bold text-gray-900 mb-1">Toplu Düzenleme</h3>
+            <p className="text-sm text-gray-500 mb-4">{selected.size} ürün seçili. Boş bırakılan alanlar değiştirilmez.</p>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">New Price (₺)</label>
-                <input type="number" value={bulkForm.price} onChange={e => setBulkForm(f => ({ ...f, price: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Leave empty to keep unchanged" />
+                <label className="block text-xs font-medium text-gray-600 mb-1">Yeni Fiyat (₺)</label>
+                <input type="number" value={bulkForm.price} onChange={e => setBulkForm(f => ({ ...f, price: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Boş bırakırsan değişmez" />
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Discounted Price (₺)</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">İndirimli Fiyat (₺)</label>
                 <div className="flex gap-2">
-                  <input type="number" value={bulkForm.discountPrice} onChange={e => setBulkForm(f => ({ ...f, discountPrice: e.target.value, clearDiscount: false }))} disabled={bulkForm.clearDiscount} className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B] disabled:opacity-50" placeholder="Leave empty to keep unchanged" />
+                  <input type="number" value={bulkForm.discountPrice} onChange={e => setBulkForm(f => ({ ...f, discountPrice: e.target.value, clearDiscount: false }))} disabled={bulkForm.clearDiscount} className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B] disabled:opacity-50" placeholder="Boş bırakırsan değişmez" />
                   <label className="flex items-center gap-1 text-xs text-red-600 cursor-pointer whitespace-nowrap">
-                    <input type="checkbox" checked={bulkForm.clearDiscount} onChange={e => setBulkForm(f => ({ ...f, clearDiscount: e.target.checked, discountPrice: '' }))} /> Remove discount
+                    <input type="checkbox" checked={bulkForm.clearDiscount} onChange={e => setBulkForm(f => ({ ...f, clearDiscount: e.target.checked, discountPrice: '' }))} /> İndirimi kaldır
                   </label>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Stock</label>
-                <input type="number" value={bulkForm.stock} onChange={e => setBulkForm(f => ({ ...f, stock: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Leave empty to keep unchanged" />
+                <label className="block text-xs font-medium text-gray-600 mb-1">Stok</label>
+                <input type="number" value={bulkForm.stock} onChange={e => setBulkForm(f => ({ ...f, stock: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]" placeholder="Boş bırakırsan değişmez" />
               </div>
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Featured</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Öne Çıkan</label>
                   <select value={bulkForm.isFeatured} onChange={e => setBulkForm(f => ({ ...f, isFeatured: e.target.value as '' | 'true' | 'false' }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]">
-                    <option value="">Do not change</option>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                    <option value="">Değiştirme</option>
+                    <option value="true">Evet</option>
+                    <option value="false">Hayır</option>
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-xs font-medium text-gray-600 mb-1">New Product</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Yeni Ürün</label>
                   <select value={bulkForm.isNew} onChange={e => setBulkForm(f => ({ ...f, isNew: e.target.value as '' | 'true' | 'false' }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]">
-                    <option value="">Do not change</option>
-                    <option value="true">Yes</option>
-                    <option value="false">No</option>
+                    <option value="">Değiştirme</option>
+                    <option value="true">Evet</option>
+                    <option value="false">Hayır</option>
                   </select>
                 </div>
               </div>
             </div>
-            {bulkMsg && <p className={`text-sm mt-3 ${bulkMsg.includes('updated') ? 'text-green-600' : 'text-red-600'}`}>{bulkMsg}</p>}
+            {bulkMsg && <p className={`text-sm mt-3 ${bulkMsg.includes('güncellendi') ? 'text-green-600' : 'text-red-600'}`}>{bulkMsg}</p>}
             <div className="flex gap-2 mt-4">
-              <button onClick={() => setBulkModal(false)} className="flex-1 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50">Cancel</button>
+              <button onClick={() => setBulkModal(false)} className="flex-1 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm hover:bg-gray-50">İptal</button>
               <button onClick={handleBulkUpdate} disabled={bulkSaving} className="flex-1 py-2 bg-[#1B3A6B] text-white rounded-lg text-sm hover:bg-[#152d54] disabled:opacity-50">
-                {bulkSaving ? 'Updating...' : `Update ${selected.size} Products`}
+                {bulkSaving ? 'Güncelleniyor...' : `${selected.size} Ürünü Güncelle`}
               </button>
             </div>
           </div>
@@ -888,10 +888,10 @@ export default function AdminProducts() {
       {/* Bulk Actions Bar */}
       {selected.size > 0 && (
         <div className="bg-[#1B3A6B] text-white rounded-xl px-4 py-3 flex items-center justify-between">
-          <span className="text-sm font-medium">{selected.size} products selected</span>
+          <span className="text-sm font-medium">{selected.size} ürün seçildi</span>
           <div className="flex gap-2">
-            <button onClick={() => setSelected(new Set())} className="text-sm text-blue-200 hover:text-white">Clear Selection</button>
-            <button onClick={() => setBulkModal(true)} className="px-3 py-1.5 bg-white text-[#1B3A6B] rounded-lg text-sm font-semibold hover:bg-blue-50">Bulk Edit</button>
+            <button onClick={() => setSelected(new Set())} className="text-sm text-blue-200 hover:text-white">Seçimi Kaldır</button>
+            <button onClick={() => setBulkModal(true)} className="px-3 py-1.5 bg-white text-[#1B3A6B] rounded-lg text-sm font-semibold hover:bg-blue-50">Toplu Düzenle</button>
           </div>
         </div>
       )}
@@ -909,13 +909,13 @@ export default function AdminProducts() {
                 <th className="px-4 py-4">
                   <input type="checkbox" checked={selected.size === products.length && products.length > 0} onChange={e => setSelected(e.target.checked ? new Set(products.map(p => p.id)) : new Set())} className="rounded" />
                 </th>
-                <th className="text-left px-6 py-4 font-semibold text-gray-500">Product</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Category</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Price</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Stock</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Favorites</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Status</th>
-                <th className="text-right px-6 py-4 font-semibold text-gray-500">Actions</th>
+                <th className="text-left px-6 py-4 font-semibold text-gray-500">Ürün</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Kategori</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Fiyat</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Stok</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Favori</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Durum</th>
+                <th className="text-right px-6 py-4 font-semibold text-gray-500">İşlem</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -958,8 +958,8 @@ export default function AdminProducts() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex flex-wrap gap-1">
-                      {p.isFeatured && <span className="bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1"><Star size={10} />Featured</span>}
-                      {p.isNew && <span className="bg-green-100 text-green-600 text-xs px-2 py-0.5 rounded-full font-medium">New</span>}
+                      {p.isFeatured && <span className="bg-orange-100 text-orange-600 text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1"><Star size={10} />Öne Çıkan</span>}
+                      {p.isNew && <span className="bg-green-100 text-green-600 text-xs px-2 py-0.5 rounded-full font-medium">Yeni</span>}
                       {p.flashSalePrice && p.flashSaleEndsAt && new Date(p.flashSaleEndsAt) > new Date() && (
                         <FlashBadge endsAt={p.flashSaleEndsAt} />
                       )}
@@ -969,7 +969,7 @@ export default function AdminProducts() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => openEdit(p)}
-                        title="Edit / Add Image"
+                        title="Düzenle / Fotoğraf Ekle"
                         className="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                       >
                         <Pencil size={16} />
@@ -977,12 +977,12 @@ export default function AdminProducts() {
                       <button
                         onClick={() => { setPendingImageId(p.id); fileRef.current?.click(); }}
                         disabled={uploadingId === p.id}
-                        title="Quick Image Upload"
+                        title="Hızlı Resim Yükle"
                         className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         {uploadingId === p.id ? <span className="text-xs">...</span> : <ImageIcon size={16} />}
                       </button>
-                      <button onClick={() => handleDelete(p.id)} title="Delete" className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                      <button onClick={() => handleDelete(p.id)} title="Sil" className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
                         <Trash2 size={16} />
                       </button>
                     </div>

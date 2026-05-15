@@ -408,7 +408,7 @@ const LanguageContext = createContext<LanguageContextType>({
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>('en');
+  const [lang, setLangState] = useState<Lang>('tr');
 
   useEffect(() => {
     const saved = localStorage.getItem('lang') as Lang | null;

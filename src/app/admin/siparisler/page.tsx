@@ -8,11 +8,11 @@ import Image from 'next/image';
 
 const STATUS_OPTIONS = ['hazirlanıyor', 'kargoya-verildi', 'dagitimda', 'teslim-edildi', 'iptal'];
 const STATUS_LABELS: Record<string, string> = {
-  'hazirlanıyor': 'Processing',
-  'kargoya-verildi': 'Shipped',
-  'dagitimda': 'In Transit',
-  'teslim-edildi': 'Delivered',
-  'iptal': 'Cancelled',
+  'hazirlanıyor': 'Hazırlanıyor',
+  'kargoya-verildi': 'Kargoya Verildi',
+  'dagitimda': 'Dağıtımda',
+  'teslim-edildi': 'Teslim Edildi',
+  'iptal': 'İptal',
 };
 const STATUS_COLORS: Record<string, string> = {
   'hazirlanıyor': 'bg-orange-100 text-orange-600',
@@ -21,7 +21,7 @@ const STATUS_COLORS: Record<string, string> = {
   'teslim-edildi': 'bg-green-100 text-green-600',
   'iptal': 'bg-red-100 text-red-600',
 };
-const CARGO_COMPANIES = ['Aras Kargo', 'Yurtiçi Kargo', 'PTT Kargo', 'MNG Kargo', 'Sürat Kargo', 'Other'];
+const CARGO_COMPANIES = ['Aras Kargo', 'Yurtiçi Kargo', 'PTT Kargo', 'MNG Kargo', 'Sürat Kargo', 'Diğer'];
 
 interface OrderItem {
   id: number;
@@ -72,7 +72,7 @@ export default function AdminOrders() {
     setLoadError('');
     api.admin.orders.getAll()
       .then(data => setOrders(data as Order[]))
-      .catch(e => setLoadError(e instanceof Error ? e.message : 'Orders could not be loaded.'))
+      .catch(e => setLoadError(e instanceof Error ? e.message : 'Siparişler yüklenemedi.'))
       .finally(() => setLoading(false));
   };
   useEffect(() => {
@@ -93,14 +93,14 @@ export default function AdminOrders() {
     setSavingId(id);
     try {
       await api.admin.orders.updateStatus(id, status);
-      // If order is cancelled, reverse the earned loyalty points
+      // Sipariş iptal ediliyorsa kazanılan sadakat puanlarını geri al
       if (status === 'iptal') {
         api.admin.loyalty.deductForOrder(id).catch(() => {});
       }
       window.dispatchEvent(new Event('order-status-updated'));
     } catch (e: unknown) {
       setOrders(p => p.map(o => o.id === id ? { ...o, status: prev ?? o.status } : o));
-      const msg = e instanceof Error ? e.message : 'Status could not be updated.';
+      const msg = e instanceof Error ? e.message : 'Durum güncellenemedi.';
       setStatusError(msg);
       setTimeout(() => setStatusError(''), 4000);
     } finally {
@@ -115,10 +115,10 @@ export default function AdminOrders() {
     try {
       await api.admin.orders.updateNote(noteOrderId, noteText || null);
       setOrders(prev => prev.map(o => o.id === noteOrderId ? { ...o, adminNote: noteText || null } : o));
-      setNoteMsg('Note saved.');
+      setNoteMsg('Not kaydedildi.');
       setTimeout(() => { setNoteOrderId(null); setNoteMsg(''); }, 700);
     } catch {
-      setNoteMsg('Could not be saved.');
+      setNoteMsg('Kaydedilemedi.');
     } finally {
       setNoteSaving(false);
     }
@@ -152,7 +152,7 @@ export default function AdminOrders() {
       setCargoModal(null);
     } catch (e: unknown) {
       setOrders(p => p.map(o => o.id === cargoModal.orderId ? { ...o, status: prev ?? o.status } : o));
-      const msg = e instanceof Error ? e.message : 'Shipping info could not be saved.';
+      const msg = e instanceof Error ? e.message : 'Kargo bilgisi kaydedilemedi.';
       setStatusError(msg);
       setTimeout(() => setStatusError(''), 4000);
       setCargoModal(null);
@@ -166,7 +166,7 @@ export default function AdminOrders() {
   const totalRevenue = orders.filter(o => o.status !== 'iptal').reduce((s, o) => s + o.total, 0);
 
   const downloadCSV = () => {
-    const headers = ['Order No', 'Date', 'Customer', 'Email', 'Total (₺)', 'Status', 'Address', 'Products'];
+    const headers = ['Sipariş No', 'Tarih', 'Müşteri', 'E-posta', 'Toplam (₺)', 'Durum', 'Adres', 'Ürünler'];
     const rows = filtered.map(o => [
       o.id,
       new Date(o.createdAt).toLocaleDateString('tr-TR'),
@@ -182,7 +182,7 @@ export default function AdminOrders() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `orders_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `siparisler_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -190,14 +190,14 @@ export default function AdminOrders() {
   return (
     <div className="p-8">
 
-      {/* Shipping code modal */}
+      {/* Kargo kodu modal */}
       {cargoModal && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-[#1B3A6B] flex items-center gap-2">
                 <Truck size={20} className="text-purple-500" />
-                Shipping Details — #{cargoModal.orderId}
+                Kargo Bilgileri — #{cargoModal.orderId}
               </h3>
               <button onClick={() => setCargoModal(null)} className="text-gray-400 hover:text-gray-600">
                 <X size={20} />
@@ -205,7 +205,7 @@ export default function AdminOrders() {
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Shipping Company</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Kargo Firması</label>
                 <select
                   value={cargoForm.cargoCompany}
                   onChange={e => setCargoForm(p => ({ ...p, cargoCompany: e.target.value }))}
@@ -215,18 +215,18 @@ export default function AdminOrders() {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Tracking Code *</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Takip Kodu *</label>
                 <input
                   type="text"
                   value={cargoForm.trackingCode}
                   onChange={e => setCargoForm(p => ({ ...p, trackingCode: e.target.value }))}
-                  placeholder="Cargo tracking number"
+                  placeholder="Kargo takip numarası"
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400"
                 />
               </div>
               {cargoModal.userEmail && (
                 <p className="text-xs text-gray-400 bg-blue-50 rounded-lg px-3 py-2">
-                  Shipping notification will be sent automatically to <strong>{cargoModal.userEmail}</strong>.
+                  Kargo bildirimi <strong>{cargoModal.userEmail}</strong> adresine otomatik gönderilecek.
                 </p>
               )}
             </div>
@@ -235,7 +235,7 @@ export default function AdminOrders() {
                 onClick={() => setCargoModal(null)}
                 className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl text-sm hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                İptal
               </button>
               <button
                 onClick={handleCargoConfirm}
@@ -243,14 +243,14 @@ export default function AdminOrders() {
                 className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2"
               >
                 {cargoSaving ? <Loader2 size={15} className="animate-spin" /> : <Truck size={15} />}
-                Ship Order
+                Kargoya Ver
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Error notification */}
+      {/* Hata bildirimi */}
       {statusError && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-red-600 text-white text-sm font-semibold px-5 py-3 rounded-xl shadow-lg">
           <AlertCircle size={16} />
@@ -261,13 +261,13 @@ export default function AdminOrders() {
       {loadError && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm mb-6 flex items-center justify-between">
           <span>{loadError}</span>
-          <button onClick={load} className="font-semibold underline ml-4">Try Again</button>
+          <button onClick={load} className="font-semibold underline ml-4">Tekrar Dene</button>
         </div>
       )}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Order Management</h1>
-          <p className="text-sm text-gray-400 mt-1">{orders.length} orders · {totalRevenue.toLocaleString('tr-TR')} ₺ total revenue</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Sipariş Yönetimi</h1>
+          <p className="text-sm text-gray-400 mt-1">{orders.length} sipariş · {totalRevenue.toLocaleString('tr-TR')} ₺ toplam gelir</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -276,16 +276,16 @@ export default function AdminOrders() {
             className="flex items-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-300 text-white font-semibold text-sm px-4 py-2 rounded-lg transition-colors"
           >
             <Download size={15} />
-            Download CSV
+            CSV İndir
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">Filter:</span>
+            <span className="text-sm text-gray-500">Filtrele:</span>
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
               className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-orange-400"
             >
-              <option value="all">All</option>
+              <option value="all">Tümü</option>
               {STATUS_OPTIONS.map(s => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
             </select>
           </div>
@@ -298,7 +298,7 @@ export default function AdminOrders() {
         ) : filtered.length === 0 ? (
           <div className="text-center py-20 text-gray-400 bg-white rounded-2xl">
             <Package size={40} className="mx-auto mb-3 text-gray-200" />
-            <p>No orders found.</p>
+            <p>Sipariş bulunamadı.</p>
           </div>
         ) : (
           filtered.map(order => {
@@ -318,7 +318,7 @@ export default function AdminOrders() {
                   </div>
                   <div className="text-right min-w-[100px]">
                     <p className="font-extrabold text-[#1B3A6B]">{order.total.toLocaleString('tr-TR')} ₺</p>
-                    <p className="text-xs text-gray-400">{order.items?.length ?? 0} items</p>
+                    <p className="text-xs text-gray-400">{order.items?.length ?? 0} ürün</p>
                   </div>
                   <div>
                     <div className="relative inline-block">
@@ -342,13 +342,13 @@ export default function AdminOrders() {
                       target="_blank"
                       className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 font-semibold"
                     >
-                      <ExternalLink size={13} />Track
+                      <ExternalLink size={13} />Takip
                     </Link>
                     <button
                       onClick={() => setExpanded(isExpanded ? null : order.id)}
                       className="flex items-center gap-1 text-xs text-orange-500 hover:text-orange-600 font-semibold"
                     >
-                      {isExpanded ? <><ChevronUp size={14} />Hide</> : <><ChevronDown size={14} />Details</>}
+                      {isExpanded ? <><ChevronUp size={14} />Gizle</> : <><ChevronDown size={14} />Detay</>}
                     </button>
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export default function AdminOrders() {
                   <div className="border-t border-gray-100 bg-gray-50 p-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
                     {/* Products */}
                     <div className="lg:col-span-2 space-y-2">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-3">Products</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase mb-3">Ürünler</p>
                       {order.items?.map((item) => {
                         const imgUrl = item.productImageUrl && !item.productImageUrl.startsWith('/')
                           ? item.productImageUrl
@@ -370,7 +370,7 @@ export default function AdminOrders() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-semibold text-[#1B3A6B] truncate">{item.productName}</p>
-                              <p className="text-xs text-gray-400">{item.quantity} pcs × {item.unitPrice.toLocaleString('tr-TR')} ₺</p>
+                              <p className="text-xs text-gray-400">{item.quantity} adet × {item.unitPrice.toLocaleString('tr-TR')} ₺</p>
                             </div>
                             <p className="font-bold text-[#1B3A6B] text-sm shrink-0">{(item.unitPrice * item.quantity).toLocaleString('tr-TR')} ₺</p>
                           </div>
@@ -379,15 +379,15 @@ export default function AdminOrders() {
                       {/* Price breakdown */}
                       <div className="bg-white rounded-xl p-4 space-y-1.5 mt-2">
                         <div className="flex justify-between text-sm text-gray-500">
-                          <span>Subtotal</span>
+                          <span>Ara Toplam</span>
                           <span>{subtotal.toLocaleString('tr-TR')} ₺</span>
                         </div>
                         <div className="flex justify-between text-sm text-gray-500">
-                          <span>Shipping</span>
-                          <span>{(order.total - subtotal) === 0 ? <span className="text-green-600">Free</span> : `${(order.total - subtotal).toLocaleString('tr-TR')} ₺`}</span>
+                          <span>Kargo</span>
+                          <span>{(order.total - subtotal) === 0 ? <span className="text-green-600">Ücretsiz</span> : `${(order.total - subtotal).toLocaleString('tr-TR')} ₺`}</span>
                         </div>
                         <div className="flex justify-between font-extrabold text-[#1B3A6B] border-t pt-2">
-                          <span>Grand Total</span>
+                          <span>Genel Toplam</span>
                           <span>{order.total.toLocaleString('tr-TR')} ₺</span>
                         </div>
                       </div>
@@ -395,7 +395,7 @@ export default function AdminOrders() {
 
                     {/* Customer & shipping info */}
                     <div className="space-y-3">
-                      <p className="text-xs font-bold text-gray-400 uppercase">Customer Info</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase">Müşteri Bilgisi</p>
                       <div className="bg-white rounded-xl p-4 space-y-2">
                         <div className="flex items-center gap-2 text-sm">
                           <Package size={14} className="text-orange-500 shrink-0" />
@@ -422,7 +422,7 @@ export default function AdminOrders() {
                       </div>
 
                       {/* Admin Internal Note */}
-                      <p className="text-xs font-bold text-gray-400 uppercase">Internal Note</p>
+                      <p className="text-xs font-bold text-gray-400 uppercase">İç Not (Dahili)</p>
                       {noteOrderId === order.id ? (
                         <div className="bg-white rounded-xl p-3 space-y-2">
                           <textarea
@@ -430,13 +430,13 @@ export default function AdminOrders() {
                             onChange={e => setNoteText(e.target.value)}
                             rows={2}
                             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]"
-                            placeholder="Internal note..."
+                            placeholder="Dahili not..."
                           />
                           {noteMsg && <p className="text-xs text-green-600">{noteMsg}</p>}
                           <div className="flex gap-2">
-                            <button onClick={() => setNoteOrderId(null)} className="flex-1 text-xs py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">Cancel</button>
+                            <button onClick={() => setNoteOrderId(null)} className="flex-1 text-xs py-1.5 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">İptal</button>
                             <button onClick={handleNoteSave} disabled={noteSaving} className="flex-1 text-xs py-1.5 bg-[#1B3A6B] text-white rounded-lg hover:bg-[#152d54] disabled:opacity-50">
-                              {noteSaving ? 'Saving...' : 'Save'}
+                              {noteSaving ? 'Kaydediliyor...' : 'Kaydet'}
                             </button>
                           </div>
                         </div>
@@ -445,7 +445,7 @@ export default function AdminOrders() {
                           onClick={() => { setNoteOrderId(order.id); setNoteText(order.adminNote ?? ''); setNoteMsg(''); }}
                           className={`w-full text-left p-3 rounded-xl text-sm border transition-colors ${order.adminNote ? 'bg-yellow-50 border-yellow-200 text-gray-700' : 'bg-white border-gray-100 text-gray-400 hover:bg-gray-50'}`}
                         >
-                          {order.adminNote || '+ Add internal note'}
+                          {order.adminNote || '+ Dahili not ekle'}
                         </button>
                       )}
                     </div>

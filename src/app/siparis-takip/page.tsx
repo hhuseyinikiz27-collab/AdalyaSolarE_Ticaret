@@ -32,18 +32,18 @@ interface CargoTrackResult {
 }
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode; step: number }> = {
-  'hazirlanıyor':    { label: 'Preparing',      color: 'text-orange-600', bg: 'bg-orange-100', icon: <Package size={18} />,     step: 1 },
-  'kargoya-verildi': { label: 'Shipped',         color: 'text-purple-600', bg: 'bg-purple-100', icon: <Truck size={18} />,       step: 2 },
-  'dagitimda':       { label: 'Out for Delivery',color: 'text-blue-600',   bg: 'bg-blue-100',   icon: <Truck size={18} />,       step: 3 },
-  'teslim-edildi':   { label: 'Delivered',       color: 'text-green-600',  bg: 'bg-green-100',  icon: <CheckCircle size={18} />, step: 4 },
-  'iptal':           { label: 'Cancelled',       color: 'text-red-600',    bg: 'bg-red-100',    icon: <XCircle size={18} />,     step: 0 },
+  'hazirlanıyor':    { label: 'Hazırlanıyor',    color: 'text-orange-600', bg: 'bg-orange-100', icon: <Package size={18} />,     step: 1 },
+  'kargoya-verildi': { label: 'Kargoya Verildi', color: 'text-purple-600', bg: 'bg-purple-100', icon: <Truck size={18} />,       step: 2 },
+  'dagitimda':       { label: 'Dağıtımda',       color: 'text-blue-600',   bg: 'bg-blue-100',   icon: <Truck size={18} />,       step: 3 },
+  'teslim-edildi':   { label: 'Teslim Edildi',   color: 'text-green-600',  bg: 'bg-green-100',  icon: <CheckCircle size={18} />, step: 4 },
+  'iptal':           { label: 'İptal Edildi',    color: 'text-red-600',    bg: 'bg-red-100',    icon: <XCircle size={18} />,     step: 0 },
 };
 
 const steps = [
-  { label: 'Preparing',       icon: <Package size={15} /> },
-  { label: 'Shipped',         icon: <Truck size={15} /> },
-  { label: 'Out for Delivery',icon: <Truck size={15} /> },
-  { label: 'Delivered',       icon: <CheckCircle size={15} /> },
+  { label: 'Hazırlanıyor',    icon: <Package size={15} /> },
+  { label: 'Kargoya Verildi', icon: <Truck size={15} /> },
+  { label: 'Dağıtımda',       icon: <Truck size={15} /> },
+  { label: 'Teslim Edildi',   icon: <CheckCircle size={15} /> },
 ];
 
 function SiparisTakipContent() {
@@ -70,7 +70,7 @@ function SiparisTakipContent() {
           fetchCargoInfo(data.trackingCode, data.cargoCompany);
         }
       })
-      .catch(() => setError('Order not found. Please check the number and try again.'))
+      .catch(() => setError('Sipariş bulunamadı. Numarayı kontrol edip tekrar deneyin.'))
       .finally(() => setLoading(false));
 
     // Poll every 15s so status updates appear without refresh
@@ -89,15 +89,15 @@ function SiparisTakipContent() {
     try {
       const res = await fetch(`/api/kargo/track?code=${encodeURIComponent(trackingCode)}&company=${encodeURIComponent(cargoCompany)}`);
       if (res.ok) setCargoInfo(await res.json());
-    } catch { /* silently skip until cargo API connects */ }
+    } catch { /* kargo API bağlanana kadar sessizce geç */ }
     finally { setCargoLoading(false); }
   };
 
   const handleTrack = async (e: { preventDefault(): void }) => {
     e.preventDefault();
     const id = parseInt(orderId.trim());
-    if (!orderId.trim()) { setError('Please enter an order number.'); return; }
-    if (isNaN(id)) { setError('Please enter a valid order number.'); return; }
+    if (!orderId.trim()) { setError('Lütfen sipariş numarası girin.'); return; }
+    if (isNaN(id)) { setError('Geçerli bir sipariş numarası girin.'); return; }
     setLoading(true);
     setError('');
     setResult(null);
@@ -109,31 +109,33 @@ function SiparisTakipContent() {
         fetchCargoInfo(data.trackingCode, data.cargoCompany);
       }
     } catch {
-      setError('Order not found. Please check the number and try again.');
+      setError('Sipariş bulunamadı. Numarayı kontrol edip tekrar deneyin.');
     } finally {
       setLoading(false);
     }
   };
 
-  const cfg = result ? (statusConfig[result.status] ?? statusConfig['hazirlanıyor']) : null;
+  const cfg = result ? (statusConfig[result.status] ?? statusConfig['Beklemede']) : null;
   const currentStep = cfg?.step ?? 0;
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-14">
+      {/* Başlık */}
       <div className="text-center mb-10">
         <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Package size={28} className="text-orange-500" />
         </div>
-        <h1 className="text-3xl font-extrabold text-[#1B3A6B] mb-2">Order Tracking</h1>
-        <p className="text-gray-500 text-sm">Enter your order number to check your order status.</p>
+        <h1 className="text-3xl font-extrabold text-[#1B3A6B] mb-2">Sipariş Takibi</h1>
+        <p className="text-gray-500 text-sm">Sipariş numaranızı girerek siparişinizin durumunu öğrenin.</p>
       </div>
 
+      {/* Arama formu */}
       <form onSubmit={handleTrack} className="flex gap-3 mb-8">
         <input
           type="text"
           value={orderId}
           onChange={e => setOrderId(e.target.value)}
-          placeholder="Order number (e.g.: 1042)"
+          placeholder="Sipariş numarası (örn: 1042)"
           className="flex-1 border-2 border-gray-200 focus:border-orange-400 rounded-xl px-4 py-3 text-sm outline-none transition-colors"
         />
         <button
@@ -142,7 +144,7 @@ function SiparisTakipContent() {
           className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold px-5 py-3 rounded-xl transition-colors flex items-center gap-2 whitespace-nowrap"
         >
           <Search size={18} />
-          {loading ? 'Searching...' : 'Track'}
+          {loading ? 'Aranıyor...' : 'Sorgula'}
         </button>
       </form>
 
@@ -152,22 +154,25 @@ function SiparisTakipContent() {
         </div>
       )}
 
+      {/* Sonuç */}
       {result && cfg && (
         <div className="space-y-5">
+          {/* Durum kartı */}
           <div className={`flex items-center gap-4 ${cfg.bg} rounded-2xl px-6 py-5`}>
             <div className={cfg.color}>{cfg.icon}</div>
             <div>
               <p className="text-xs text-gray-500 font-medium">
-                Order #{result.id} · {new Date(result.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                Sipariş #{result.id} · {new Date(result.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
               </p>
               <p className={`text-lg font-extrabold ${cfg.color}`}>{cfg.label}</p>
             </div>
             <div className="ml-auto text-right shrink-0">
-              <p className="text-xs text-gray-500">Total</p>
-              <p className="font-extrabold text-[#1B3A6B]">₺{result.total.toLocaleString('en-US')}</p>
+              <p className="text-xs text-gray-500">Toplam</p>
+              <p className="font-extrabold text-[#1B3A6B]">{result.total.toLocaleString('tr-TR')} ₺</p>
             </div>
           </div>
 
+          {/* Adım göstergesi */}
           {result.status !== 'iptal' && (
             <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
               <div className="relative flex justify-between">
@@ -195,9 +200,10 @@ function SiparisTakipContent() {
             </div>
           )}
 
+          {/* Kargo takip kodu + canlı bilgi */}
           {result.trackingCode && (
             <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Cargo Tracking</p>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Kargo Takibi</p>
               <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
                 <div>
                   <p className="text-sm font-semibold text-[#1B3A6B]">{result.cargoCompany}</p>
@@ -206,7 +212,7 @@ function SiparisTakipContent() {
                 {cargoLoading && (
                   <span className="text-xs text-gray-400 flex items-center gap-1">
                     <span className="w-3 h-3 border-2 border-gray-300 border-t-orange-400 rounded-full animate-spin inline-block" />
-                    Querying...
+                    Sorgulanıyor...
                   </span>
                 )}
               </div>
@@ -215,7 +221,7 @@ function SiparisTakipContent() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="font-semibold text-gray-700">{cargoInfo.statusLabel}</span>
                     {cargoInfo.estimatedDelivery && (
-                      <span className="text-xs text-green-600 font-semibold">Est. delivery: {cargoInfo.estimatedDelivery}</span>
+                      <span className="text-xs text-green-600 font-semibold">Tahmini teslim: {cargoInfo.estimatedDelivery}</span>
                     )}
                   </div>
                   {cargoInfo.events.length > 0 && (
@@ -234,14 +240,16 @@ function SiparisTakipContent() {
             </div>
           )}
 
+          {/* Teslimat adresi */}
           <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Delivery Information</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Teslimat Bilgileri</p>
             <p className="font-semibold text-[#1B3A6B]">{result.shippingFullName}</p>
             <p className="text-sm text-gray-500 mt-1">{result.shippingAddress}</p>
           </div>
 
+          {/* Ürünler */}
           <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Order Contents</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Sipariş İçeriği</p>
             <div className="space-y-3">
               {result.items.map((item, i) => (
                 <div key={i} className="flex items-center justify-between gap-3">
@@ -251,11 +259,11 @@ function SiparisTakipContent() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-gray-800">{item.productName}</p>
-                      <p className="text-xs text-gray-400">{item.quantity} units</p>
+                      <p className="text-xs text-gray-400">{item.quantity} adet</p>
                     </div>
                   </div>
                   <p className="text-sm font-bold text-[#1B3A6B] shrink-0">
-                    ₺{(item.unitPrice * item.quantity).toLocaleString('en-US')}
+                    {(item.unitPrice * item.quantity).toLocaleString('tr-TR')} ₺
                   </p>
                 </div>
               ))}
@@ -264,7 +272,7 @@ function SiparisTakipContent() {
 
           <div className="text-center">
             <Link href="/hesabim?tab=siparisler" className="inline-flex items-center gap-1.5 text-sm text-orange-500 hover:text-orange-600 font-semibold">
-              View all my orders <ChevronRight size={14} />
+              Tüm siparişlerimi gör <ChevronRight size={14} />
             </Link>
           </div>
         </div>
@@ -273,9 +281,9 @@ function SiparisTakipContent() {
       {!result && !error && (
         <div className="bg-gray-50 rounded-2xl p-8 text-center text-gray-400">
           <Package size={40} className="mx-auto mb-3 opacity-30" />
-          <p className="text-sm">Your order number can be found in your confirmation email and in your account order history.</p>
+          <p className="text-sm">Sipariş numaranız onay e-postasında ve hesabınızın sipariş geçmişinde yer alır.</p>
           <Link href="/hesabim?tab=siparisler" className="inline-flex items-center gap-1.5 text-sm text-orange-500 hover:text-orange-600 font-semibold mt-4">
-            Go to my orders <ChevronRight size={14} />
+            Siparişlerime git <ChevronRight size={14} />
           </Link>
         </div>
       )}

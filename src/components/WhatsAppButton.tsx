@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5207';
-const MESSAGE = encodeURIComponent('Hello, I would like to get information about Adalya Solar.');
+const MESSAGE = encodeURIComponent('Merhaba, Adalya Solar hakkında bilgi almak istiyorum.');
 
 function cleanNumber(raw: string) {
   return raw.replace(/[\s\-().+]/g, '');
@@ -31,7 +31,7 @@ export default function WhatsAppButton() {
       href={`https://wa.me/${number}?text=${MESSAGE}`}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Contact via WhatsApp"
+      aria-label="WhatsApp ile iletişim"
       className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110"
     >
       <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7">

@@ -47,6 +47,14 @@ export default function PageLoader() {
     return () => clearTimeout(t);
   }, [visible, progress]);
 
+  // Navigasyon takılırsa 8 saniye sonra zorla tamamla
+  useEffect(() => {
+    if (!visible) return;
+    const t1 = setTimeout(() => setProgress(100), 8000);
+    const t2 = setTimeout(() => { setVisible(false); setProgress(0); }, 8400);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [visible]);
+
   if (!visible && progress === 0) return null;
 
   return (

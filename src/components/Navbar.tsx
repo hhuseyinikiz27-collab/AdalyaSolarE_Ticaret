@@ -158,7 +158,7 @@ export default function Navbar() {
           <form onSubmit={handleSearch} className="flex w-full border-2 border-orange-400 rounded-lg overflow-hidden">
             <input
               type="text"
-              placeholder="Search product, brand or category..."
+              placeholder="Ürün, marka veya kategori ara..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setShowSuggestions(true)}
@@ -190,7 +190,7 @@ export default function Navbar() {
                 className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-orange-50 hover:bg-orange-100 text-orange-600 text-sm font-semibold transition-colors"
               >
                 <Search size={14} />
-                See all results for &ldquo;{searchQuery}&rdquo;
+                &ldquo;{searchQuery}&rdquo; için tüm sonuçları gör
               </button>
             </div>
           )}
@@ -222,16 +222,16 @@ export default function Navbar() {
                   <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                   <div className="absolute right-0 top-9 bg-white shadow-xl rounded-xl py-2 w-52 border border-gray-100 z-50">
                     <div className="px-4 py-2 border-b border-gray-100 mb-1">
-                      <p className="text-xs font-semibold text-gray-400">Account</p>
+                      <p className="text-xs font-semibold text-gray-400">Hesap</p>
                       <p className="text-sm font-bold text-[#1B3A6B] truncate">{user.name}</p>
                     </div>
-                    <Link href="/hesabim" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors">My Account</Link>
-                    <Link href="/hesabim?tab=siparisler" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors">My Orders</Link>
+                    <Link href="/hesabim" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors">Hesabım</Link>
+                    <Link href="/hesabim?tab=siparisler" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm hover:bg-orange-50 hover:text-orange-600 transition-colors">Siparişlerim</Link>
                     {user.role === 'admin' && (
                       <Link href="/admin" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 text-sm text-orange-600 font-semibold hover:bg-orange-50 transition-colors">Admin Panel</Link>
                     )}
                     <hr className="my-1" />
-                    <button onClick={() => { logout(); setUserMenuOpen(false); }} className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">Sign Out</button>
+                    <button onClick={() => { logout(); setUserMenuOpen(false); }} className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors">Çıkış Yap</button>
                   </div>
                 </>
               )}
@@ -242,7 +242,7 @@ export default function Navbar() {
               className="hidden sm:flex items-center gap-1 text-[#1B3A6B] hover:text-orange-500 transition-colors"
             >
               <User size={20} />
-              <span className="text-sm font-medium">Sign In</span>
+              <span className="text-sm font-medium">Giriş</span>
             </Link>
           )}
 
@@ -263,7 +263,7 @@ export default function Navbar() {
               {notifOpen && (
                 <div className="absolute right-0 top-9 bg-white shadow-2xl rounded-2xl w-80 border border-gray-100 z-50 overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                    <p className="font-bold text-[#1B3A6B] text-sm">Notifications</p>
+                    <p className="font-bold text-[#1B3A6B] text-sm">Bildirimler</p>
                     {notifications.length > 0 && (
                       <button
                         onClick={async () => {
@@ -272,7 +272,7 @@ export default function Navbar() {
                         }}
                         className="flex items-center gap-1 text-xs text-gray-400 hover:text-orange-500 transition-colors"
                       >
-                        <CheckCheck size={12} /> Mark All Read
+                        <CheckCheck size={12} /> Tümünü Oku
                       </button>
                     )}
                   </div>
@@ -280,7 +280,7 @@ export default function Navbar() {
                   {notifications.length === 0 ? (
                     <div className="py-10 text-center text-gray-400 text-sm">
                       <Bell size={28} className="mx-auto mb-2 text-gray-200" />
-                      No notifications
+                      Bildirim yok
                     </div>
                   ) : (
                     <div className="max-h-80 overflow-y-auto divide-y divide-gray-50">
@@ -320,11 +320,11 @@ export default function Navbar() {
             </div>
           )}
 
-          {/* Language switcher */}
+          {/* Dil değiştirici */}
           <button
             onClick={() => setLang(lang === 'tr' ? 'en' : 'tr')}
             className="hidden lg:flex items-center gap-1 text-xs font-bold border border-gray-200 hover:border-orange-400 rounded-lg px-2 py-1.5 text-gray-600 hover:text-orange-500 transition-colors"
-            title={lang === 'tr' ? 'Switch to English' : 'Switch to Turkish'}
+            title={lang === 'tr' ? 'Switch to English' : 'Türkçeye geç'}
           >
             {lang === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR'}
           </button>
@@ -336,7 +336,7 @@ export default function Navbar() {
                 {totalItems}
               </span>
             )}
-            <span className="text-sm font-medium hidden lg:block">Cart</span>
+            <span className="text-sm font-medium hidden lg:block">Sepet</span>
           </Link>
 
           <button
@@ -350,7 +350,7 @@ export default function Navbar() {
 
       {/* Category nav */}
       <nav className="bg-orange-500 hidden md:flex items-center">
-        {/* ALL CATEGORIES — fixed, dropdown should not be affected by overflow */}
+        {/* TÜM KATEGORİLER — sabit, dropdown overflow etkilenmesin */}
         <div
           className="relative shrink-0"
           onMouseEnter={() => setCategoryOpen(true)}
@@ -358,7 +358,7 @@ export default function Navbar() {
         >
           <button className="flex items-center gap-1.5 px-4 py-3.5 text-white font-semibold hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
             <Menu size={16} />
-            ALL CATEGORIES
+            TÜM KATEGORİLER
             <ChevronDown size={14} />
           </button>
           {categoryOpen && (
@@ -377,7 +377,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Scrollable links area */}
+        {/* Kaydırılabilir link alanı */}
         <div className="relative flex-1 flex items-center min-w-0">
           {canScrollLeft && (
             <button
@@ -395,7 +395,7 @@ export default function Navbar() {
             style={{ paddingLeft: canScrollLeft ? '2rem' : 0, paddingRight: canScrollRight ? '2rem' : 0 }}
           >
             <Link href="/urunler" className="px-3.5 py-3.5 text-white font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              All Products
+              Tüm Ürünler
             </Link>
             {(apiCategories.length > 0 ? apiCategories : categories).map((cat) => (
               <Link
@@ -407,32 +407,32 @@ export default function Navbar() {
               </Link>
             ))}
             <Link href="/kampanyalar" className="px-3.5 py-3.5 text-yellow-200 font-bold hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              Campaigns
+              Kampanyalar
             </Link>
             <Link href="/bundlelar" className="px-3.5 py-3.5 text-sky-200 font-bold hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              Bundles
+              Paketler
             </Link>
             <Link href="/hesaplayici" className="px-3.5 py-3.5 text-green-300 font-bold hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              Calculator
+              Hesaplayıcı
             </Link>
             <div className="w-px h-5 bg-white/30 mx-1 shrink-0" />
             <Link href="/blog" className="px-3.5 py-3.5 text-white/90 font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
               Blog
             </Link>
             <Link href="/sss" className="px-3.5 py-3.5 text-white/90 font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              FAQ
+              SSS
             </Link>
             <Link href="/kurumsal" className="px-3.5 py-3.5 text-white/90 font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              Corporate
+              Kurumsal
             </Link>
             <Link href="/referanslar" className="px-3.5 py-3.5 text-white/90 font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              References
+              Referanslar
             </Link>
             <Link href="/hakkimizda" className="px-3.5 py-3.5 text-white/90 font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              About Us
+              Hakkımızda
             </Link>
             <Link href="/iletisim" className="px-3.5 py-3.5 text-white/90 font-medium hover:bg-orange-600 transition-colors text-sm whitespace-nowrap">
-              Contact
+              İletişim
             </Link>
           </div>
 
@@ -454,7 +454,7 @@ export default function Navbar() {
             <form onSubmit={handleSearch} className="flex border-2 border-orange-400 rounded-lg overflow-hidden mb-3">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Ürün ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 px-3 py-2 text-sm outline-none"
@@ -476,45 +476,45 @@ export default function Navbar() {
             </Link>
           ))}
           <Link href="/kampanyalar" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-orange-500 font-semibold border-b hover:bg-orange-50">
-            Campaigns
+            Kampanyalar
           </Link>
           <Link href="/bundlelar" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sky-600 font-semibold border-b hover:bg-sky-50">
-            Bundles
+            Paketler
           </Link>
           <Link href="/hesaplayici" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-emerald-600 font-semibold border-b hover:bg-green-50">
-            Energy Calculator
+            Enerji Hesaplayıcı
           </Link>
           <Link href="/blog" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 border-b hover:bg-orange-50">
             Blog
           </Link>
           <Link href="/sss" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 border-b hover:bg-orange-50">
-            FAQ
+            SSS
           </Link>
           <Link href="/kurumsal" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 border-b hover:bg-orange-50">
-            Corporate
+            Kurumsal
           </Link>
           <Link href="/referanslar" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 border-b hover:bg-orange-50">
-            References
+            Referanslar
           </Link>
           <Link href="/hakkimizda" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 border-b hover:bg-orange-50">
-            About Us
+            Hakkımızda
           </Link>
           <Link href="/iletisim" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 border-b hover:bg-orange-50">
-            Contact
+            İletişim
           </Link>
           <div className="border-t">
             {user ? (
               <>
                 <Link href="/hesabim" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50">
-                  <User size={18} /> My Account
+                  <User size={18} /> Hesabım
                 </Link>
                 <button onClick={() => { logout(); setMobileOpen(false); }} className="flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 w-full">
-                  Sign Out
+                  Çıkış Yap
                 </button>
               </>
             ) : (
               <Link href="/giris" onClick={() => setMobileOpen(false)} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-orange-50">
-                <User size={18} /> Sign In / Register
+                <User size={18} /> Giriş Yap / Kayıt Ol
               </Link>
             )}
           </div>

@@ -18,10 +18,10 @@ import { LanguageProvider } from '@/context/LanguageContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Adalya Solar Energy | Solar Panel, Battery, Inverter',
+  title: 'Adalya Solar Enerji | Güneş Paneli, Batarya, İnverter',
   description:
-    'Adalya Solar Energy — Solar panels, LiFePO4 batteries, hybrid inverters, and mounting accessories. Fast delivery across Turkey, expert technical support.',
-  keywords: 'solar panel, battery, inverter, MPPT, photovoltaic, adalya solar, renewable energy',
+    'Adalya Solar Enerji — Güneş panelleri, LiFePO4 bataryalar, hibrit inverterler ve montaj aksesuarları. Türkiye genelinde hızlı teslimat, uzman teknik destek.',
+  keywords: 'güneş paneli, solar panel, batarya, inverter, MPPT, fotovoltaik, adalya solar',
   icons: {
     icon: '/favicon.png',
     shortcut: '/favicon.png',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="tr" className="scroll-smooth">
       <body className={`${inter.className} bg-white min-h-screen flex flex-col antialiased`}>
         <LanguageProvider>
         <ToastProvider>

@@ -6,11 +6,6 @@ import { MapPin, Zap, Calendar, ChevronRight, Building2, Home, Tractor } from 'l
 import { api, ApiProjectReference } from '@/lib/api';
 
 const typeIcon: Record<string, React.ReactNode> = {
-  Residential: <Home size={14} />,
-  Commercial: <Building2 size={14} />,
-  Industrial: <Building2 size={14} />,
-  Agricultural: <Tractor size={14} />,
-  Public: <Building2 size={14} />,
   Ticari: <Building2 size={14} />,
   Endüstriyel: <Building2 size={14} />,
   Konut: <Home size={14} />,
@@ -19,11 +14,6 @@ const typeIcon: Record<string, React.ReactNode> = {
 };
 
 const typeColor: Record<string, string> = {
-  Residential: 'bg-green-100 text-green-700',
-  Commercial: 'bg-blue-100 text-blue-700',
-  Industrial: 'bg-purple-100 text-purple-700',
-  Agricultural: 'bg-amber-100 text-amber-700',
-  Public: 'bg-orange-100 text-orange-700',
   Ticari: 'bg-blue-100 text-blue-700',
   Endüstriyel: 'bg-purple-100 text-purple-700',
   Konut: 'bg-green-100 text-green-700',
@@ -31,7 +21,7 @@ const typeColor: Record<string, string> = {
   Kamu: 'bg-orange-100 text-orange-700',
 };
 
-export default function ReferencesPage() {
+export default function ReferanslarPage() {
   const [projects, setProjects] = useState<ApiProjectReference[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,20 +37,20 @@ export default function ReferencesPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1B3A6B] via-[#2d5282] to-[#1B3A6B] text-white py-16 px-4 text-center">
         <span className="inline-block bg-orange-500/20 border border-orange-400/30 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-          Completed Projects
+          Tamamlanan Projeler
         </span>
-        <h1 className="text-4xl font-extrabold mb-3">Our Reference Projects</h1>
+        <h1 className="text-4xl font-extrabold mb-3">Referans Projelerimiz</h1>
         <p className="text-gray-300 max-w-xl mx-auto text-sm leading-relaxed mb-10">
-          Solar energy projects we have completed across Turkey.
-          Solutions at every scale — from residential to industrial, agricultural to public.
+          Türkiye&apos;nin dört bir yanında tamamladığımız güneş enerjisi projeleri.
+          Konuttan endüstriyele, tarımsaldan kamuya her ölçekte çözümler.
         </p>
         {!loading && (
           <div className="flex flex-wrap justify-center gap-10">
             {[
-              { value: `${projects.length}+`, label: 'Completed Projects' },
-              { value: `${totalKwp} kWp`, label: 'Total Installed Capacity' },
-              { value: `${totalPanels.toLocaleString('en-US')}+`, label: 'Panels Installed' },
-              { value: `${new Set(projects.map(p => p.city)).size}+`, label: 'Cities' },
+              { value: `${projects.length}+`, label: 'Tamamlanan Proje' },
+              { value: `${totalKwp} kWp`, label: 'Toplam Kurulu Güç' },
+              { value: `${totalPanels.toLocaleString('tr-TR')}+`, label: 'Kurulan Panel' },
+              { value: `${new Set(projects.map(p => p.city)).size}+`, label: 'Farklı Şehir' },
             ].map(({ value, label }) => (
               <div key={label} className="text-center">
                 <p className="text-3xl font-extrabold text-white">{value}</p>
@@ -79,7 +69,7 @@ export default function ReferencesPage() {
           </div>
         ) : projects.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
-            <p>No reference projects found yet.</p>
+            <p>Henüz referans proje bulunmamaktadır.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -104,22 +94,22 @@ export default function ReferencesPage() {
                     <div className="bg-orange-50 rounded-xl p-2.5 text-center">
                       <Zap size={14} className="text-orange-500 mx-auto mb-1" />
                       <p className="text-xs font-bold text-[#1B3A6B]">{p.capacity}</p>
-                      <p className="text-xs text-gray-400">Capacity</p>
+                      <p className="text-xs text-gray-400">Kapasite</p>
                     </div>
                     <div className="bg-blue-50 rounded-xl p-2.5 text-center">
                       <Building2 size={14} className="text-blue-500 mx-auto mb-1" />
                       <p className="text-xs font-bold text-[#1B3A6B]">{p.panels}</p>
-                      <p className="text-xs text-gray-400">Panels</p>
+                      <p className="text-xs text-gray-400">Panel</p>
                     </div>
                     <div className="bg-green-50 rounded-xl p-2.5 text-center">
                       <Calendar size={14} className="text-green-500 mx-auto mb-1" />
                       <p className="text-xs font-bold text-[#1B3A6B]">{p.year}</p>
-                      <p className="text-xs text-gray-400">Year</p>
+                      <p className="text-xs text-gray-400">Yıl</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                     <div>
-                      <p className="text-xs text-gray-400">Estimated Savings</p>
+                      <p className="text-xs text-gray-400">Tahmini Tasarruf</p>
                       <p className="text-sm font-extrabold text-green-600">{p.savings}</p>
                     </div>
                   </div>
@@ -131,22 +121,22 @@ export default function ReferencesPage() {
 
         {/* CTA */}
         <div className="mt-16 bg-gradient-to-br from-[#1B3A6B] to-[#2d5282] rounded-3xl p-10 text-center text-white">
-          <h2 className="text-2xl font-extrabold mb-3">Join the List</h2>
+          <h2 className="text-2xl font-extrabold mb-3">Siz de Listede Yerinizi Alın</h2>
           <p className="text-gray-300 text-sm mb-6 max-w-md mx-auto">
-            Get a free site survey and quote for your home, business, or farm.
+            Konut, işyeri veya tarımsal tesisleriniz için ücretsiz keşif ve teklif alın.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/teklif-iste"
               className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2"
             >
-              Get a Quote <ChevronRight size={16} />
+              Teklif Al <ChevronRight size={16} />
             </Link>
             <Link
               href="/iletisim"
               className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
             >
-              Contact Us
+              İletişime Geç
             </Link>
           </div>
         </div>

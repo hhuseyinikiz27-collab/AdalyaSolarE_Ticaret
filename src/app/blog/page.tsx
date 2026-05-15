@@ -6,7 +6,7 @@ import NewsletterForm from '@/components/NewsletterForm';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5207';
 
-export const metadata = { title: 'Blog | Adalya Solar Energy' };
+export const metadata = { title: 'Blog | Adalya Solar Enerji' };
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +31,10 @@ function parseTags(raw: string): string[] {
 async function getPosts(category?: string): Promise<ApiBlogPost[]> {
   try {
     const qs = category ? `?category=${encodeURIComponent(category)}` : '';
-    const res = await fetch(`${BASE_URL}/api/blogs${qs}`, { next: { revalidate: 60 } });
+    const res = await fetch(`${BASE_URL}/api/blogs${qs}`, {
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(5000),
+    });
     if (!res.ok) throw new Error();
     const data = await res.json() as ApiBlogPost[];
     if (data.length > 0) return data;
@@ -73,16 +76,16 @@ export default async function BlogPage({
           <span className="inline-block bg-orange-500/20 border border-orange-400/30 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
             Adalya Solar Blog
           </span>
-          <h1 className="text-4xl font-extrabold mb-3">Solar Energy Guide</h1>
+          <h1 className="text-4xl font-extrabold mb-3">Güneş Enerjisi Rehberi</h1>
           <p className="text-gray-300 max-w-xl mx-auto text-sm leading-relaxed mb-8">
-            Explore the world of solar energy with installation guides, product reviews,
-            industry news, and money-saving tips.
+            Kurulum rehberleri, ürün incelemeleri, sektör haberleri ve tasarruf ipuçlarıyla
+            güneş enerjisi dünyasını keşfedin.
           </p>
           <div className="flex flex-wrap justify-center gap-8">
             {[
-              { icon: BookOpen, value: `${allPosts.length}`, label: 'Articles' },
-              { icon: TrendingUp, value: `${totalReadTime}+`, label: 'Min of Content' },
-              { icon: Tag, value: `${categoryList.length}`, label: 'Categories' },
+              { icon: BookOpen, value: `${allPosts.length}`, label: 'Makale' },
+              { icon: TrendingUp, value: `${totalReadTime}+`, label: 'Dakika İçerik' },
+              { icon: Tag, value: `${categoryList.length}`, label: 'Kategori' },
             ].map(({ icon: Icon, value, label }) => (
               <div key={label} className="text-center">
                 <div className="flex items-center justify-center gap-1.5 mb-1">
@@ -105,7 +108,7 @@ export default async function BlogPage({
               !kategori ? 'bg-[#1B3A6B] text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'
             }`}
           >
-            All ({allPosts.length})
+            Tümü ({allPosts.length})
           </Link>
           {categoryList.map((cat) => {
             const count = allPosts.filter((p) => p.category === cat).length;
@@ -126,7 +129,7 @@ export default async function BlogPage({
         {posts.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <BookOpen size={48} className="mx-auto mb-4 text-gray-200" />
-            <p className="font-semibold">No posts found in this category.</p>
+            <p className="font-semibold">Bu kategoride henüz yazı bulunmuyor.</p>
           </div>
         )}
 
@@ -151,7 +154,7 @@ export default async function BlogPage({
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 <span className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow">
-                  Featured
+                  Öne Çıkan
                 </span>
               </div>
               <div className="lg:col-span-2 bg-white p-8 flex flex-col justify-center">
@@ -165,13 +168,13 @@ export default async function BlogPage({
                   <div>
                     <p className="font-semibold text-gray-600">{featured.author}</p>
                     <p>
-                      {new Date(featured.date).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
-                      {' · '}{featured.readTime} min read
+                      {new Date(featured.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      {' · '}{featured.readTime} dk okuma
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-orange-50 hover:bg-orange-100 text-orange-500 font-bold text-sm px-4 py-2.5 rounded-xl w-fit transition-colors">
-                  Read More <ChevronRight size={16} />
+                  Devamını Oku <ChevronRight size={16} />
                 </div>
               </div>
             </div>
@@ -211,7 +214,7 @@ export default async function BlogPage({
                   <p className="text-gray-500 text-sm leading-relaxed mb-4 line-clamp-2 flex-1">{post.excerpt}</p>
                   <div className="flex items-center justify-between text-xs text-gray-400 pt-3 border-t border-gray-50">
                     <span className="font-medium text-gray-500">{post.author}</span>
-                    <div className="flex items-center gap-1"><Clock size={12} />{post.readTime} min</div>
+                    <div className="flex items-center gap-1"><Clock size={12} />{post.readTime} dk</div>
                   </div>
                 </div>
               </Link>
@@ -223,7 +226,7 @@ export default async function BlogPage({
         {allTags.length > 0 && (
           <div className="mt-16 bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl p-8 border border-orange-100">
             <h3 className="text-lg font-extrabold text-[#1B3A6B] mb-4 flex items-center gap-2">
-              <Tag size={18} className="text-orange-500" /> Popular Tags
+              <Tag size={18} className="text-orange-500" /> Popüler Etiketler
             </h3>
             <div className="flex flex-wrap gap-2">
               {allTags.map((tag) => (
@@ -237,8 +240,8 @@ export default async function BlogPage({
 
         {/* Newsletter CTA */}
         <div className="mt-10 bg-[#1B3A6B] rounded-3xl p-8 text-center text-white">
-          <h3 className="text-xl font-extrabold mb-2">Stay Updated on New Posts</h3>
-          <p className="text-gray-300 text-sm mb-5">Get solar energy news, guides, and campaigns delivered to your inbox.</p>
+          <h3 className="text-xl font-extrabold mb-2">Yeni Yazılardan Haberdar Ol</h3>
+          <p className="text-gray-300 text-sm mb-5">Güneş enerjisi haberleri, rehberler ve kampanyalar e-postana gelsin.</p>
           <div className="max-w-sm mx-auto"><NewsletterForm /></div>
         </div>
       </div>

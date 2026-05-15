@@ -18,7 +18,7 @@ export default function AdminReviews() {
     setLoadError('');
     api.admin.reviews.getAll()
       .then(setReviews)
-      .catch(e => setLoadError(e instanceof Error ? e.message : 'Reviews could not be loaded.'))
+      .catch(e => setLoadError(e instanceof Error ? e.message : 'Yorumlar yüklenemedi.'))
       .finally(() => setLoading(false));
   };
 
@@ -39,19 +39,19 @@ export default function AdminReviews() {
       setReplyText(r => ({ ...r, [id]: '' }));
       if (wasUnanswered) window.dispatchEvent(new Event('review-replied'));
     } catch {
-      error('Reply could not be sent.');
+      error('Yanıt gönderilemedi.');
     } finally {
       setSending(null);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this review?')) return;
+    if (!confirm('Bu yorumu silmek istediğinize emin misiniz?')) return;
     try {
       await api.admin.reviews.delete(id);
       setReviews(prev => prev.filter(r => r.id !== id));
     } catch {
-      error('Review could not be deleted.');
+      error('Yorum silinemedi.');
     }
   };
 
@@ -60,10 +60,10 @@ export default function AdminReviews() {
       {loadError && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm mb-6 flex items-center justify-between">
           <span>{loadError}</span>
-          <button onClick={load} className="font-semibold underline ml-4">Try Again</button>
+          <button onClick={load} className="font-semibold underline ml-4">Tekrar Dene</button>
         </div>
       )}
-      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-8">Review Management</h1>
+      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-8">Yorum Yönetimi</h1>
 
       {loading ? (
         <div className="space-y-4">
@@ -72,7 +72,7 @@ export default function AdminReviews() {
       ) : reviews.length === 0 ? (
         <div className="text-center py-20 text-gray-400 bg-white rounded-2xl">
           <Star size={40} className="mx-auto mb-3 text-gray-200" />
-          <p>No reviews yet.</p>
+          <p>Henüz yorum yok.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -82,7 +82,7 @@ export default function AdminReviews() {
                 <div>
                   <p className="font-semibold text-[#1B3A6B]">{r.userName}</p>
                   <p className="text-xs text-gray-400">{r.userEmail} · {new Date(r.createdAt).toLocaleDateString('tr-TR')}</p>
-                  <p className="text-xs text-orange-500 font-medium mt-0.5">Product: {r.productName}</p>
+                  <p className="text-xs text-orange-500 font-medium mt-0.5">Ürün: {r.productName}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex">
@@ -104,7 +104,7 @@ export default function AdminReviews() {
 
               {r.adminReply && (
                 <div className="bg-orange-50 border border-orange-100 rounded-xl p-3 mb-4">
-                  <p className="text-xs font-semibold text-orange-600 mb-1">Admin Reply:</p>
+                  <p className="text-xs font-semibold text-orange-600 mb-1">Admin Yanıtı:</p>
                   <p className="text-sm text-gray-700">{r.adminReply}</p>
                 </div>
               )}
@@ -113,7 +113,7 @@ export default function AdminReviews() {
                 <input
                   value={replyText[r.id] || ''}
                   onChange={e => setReplyText(prev => ({ ...prev, [r.id]: e.target.value }))}
-                  placeholder={r.adminReply ? 'Update reply...' : 'Write a reply...'}
+                  placeholder={r.adminReply ? 'Yanıtı güncelle...' : 'Yanıt yaz...'}
                   className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
                   onKeyDown={e => e.key === 'Enter' && handleReply(r.id)}
                 />
@@ -123,7 +123,7 @@ export default function AdminReviews() {
                   className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 text-white px-4 rounded-xl transition-colors flex items-center gap-2 text-sm font-semibold"
                 >
                   <Send size={14} />
-                  {sending === r.id ? '...' : 'Reply'}
+                  {sending === r.id ? '...' : 'Yanıtla'}
                 </button>
               </div>
             </div>

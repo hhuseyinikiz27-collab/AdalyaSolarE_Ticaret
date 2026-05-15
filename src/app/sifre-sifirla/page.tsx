@@ -18,13 +18,13 @@ function ResetForm() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!token) setError('Invalid or missing reset link. Please request a new one.');
+    if (!token) setError('Geçersiz veya eksik sıfırlama bağlantısı. Lütfen tekrar talep edin.');
   }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (form.password.length < 6) { setError('Password must be at least 6 characters.'); return; }
-    if (form.password !== form.confirm) { setError('Passwords do not match.'); return; }
+    if (form.password.length < 6) { setError('Şifre en az 6 karakter olmalıdır.'); return; }
+    if (form.password !== form.confirm) { setError('Şifreler eşleşmiyor.'); return; }
     setLoading(true);
     setError('');
     try {
@@ -32,7 +32,7 @@ function ResetForm() {
       setDone(true);
       setTimeout(() => router.push('/giris'), 3000);
     } catch {
-      setError('The link is invalid or has expired. Please request a new reset link.');
+      setError('Bağlantı geçersiz veya süresi dolmuş. Lütfen yeni bir sıfırlama talep edin.');
     } finally {
       setLoading(false);
     }
@@ -45,22 +45,22 @@ function ResetForm() {
           <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Lock size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Set New Password</h1>
-          <p className="text-gray-500 text-sm mt-2">Create a new password for your account.</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Yeni Şifre Belirle</h1>
+          <p className="text-gray-500 text-sm mt-2">Hesabınız için yeni bir şifre oluşturun.</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           {done ? (
             <div className="text-center">
               <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
-              <h2 className="text-lg font-bold text-gray-800 mb-2">Password Updated</h2>
-              <p className="text-gray-500 text-sm mb-1">You can now sign in with your new password.</p>
-              <p className="text-xs text-gray-400 mb-6">Redirecting to sign in page in 3 seconds...</p>
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Şifreniz Güncellendi</h2>
+              <p className="text-gray-500 text-sm mb-1">Yeni şifrenizle giriş yapabilirsiniz.</p>
+              <p className="text-xs text-gray-400 mb-6">3 saniye içinde giriş sayfasına yönlendiriliyorsunuz...</p>
               <Link
                 href="/giris"
                 className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
               >
-                Sign In
+                Giriş Yap
               </Link>
             </div>
           ) : (
@@ -73,7 +73,7 @@ function ResetForm() {
               )}
 
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">New Password</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Yeni Şifre</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
@@ -81,7 +81,7 @@ function ResetForm() {
                     value={form.password}
                     onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
                     required
-                    placeholder="At least 6 characters"
+                    placeholder="En az 6 karakter"
                     className="w-full border border-gray-200 rounded-xl pl-10 pr-10 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                   />
                   <button
@@ -95,7 +95,7 @@ function ResetForm() {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Confirm New Password</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Yeni Şifre (Tekrar)</label>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
@@ -103,16 +103,16 @@ function ResetForm() {
                     value={form.confirm}
                     onChange={e => setForm(f => ({ ...f, confirm: e.target.value }))}
                     required
-                    placeholder="Re-enter your password"
+                    placeholder="Şifrenizi tekrar girin"
                     className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                   />
                 </div>
                 {form.confirm && form.password !== form.confirm && (
-                  <p className="text-xs text-red-500 mt-1">Passwords do not match.</p>
+                  <p className="text-xs text-red-500 mt-1">Şifreler eşleşmiyor.</p>
                 )}
                 {form.confirm && form.password === form.confirm && form.password.length >= 6 && (
                   <p className="text-xs text-green-500 mt-1 flex items-center gap-1">
-                    <CheckCircle size={12} /> Passwords match.
+                    <CheckCircle size={12} /> Şifreler eşleşiyor.
                   </p>
                 )}
               </div>
@@ -124,7 +124,7 @@ function ResetForm() {
               >
                 {loading
                   ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  : 'Update Password'
+                  : 'Şifremi Güncelle'
                 }
               </button>
 
@@ -133,7 +133,7 @@ function ResetForm() {
                 className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition-colors"
               >
                 <ArrowLeft size={14} />
-                Request a new reset link
+                Yeni sıfırlama bağlantısı talep et
               </Link>
             </form>
           )}
@@ -143,7 +143,7 @@ function ResetForm() {
   );
 }
 
-export default function ResetPasswordPage() {
+export default function SifreSifirlaPage() {
   return (
     <Suspense fallback={
       <div className="min-h-[80vh] flex items-center justify-center">
