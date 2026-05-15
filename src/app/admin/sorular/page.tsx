@@ -56,7 +56,7 @@ export default function AdminQuestionsPage() {
   };
 
   const deleteQ = async (id: number) => {
-    if (!confirm('Bu soruyu silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this question?')) return;
     await api.admin.questions.delete(id);
     setQuestions(prev => prev.filter(q => q.id !== id));
   };
@@ -67,10 +67,10 @@ export default function AdminQuestionsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Soru & Cevap</h1>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Question Management</h1>
           {unansweredCount > 0 && (
             <p className="text-sm text-amber-600 font-medium mt-0.5">
-              {unansweredCount} yanıtsız soru var
+              {unansweredCount} unanswered question{unansweredCount > 1 ? 's' : ''}
             </p>
           )}
         </div>
@@ -83,18 +83,18 @@ export default function AdminQuestionsPage() {
                 filterAnswered === f ? 'bg-[#1B3A6B] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              {f === 'all' ? 'Tümü' : f === 'unanswered' ? 'Yanıtsız' : 'Yanıtlı'}
+              {f === 'all' ? 'All' : f === 'unanswered' ? 'Unanswered' : 'Answered'}
             </button>
           ))}
         </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-20 text-gray-400">Yükleniyor...</div>
+        <div className="text-center py-20 text-gray-400">Loading...</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <MessageCircle size={48} className="mx-auto mb-3 text-gray-200" />
-          <p className="font-semibold">Soru bulunamadı.</p>
+          <p className="font-semibold">No questions found.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -115,19 +115,19 @@ export default function AdminQuestionsPage() {
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   {!q.answer && (
-                    <span className="text-xs bg-amber-50 text-amber-600 border border-amber-200 px-2 py-1 rounded-lg font-semibold">Yanıtsız</span>
+                    <span className="text-xs bg-amber-50 text-amber-600 border border-amber-200 px-2 py-1 rounded-lg font-semibold">Unanswered</span>
                   )}
                   <button
                     onClick={() => openAnswer(q)}
                     className="flex items-center gap-1 text-xs bg-[#1B3A6B] hover:bg-[#2d5282] text-white px-3 py-1.5 rounded-lg font-semibold transition-colors"
                   >
                     <CheckCircle size={12} />
-                    {q.answer ? 'Güncelle' : 'Yanıtla'}
+                    {q.answer ? 'Update' : 'Answer'}
                   </button>
                   <button
                     onClick={() => toggleVisibility(q)}
                     className="p-1.5 text-gray-400 hover:text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
-                    title={q.isVisible ? 'Gizle' : 'Göster'}
+                    title={q.isVisible ? 'Hide' : 'Show'}
                   >
                     {q.isVisible ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
@@ -144,7 +144,7 @@ export default function AdminQuestionsPage() {
 
               {q.answer && (
                 <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3">
-                  <p className="text-xs font-bold text-green-700 mb-1">Yanıt</p>
+                  <p className="text-xs font-bold text-green-700 mb-1">Answer</p>
                   <p className="text-sm text-green-800 leading-relaxed">{q.answer}</p>
                 </div>
               )}
@@ -158,18 +158,18 @@ export default function AdminQuestionsPage() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-[#1B3A6B]">Soruyu Yanıtla</h3>
+              <h3 className="text-lg font-bold text-[#1B3A6B]">Answer Question</h3>
               <button onClick={() => setAnswerModal(null)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
             </div>
             <div className="bg-gray-50 rounded-xl px-4 py-3 mb-4">
-              <p className="text-xs text-gray-400 font-semibold mb-1">{answerModal.userName} sordu:</p>
+              <p className="text-xs text-gray-400 font-semibold mb-1">{answerModal.userName} asked:</p>
               <p className="text-sm text-gray-800 font-medium">{answerModal.question}</p>
             </div>
             <textarea
               value={answerText}
               onChange={e => setAnswerText(e.target.value)}
               rows={5}
-              placeholder="Yanıtınızı yazın..."
+              placeholder="Write your answer..."
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none"
             />
             <div className="flex gap-3 mt-4">
@@ -177,14 +177,14 @@ export default function AdminQuestionsPage() {
                 onClick={() => setAnswerModal(null)}
                 className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50"
               >
-                Vazgeç
+                Cancel
               </button>
               <button
                 onClick={submitAnswer}
                 disabled={submitting || !answerText.trim()}
                 className="flex-1 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold disabled:opacity-50"
               >
-                {submitting ? 'Kaydediliyor...' : 'Yanıtı Kaydet'}
+                {submitting ? 'Saving...' : 'Save Answer'}
               </button>
             </div>
           </div>

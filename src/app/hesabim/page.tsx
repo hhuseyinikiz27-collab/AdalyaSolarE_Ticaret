@@ -144,10 +144,10 @@ function PhotoCropModal({ file, onClose, onUpload }: {
     <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-[#1B3A6B]">Fotoğrafı Düzenle</h3>
+          <h3 className="text-lg font-bold text-[#1B3A6B]">Edit Photo</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
         </div>
-        <p className="text-xs text-gray-400 text-center mb-4">Sürükle konumlandır · Scroll ile yakınlaştır</p>
+        <p className="text-xs text-gray-400 text-center mb-4">Drag to position · Scroll to zoom</p>
 
         <div
           ref={containerRef}
@@ -183,9 +183,9 @@ function PhotoCropModal({ file, onClose, onUpload }: {
 
         <div className="mt-5 px-1">
           <div className="flex items-center justify-between text-xs text-gray-400 mb-1.5">
-            <span>Uzaklaştır</span>
+            <span>Zoom Out</span>
             <span className="font-semibold text-[#1B3A6B]">{Math.round(scale / minScale * 100)}%</span>
-            <span>Yakınlaştır</span>
+            <span>Zoom In</span>
           </div>
           <input
             type="range"
@@ -198,13 +198,13 @@ function PhotoCropModal({ file, onClose, onUpload }: {
         </div>
 
         <div className="flex gap-3 mt-5">
-          <button onClick={onClose} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 text-sm transition-colors">İptal</button>
+          <button onClick={onClose} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 text-sm transition-colors">Cancel</button>
           <button
             onClick={handleSave}
             disabled={saving}
             className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
           >
-            {saving ? 'Yükleniyor...' : 'Kaydet & Yükle'}
+            {saving ? 'Uploading...' : 'Save & Upload'}
           </button>
         </div>
       </div>
@@ -223,22 +223,22 @@ function PasswordChangeForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.next !== form.confirm) {
-      setMsg({ type: 'error', text: 'Yeni şifreler eşleşmiyor.' });
+      setMsg({ type: 'error', text: 'New passwords do not match.' });
       return;
     }
     if (form.next.length < 6) {
-      setMsg({ type: 'error', text: 'Yeni şifre en az 6 karakter olmalıdır.' });
+      setMsg({ type: 'error', text: 'New password must be at least 6 characters.' });
       return;
     }
     if (form.next === form.current) {
-      setMsg({ type: 'error', text: 'Yeni şifreniz mevcut şifrenizle aynı olamaz.' });
+      setMsg({ type: 'error', text: 'Your new password cannot be the same as your current password.' });
       return;
     }
     setLoading(true);
     setMsg(null);
     try {
       await api.auth.changePassword(form.current, form.next);
-      setMsg({ type: 'success', text: 'Şifreniz başarıyla güncellendi.' });
+      setMsg({ type: 'success', text: 'Your password has been updated successfully.' });
       setForm({ current: '', next: '', confirm: '' });
       if (user?.email) {
         const email = user.email;
@@ -248,7 +248,7 @@ function PasswordChangeForm() {
           .catch(() => {});
       }
     } catch (err: unknown) {
-      setMsg({ type: 'error', text: err instanceof Error ? err.message : 'Şifre değiştirilemedi.' });
+      setMsg({ type: 'error', text: err instanceof Error ? err.message : 'Password could not be changed.' });
     } finally {
       setLoading(false);
     }
@@ -262,7 +262,7 @@ function PasswordChangeForm() {
         </div>
       )}
       <div>
-        <label className="text-sm font-semibold text-gray-700 block mb-1">Mevcut Şifre</label>
+        <label className="text-sm font-semibold text-gray-700 block mb-1">Current Password</label>
         <div className="relative">
           <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -271,7 +271,7 @@ function PasswordChangeForm() {
             onChange={e => setForm(p => ({ ...p, current: e.target.value }))}
             required
             className="w-full border border-gray-200 rounded-xl pl-9 pr-10 py-2.5 text-sm outline-none focus:border-orange-400"
-            placeholder="Mevcut şifreniz"
+            placeholder="Your current password"
           />
           <button type="button" onClick={() => setShowCurrent(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
             {showCurrent ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -279,7 +279,7 @@ function PasswordChangeForm() {
         </div>
       </div>
       <div>
-        <label className="text-sm font-semibold text-gray-700 block mb-1">Yeni Şifre</label>
+        <label className="text-sm font-semibold text-gray-700 block mb-1">New Password</label>
         <div className="relative">
           <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -288,7 +288,7 @@ function PasswordChangeForm() {
             onChange={e => setForm(p => ({ ...p, next: e.target.value }))}
             required
             className="w-full border border-gray-200 rounded-xl pl-9 pr-10 py-2.5 text-sm outline-none focus:border-orange-400"
-            placeholder="En az 6 karakter"
+            placeholder="At least 6 characters"
           />
           <button type="button" onClick={() => setShowNext(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
             {showNext ? <EyeOff size={15} /> : <Eye size={15} />}
@@ -296,7 +296,7 @@ function PasswordChangeForm() {
         </div>
       </div>
       <div>
-        <label className="text-sm font-semibold text-gray-700 block mb-1">Yeni Şifre (Tekrar)</label>
+        <label className="text-sm font-semibold text-gray-700 block mb-1">New Password (Confirm)</label>
         <div className="relative">
           <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
@@ -305,7 +305,7 @@ function PasswordChangeForm() {
             onChange={e => setForm(p => ({ ...p, confirm: e.target.value }))}
             required
             className="w-full border border-gray-200 rounded-xl pl-9 py-2.5 text-sm outline-none focus:border-orange-400"
-            placeholder="Yeni şifreyi tekrar girin"
+            placeholder="Re-enter your new password"
           />
         </div>
       </div>
@@ -314,7 +314,7 @@ function PasswordChangeForm() {
         disabled={loading}
         className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold px-6 py-2.5 rounded-xl transition-colors text-sm"
       >
-        {loading ? 'Güncelleniyor...' : 'Şifreyi Güncelle'}
+        {loading ? 'Updating...' : 'Update Password'}
       </button>
     </form>
   );
@@ -448,12 +448,12 @@ function AccountPageContent() {
       }
       setShowAddressForm(false);
     } catch {
-      toastError('Adres kaydedilemedi.');
+      toastError('Address could not be saved.');
     }
   };
 
   const deleteAddress = async (id: number) => {
-    if (!confirm('Bu adresi silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this address?')) return;
     await api.addresses.delete(id);
     setAddresses((prev) => prev.filter((a) => a.id !== id));
   };
@@ -490,26 +490,26 @@ function AccountPageContent() {
     }
     setRepeatingId(null);
     if (added > 0) {
-      toastSuccess(`${added} ürün sepete eklendi!`);
+      toastSuccess(`${added} product(s) added to cart!`);
       router.push('/sepet');
     } else {
-      toastError('Ürünler artık mevcut değil.');
+      toastError('Products are no longer available.');
     }
   };
 
   const submitReturn = async () => {
     if (!returnModal) return;
-    if (!returnForm.reason.trim()) { toastError('Lütfen bir neden belirtin.'); return; }
+    if (!returnForm.reason.trim()) { toastError('Please provide a reason.'); return; }
     setReturnSubmitting(true);
     try {
       await api.returns.create({ orderId: returnModal.order.id, type: returnForm.type, reason: returnForm.reason });
-      toastSuccess('Talebiniz alındı. En kısa sürede incelenecek.');
+      toastSuccess('Your request has been received. It will be reviewed shortly.');
       setReturnModal(null);
       setReturnForm({ type: 'iade', reason: '' });
       // Reload returns list
       api.returns.getMy().then(setMyReturns).catch(() => {});
     } catch (err: unknown) {
-      toastError(err instanceof Error ? err.message : 'Talep gönderilemedi.');
+      toastError(err instanceof Error ? err.message : 'Request could not be submitted.');
     } finally {
       setReturnSubmitting(false);
     }
@@ -558,7 +558,7 @@ function AccountPageContent() {
 
   const handleDeleteAccount = async () => {
     const confirmed = window.confirm(
-      'Hesabınızı silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz. Tüm siparişleriniz, adresleriniz ve verileriniz kalıcı olarak silinir.'
+      'Are you sure you want to delete your account?\n\nThis action cannot be undone. All your orders, addresses and data will be permanently deleted.'
     );
     if (!confirmed) return;
     setDeletingAccount(true);
@@ -567,7 +567,7 @@ function AccountPageContent() {
       logout();
       router.replace('/');
     } catch {
-      toastError('Hesap silinemedi. Lütfen destek ile iletişime geçin.');
+      toastError('Account could not be deleted. Please contact support.');
     } finally {
       setDeletingAccount(false);
     }
@@ -590,7 +590,7 @@ function AccountPageContent() {
     if (!ok) {
       URL.revokeObjectURL(previewUrl);
       setLocalPreviewUrl(null);
-      toastError('Fotoğraf yüklenemedi. Lütfen tekrar deneyin.');
+      toastError('Photo could not be uploaded. Please try again.');
     }
   };
 
@@ -610,7 +610,7 @@ function AccountPageContent() {
       }
     }
     // 3. Hiç kaydedilmemiş (çok eski fotoğraflar)
-    toastError('Orijinal fotoğraf bulunamadı. Lütfen "Yeni Fotoğraf" ile tekrar seçin.');
+    toastError('Original photo not found. Please select again using "New Photo".');
   };
 
   // New card form
@@ -625,13 +625,13 @@ function AccountPageContent() {
       <div className="min-h-[70vh] flex items-center justify-center">
         <div className="text-center">
           <User size={60} className="mx-auto text-gray-200 mb-4" />
-          <h2 className="text-xl font-bold text-gray-700 mb-2">Giriş Yapmanız Gerekiyor</h2>
-          <p className="text-gray-500 mb-6">Hesabınıza erişmek için giriş yapın.</p>
+          <h2 className="text-xl font-bold text-gray-700 mb-2">You Need to Sign In</h2>
+          <p className="text-gray-500 mb-6">Please sign in to access your account.</p>
           <Link
             href="/giris"
             className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3 rounded-xl transition-colors"
           >
-            Giriş Yap
+            Sign In
           </Link>
         </div>
       </div>
@@ -644,13 +644,13 @@ function AccountPageContent() {
   };
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: 'profil', label: 'Profilim', icon: <User size={18} /> },
-    { id: 'siparisler', label: 'Siparişlerim', icon: <Package size={18} /> },
-    { id: 'adresler', label: 'Adreslerim', icon: <MapPin size={18} /> },
-    { id: 'favoriler', label: 'Favorilerim', icon: <Heart size={18} /> },
-    { id: 'kartlar', label: 'Kartlarım', icon: <CreditCard size={18} /> },
-    { id: 'garanti', label: 'Garantilerim', icon: <Shield size={18} /> },
-    { id: 'ayarlar', label: 'Ayarlar', icon: <Settings size={18} /> },
+    { id: 'profil', label: 'My Profile', icon: <User size={18} /> },
+    { id: 'siparisler', label: 'My Orders', icon: <Package size={18} /> },
+    { id: 'adresler', label: 'My Addresses', icon: <MapPin size={18} /> },
+    { id: 'favoriler', label: 'My Favorites', icon: <Heart size={18} /> },
+    { id: 'kartlar', label: 'My Cards', icon: <CreditCard size={18} /> },
+    { id: 'garanti', label: 'My Warranties', icon: <Shield size={18} /> },
+    { id: 'ayarlar', label: 'Settings', icon: <Settings size={18} /> },
   ];
 
   return (
@@ -670,20 +670,20 @@ function AccountPageContent() {
             <div className="flex items-center justify-between mb-5">
               <h3 className="text-lg font-bold text-[#1B3A6B] flex items-center gap-2">
                 <AlertCircle size={20} className="text-orange-500" />
-                İade / İptal Talebi
+                Return / Cancellation Request
               </h3>
               <button onClick={() => setReturnModal(null)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
             </div>
             <p className="text-sm text-gray-500 mb-4">
-              <span className="font-semibold text-[#1B3A6B]">Sipariş #{returnModal.order.id}</span> için talep oluşturuyorsunuz.
+              You are creating a request for <span className="font-semibold text-[#1B3A6B]">Order #{returnModal.order.id}</span>.
             </p>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-2">Talep Türü</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-2">Request Type</label>
                 <div className="flex gap-2">
                   {[
-                    { value: 'iade', label: '🔄 İade Talebi', desc: 'Ürünü iade etmek istiyorum' },
-                    { value: 'iptal', label: '❌ İptal Talebi', desc: 'Siparişimi iptal ettirmek istiyorum' },
+                    { value: 'iade', label: '🔄 Return Request', desc: 'I want to return the product' },
+                    { value: 'iptal', label: '❌ Cancellation Request', desc: 'I want to cancel my order' },
                   ].map(opt => (
                     <button
                       key={opt.value}
@@ -701,11 +701,11 @@ function AccountPageContent() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Neden / Açıklama</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1">Reason / Description</label>
                 <textarea
                   value={returnForm.reason}
                   onChange={e => setReturnForm(p => ({ ...p, reason: e.target.value }))}
-                  placeholder="Talebinizin nedenini kısaca açıklayın..."
+                  placeholder="Briefly explain the reason for your request..."
                   rows={4}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none"
                 />
@@ -716,20 +716,20 @@ function AccountPageContent() {
                 onClick={() => setReturnModal(null)}
                 className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                Vazgeç
+                Cancel
               </button>
               <button
                 onClick={submitReturn}
                 disabled={returnSubmitting || !returnForm.reason.trim()}
                 className="flex-1 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold transition-colors disabled:opacity-50"
               >
-                {returnSubmitting ? 'Gönderiliyor...' : 'Talebi Gönder'}
+                {returnSubmitting ? 'Sending...' : 'Submit Request'}
               </button>
             </div>
           </div>
         </div>
       )}
-      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-8">Hesabım</h1>
+      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-8">My Account</h1>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar */}
@@ -790,7 +790,7 @@ function AccountPageContent() {
                 className="w-full flex items-center gap-3 px-5 py-3 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors"
               >
                 <LogOut size={18} />
-                Çıkış Yap
+                Log Out
               </button>
             </nav>
           </div>
@@ -806,9 +806,9 @@ function AccountPageContent() {
             <div className="bg-gradient-to-r from-purple-600 to-purple-800 rounded-2xl p-5 text-white">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-purple-200 text-xs font-semibold uppercase tracking-wider">Sadakat Puanı</p>
-                  <p className="text-3xl font-extrabold mt-1">{loyaltyPoints.toLocaleString('tr-TR')} <span className="text-lg font-semibold text-purple-200">puan</span></p>
-                  <p className="text-xs text-purple-300 mt-1">{Math.floor(loyaltyPoints / 100) * 10} ₺ indirim hakkı (100 puan = 10 ₺)</p>
+                  <p className="text-purple-200 text-xs font-semibold uppercase tracking-wider">Loyalty Points</p>
+                  <p className="text-3xl font-extrabold mt-1">{loyaltyPoints.toLocaleString('tr-TR')} <span className="text-lg font-semibold text-purple-200">pts</span></p>
+                  <p className="text-xs text-purple-300 mt-1">{Math.floor(loyaltyPoints / 100) * 10} ₺ discount available (100 pts = 10 ₺)</p>
                 </div>
                 <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center text-2xl">⭐</div>
               </div>
@@ -831,15 +831,15 @@ function AccountPageContent() {
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-xl">🎁</span>
-                  <p className="font-bold text-[#1B3A6B] text-sm">Puan Hediye Et</p>
+                  <p className="font-bold text-[#1B3A6B] text-sm">Gift Points</p>
                 </div>
-                <p className="text-xs text-gray-500 mb-3">Bir arkadaşınıza sadakat puanı gönderin. (Min. 50 puan)</p>
+                <p className="text-xs text-gray-500 mb-3">Send loyalty points to a friend. (Min. 50 pts)</p>
                 <div className="space-y-2">
                   <input
                     type="email"
                     value={giftEmail}
                     onChange={e => setGiftEmail(e.target.value)}
-                    placeholder="Alıcının e-posta adresi"
+                    placeholder="Recipient's email address"
                     className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400"
                   />
                   <div className="flex gap-2">
@@ -862,12 +862,12 @@ function AccountPageContent() {
                           setLoyaltyPoints(res.remainingPoints);
                           setGiftEmail('');
                         } catch (e: unknown) {
-                          setGiftMsg({ ok: false, text: e instanceof Error ? e.message : 'Gönderilemedi.' });
+                          setGiftMsg({ ok: false, text: e instanceof Error ? e.message : 'Could not send.' });
                         } finally { setGiftLoading(false); }
                       }}
                       className="flex-1 bg-[#1B3A6B] hover:bg-[#2d5282] disabled:bg-gray-200 text-white rounded-xl py-2.5 text-sm font-bold transition-colors"
                     >
-                      {giftLoading ? '...' : 'Gönder'}
+                      {giftLoading ? '...' : 'Send'}
                     </button>
                   </div>
                   {giftMsg && (
@@ -885,12 +885,12 @@ function AccountPageContent() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Users size={18} />
-                    <p className="font-bold text-sm">Arkadaşını Davet Et</p>
+                    <p className="font-bold text-sm">Invite a Friend</p>
                   </div>
-                  <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">{referralCount} davet</span>
+                  <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">{referralCount} invites</span>
                 </div>
                 <p className="text-xs text-orange-100 mb-3">
-                  Davet ettiğin her kişi kayıt olduğunda <strong>100 puan</strong>, arkadaşın <strong>50 puan</strong> kazanır.
+                  When every person you invite signs up, you earn <strong>100 pts</strong> and your friend earns <strong>50 pts</strong>.
                 </p>
                 <div className="bg-white/15 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
                   <span className="text-sm font-mono font-bold tracking-widest truncate">
@@ -914,13 +914,13 @@ function AccountPageContent() {
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-bold text-[#1B3A6B]">Kişisel Bilgiler</h2>
+                <h2 className="text-lg font-bold text-[#1B3A6B]">Personal Information</h2>
                 <button
                   onClick={() => setEditMode(!editMode)}
                   className="flex items-center gap-1.5 text-orange-500 hover:text-orange-600 text-sm font-semibold"
                 >
                   <Edit2 size={14} />
-                  {editMode ? 'İptal' : 'Düzenle'}
+                  {editMode ? 'Cancel' : 'Edit'}
                 </button>
               </div>
 
@@ -945,12 +945,12 @@ function AccountPageContent() {
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-700 mb-1">Profil Fotoğrafı</p>
-                  <p className="text-xs text-gray-400 mb-2">JPG, PNG veya WebP — maks. 5 MB</p>
+                  <p className="text-sm font-semibold text-gray-700 mb-1">Profile Photo</p>
+                  <p className="text-xs text-gray-400 mb-2">JPG, PNG or WebP — max. 5 MB</p>
                   <div className="flex items-center gap-2 flex-wrap">
                     <label className="cursor-pointer inline-flex items-center gap-1.5 bg-orange-50 hover:bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-2 rounded-lg transition-colors">
                       <Camera size={13} />
-                      {photoUploading ? 'Yükleniyor...' : 'Yeni Fotoğraf'}
+                      {photoUploading ? 'Uploading...' : 'New Photo'}
                       <input
                         type="file"
                         accept=".jpg,.jpeg,.png,.webp"
@@ -973,7 +973,7 @@ function AccountPageContent() {
                         className="inline-flex items-center gap-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 text-xs font-semibold px-3 py-2 rounded-lg transition-colors disabled:opacity-40"
                       >
                         <Edit2 size={13} />
-                        Yeniden Düzenle
+                        Re-Edit
                       </button>
                     )}
                   </div>
@@ -983,9 +983,9 @@ function AccountPageContent() {
               {editMode ? (
                 <div className="space-y-4">
                   {[
-                    { label: 'Ad Soyad', field: 'name', type: 'text' },
-                    { label: 'E-posta', field: 'email', type: 'email' },
-                    { label: 'Telefon', field: 'phone', type: 'tel' },
+                    { label: 'Full Name', field: 'name', type: 'text' },
+                    { label: 'Email', field: 'email', type: 'email' },
+                    { label: 'Phone', field: 'phone', type: 'tel' },
                   ].map(({ label, field, type }) => (
                     <div key={field}>
                       <label className="text-sm font-semibold text-gray-700 block mb-1">{label}</label>
@@ -1007,15 +1007,15 @@ function AccountPageContent() {
                     disabled={saving}
                     className="bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold px-6 py-2.5 rounded-xl transition-colors text-sm"
                   >
-                    {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                    {saving ? 'Saving...' : 'Save'}
                   </button>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {[
-                    { label: 'Ad Soyad', value: user.name },
-                    { label: 'E-posta Adresi', value: user.email },
-                    { label: 'Telefon Numarası', value: user.phone },
+                    { label: 'Full Name', value: user.name },
+                    { label: 'Email Address', value: user.email },
+                    { label: 'Phone Number', value: user.phone },
                   ].map(({ label, value }) => (
                     <div key={label} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                       <span className="text-sm text-gray-500 w-36">{label}</span>
@@ -1031,25 +1031,25 @@ function AccountPageContent() {
           {/* Orders Tab */}
           {activeTab === 'siparisler' && (
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[#1B3A6B]">Siparişlerim</h2>
+              <h2 className="text-lg font-bold text-[#1B3A6B]">My Orders</h2>
               {ordersLoading ? (
-                <div className="text-center py-10 text-gray-400">Yükleniyor...</div>
+                <div className="text-center py-10 text-gray-400">Loading...</div>
               ) : orders.length === 0 ? (
                 <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
                   <Package size={50} className="mx-auto text-gray-200 mb-3" />
-                  <p className="text-gray-500">Henüz siparişiniz bulunmuyor.</p>
+                  <p className="text-gray-500">You have no orders yet.</p>
                   <Link href="/urunler" className="inline-block mt-4 bg-orange-500 text-white font-semibold px-6 py-2 rounded-xl hover:bg-orange-600 transition-colors text-sm">
-                    Alışverişe Başla
+                    Start Shopping
                   </Link>
                 </div>
               ) : (
                 (() => {
                   const STATUS_LABELS: Record<string, string> = {
-                    'hazirlanıyor': 'Hazırlanıyor',
-                    'kargoya-verildi': 'Kargoya Verildi',
-                    'dagitimda': 'Dağıtımda',
-                    'teslim-edildi': 'Teslim Edildi',
-                    'iptal': 'İptal Edildi',
+                    'hazirlanıyor': 'Preparing',
+                    'kargoya-verildi': 'Shipped',
+                    'dagitimda': 'Out for Delivery',
+                    'teslim-edildi': 'Delivered',
+                    'iptal': 'Cancelled',
                   };
                   const STATUS_STYLES: Record<string, { badge: string; border: string; icon: string }> = {
                     'hazirlanıyor':    { badge: 'text-orange-600 bg-orange-50 border border-orange-200',   border: 'border-l-orange-400',  icon: '📦' },
@@ -1061,10 +1061,10 @@ function AccountPageContent() {
                   const STATUS_STEPS = ['hazirlanıyor', 'kargoya-verildi', 'dagitimda', 'teslim-edildi'];
                   const STEP_ICONS = ['📦', '🚚', '🛵', '✅'];
                   const RETURN_LABELS: Record<string, string> = {
-                    beklemede:  'Talep İncelemede',
-                    onaylandi:  'Talep Onaylandı',
-                    reddedildi: 'Talep Reddedildi',
-                    tamamlandi: 'Tamamlandı',
+                    beklemede:  'Request Under Review',
+                    onaylandi:  'Request Approved',
+                    reddedildi: 'Request Rejected',
+                    tamamlandi: 'Completed',
                   };
                   const RETURN_BADGES: Record<string, string> = {
                     beklemede:  'text-amber-600 bg-amber-50 border-amber-200',
@@ -1099,22 +1099,22 @@ function AccountPageContent() {
                     doc.text('info@adalyasolar.com  |  adalyasolar.com', margin, 21);
                     doc.setTextColor(255, 165, 0);
                     doc.setFontSize(20); doc.setFont('helvetica', 'bold');
-                    doc.text('FATURA', colRight, 20, { align: 'right' });
+                    doc.text('INVOICE', colRight, 20, { align: 'right' });
 
                     // ── Sipariş bilgileri ─────────────────────────────────────
                     let y = 44;
                     doc.setTextColor(30, 30, 30); doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-                    doc.text(`Siparis No : #${order.id}`, margin, y); y += 8;
-                    doc.text(`Tarih      : ${new Date(order.createdAt).toLocaleDateString('tr-TR')}`, margin, y); y += 8;
+                    doc.text(`Order No   : #${order.id}`, margin, y); y += 8;
+                    doc.text(`Date       : ${new Date(order.createdAt).toLocaleDateString('en-GB')}`, margin, y); y += 8;
 
                     if (order.shippingFullName) {
-                      doc.text(`Musteri    : ${tr(order.shippingFullName)}`, margin, y); y += 8;
+                      doc.text(`Customer   : ${tr(order.shippingFullName)}`, margin, y); y += 8;
                       if (order.shippingPhone)
-                        { doc.text(`Telefon    : ${order.shippingPhone}`, margin, y); y += 8; }
+                        { doc.text(`Phone      : ${order.shippingPhone}`, margin, y); y += 8; }
                       if (order.shippingAddress) {
-                        // Uzun adres için satır kaydır
+                        // Wrap long address
                         const addrLines = doc.splitTextToSize(
-                          `Adres      : ${tr(order.shippingAddress)}`, pageW - margin * 2
+                          `Address    : ${tr(order.shippingAddress)}`, pageW - margin * 2
                         ) as string[];
                         doc.text(addrLines, margin, y);
                         y += addrLines.length * 7;
@@ -1126,10 +1126,10 @@ function AccountPageContent() {
                     doc.setFillColor(240, 242, 248);
                     doc.rect(margin, y - 5, pageW - margin * 2, 10, 'F');
                     doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
-                    doc.text('Urun Adi', margin + 2, y);
-                    doc.text('Adet', colRight - 62, y, { align: 'right' });
-                    doc.text('Birim Fiyat', colRight - 32, y, { align: 'right' });
-                    doc.text('Toplam', colRight, y, { align: 'right' });
+                    doc.text('Product Name', margin + 2, y);
+                    doc.text('Qty', colRight - 62, y, { align: 'right' });
+                    doc.text('Unit Price', colRight - 32, y, { align: 'right' });
+                    doc.text('Total', colRight, y, { align: 'right' });
                     y += 9;
 
                     // ── Ürün satırları ────────────────────────────────────────
@@ -1159,22 +1159,22 @@ function AccountPageContent() {
                     const sub = order.items.reduce((s, i) => s + i.unitPrice * i.quantity, 0);
                     const kg = order.total - sub;
                     doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-                    doc.text('Urunler Toplami:', colRight - 58, y);
+                    doc.text('Subtotal:', colRight - 58, y);
                     doc.text(`${sub.toLocaleString('tr-TR')} TL`, colRight, y, { align: 'right' }); y += 8;
-                    doc.text('Kargo:', colRight - 58, y);
-                    doc.text(kg <= 0 ? 'Ucretsiz' : `${kg.toLocaleString('tr-TR')} TL`, colRight, y, { align: 'right' }); y += 10;
+                    doc.text('Shipping:', colRight - 58, y);
+                    doc.text(kg <= 0 ? 'Free' : `${kg.toLocaleString('tr-TR')} TL`, colRight, y, { align: 'right' }); y += 10;
 
                     doc.setFillColor(27, 58, 107);
                     doc.rect(margin, y - 6, pageW - margin * 2, 12, 'F');
                     doc.setTextColor(255, 255, 255);
                     doc.setFont('helvetica', 'bold'); doc.setFontSize(11);
-                    doc.text('GENEL TOPLAM:', margin + 4, y + 2);
+                    doc.text('GRAND TOTAL:', margin + 4, y + 2);
                     doc.text(`${order.total.toLocaleString('tr-TR')} TL`, colRight - 2, y + 2, { align: 'right' });
 
                     // ── Alt bilgi ─────────────────────────────────────────────
                     doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
                     doc.setTextColor(160, 160, 170);
-                    doc.text('Adalya Solar Enerji — Bu belge bilgilendirme amaclidir. KDV dahildir.', pageW / 2, 287, { align: 'center' });
+                    doc.text('Adalya Solar Enerji — This document is for informational purposes. VAT included.', pageW / 2, 287, { align: 'center' });
 
                     doc.save(`fatura-siparis-${order.id}.pdf`);
                   };
@@ -1195,7 +1195,7 @@ function AccountPageContent() {
                             <div className="flex items-center gap-3">
                               <span className="text-2xl">{style.icon}</span>
                               <div>
-                                <p className="font-extrabold text-[#1B3A6B] text-base">Sipariş #{order.id}</p>
+                                <p className="font-extrabold text-[#1B3A6B] text-base">Order #{order.id}</p>
                                 <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                               </div>
                             </div>
@@ -1203,7 +1203,7 @@ function AccountPageContent() {
                               {orderReturn && orderReturn.status !== 'beklemede' ? (
                                 <>
                                   <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${RETURN_BADGES[orderReturn.status]}`}>
-                                    {orderReturn.type === 'iade' ? 'İade' : 'İptal'} — {RETURN_LABELS[orderReturn.status]}
+                                    {orderReturn.type === 'iade' ? 'Return' : 'Cancel'} — {RETURN_LABELS[orderReturn.status]}
                                   </span>
                                   <span className={`text-[10px] px-2 py-0.5 rounded-full opacity-50 ${style.badge}`}>
                                     {STATUS_LABELS[order.status] || order.status}
@@ -1239,7 +1239,7 @@ function AccountPageContent() {
                               )}
                             </div>
                             <p className="text-xs text-gray-500">
-                              {order.items.length} ürün · {order.items.reduce((s, i) => s + i.quantity, 0)} adet
+                              {order.items.length} item(s) · {order.items.reduce((s, i) => s + i.quantity, 0)} qty
                             </p>
                           </div>
 
@@ -1280,21 +1280,21 @@ function AccountPageContent() {
                               onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
                               className="flex items-center gap-1.5 text-sm text-orange-500 hover:text-orange-600 font-semibold bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-lg transition-colors"
                             >
-                              {isExpanded ? '▲ Gizle' : '▼ Detaylar'}
+                              {isExpanded ? '▲ Hide' : '▼ Details'}
                             </button>
                             <button
                               onClick={() => downloadPdf(order)}
                               className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#1B3A6B] font-semibold bg-gray-50 hover:bg-gray-100 px-3 py-1.5 rounded-lg transition-colors"
                             >
                               <Download size={13} />
-                              Fatura
+                              Invoice
                             </button>
                             <Link
                               href={`/siparis-takip?id=${order.id}`}
                               className="flex items-center gap-1.5 text-sm text-blue-500 hover:text-blue-600 font-semibold bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
                             >
                               <ChevronRight size={13} />
-                              Takip Et
+                              Track
                             </Link>
                             {/* Tekrarla */}
                             <button
@@ -1303,7 +1303,7 @@ function AccountPageContent() {
                               className="flex items-center gap-1.5 text-sm text-green-600 hover:text-green-700 font-semibold bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                             >
                               <RotateCcw size={13} />
-                              {repeatingId === order.id ? 'Ekleniyor...' : 'Tekrarla'}
+                              {repeatingId === order.id ? 'Adding...' : 'Reorder'}
                             </button>
                             {/* İade/İptal Talebi — aktif talep yoksa göster */}
                             {order.status !== 'iptal' && !myReturns.some(r => r.orderId === order.id && (r.status === 'beklemede' || r.status === 'onaylandi')) && (
@@ -1315,14 +1315,14 @@ function AccountPageContent() {
                                 className="flex items-center gap-1.5 text-sm text-purple-600 hover:text-purple-700 font-semibold bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg transition-colors"
                               >
                                 <AlertCircle size={13} />
-                                İade/İptal
+                                Return/Cancel
                               </button>
                             )}
                             {/* Return talep durumu */}
                             {orderReturn && (
                               <span className={`flex items-center gap-1 text-xs border px-2.5 py-1 rounded-lg font-semibold ${RETURN_BADGES[orderReturn.status]}`}>
                                 <AlertCircle size={11} />
-                                {orderReturn.type === 'iade' ? 'İade' : 'İptal'} — {RETURN_LABELS[orderReturn.status]}
+                                {orderReturn.type === 'iade' ? 'Return' : 'Cancel'} — {RETURN_LABELS[orderReturn.status]}
                                 {orderReturn.adminNote && (
                                   <span className="font-normal ml-0.5">· {orderReturn.adminNote}</span>
                                 )}
@@ -1334,13 +1334,13 @@ function AccountPageContent() {
                               <button
                                 disabled={cancellingId === order.id}
                                 onClick={async () => {
-                                  if (!confirm('Bu siparişi iptal etmek istediğinize emin misiniz?')) return;
+                                  if (!confirm('Are you sure you want to cancel this order?')) return;
                                   setCancellingId(order.id);
                                   try {
                                     await api.orders.cancel(order.id);
                                     setOrders((prev) => prev.map((o) => o.id === order.id ? { ...o, status: 'iptal' } : o));
                                   } catch (err: unknown) {
-                                    toastError(err instanceof Error ? err.message : 'Sipariş iptal edilemedi.');
+                                    toastError(err instanceof Error ? err.message : 'Order could not be cancelled.');
                                   } finally {
                                     setCancellingId(null);
                                   }
@@ -1348,7 +1348,7 @@ function AccountPageContent() {
                                 className="flex items-center gap-1.5 text-sm text-red-500 hover:text-red-600 font-semibold bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                               >
                                 <XCircle size={13} />
-                                {cancellingId === order.id ? 'İptal ediliyor...' : 'Anında İptal'}
+                                {cancellingId === order.id ? 'Cancelling...' : 'Cancel Now'}
                               </button>
                             )}
                           </div>
@@ -1359,7 +1359,7 @@ function AccountPageContent() {
                           <div className="border-t border-gray-100 bg-gray-50/60 p-5 space-y-4">
                             {/* Items */}
                             <div>
-                              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Sipariş İçeriği</p>
+                              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Order Contents</p>
                               <div className="space-y-2">
                                 {order.items.map((item) => {
                                   const imgUrl = item.productImageUrl && !item.productImageUrl.startsWith('/')
@@ -1375,7 +1375,7 @@ function AccountPageContent() {
                                       </div>
                                       <div className="flex-1 min-w-0">
                                         <p className="text-sm font-semibold text-[#1B3A6B] line-clamp-1">{item.productName}</p>
-                                        <p className="text-xs text-gray-400 mt-0.5">{item.quantity} adet × {item.unitPrice.toLocaleString('tr-TR')} ₺</p>
+                                        <p className="text-xs text-gray-400 mt-0.5">{item.quantity} qty × {item.unitPrice.toLocaleString('tr-TR')} ₺</p>
                                         {order.status === 'teslim-edildi' && item.warrantyMonths && item.warrantyMonths > 0 && (() => {
                                           const expiryDate = new Date(order.createdAt);
                                           expiryDate.setMonth(expiryDate.getMonth() + item.warrantyMonths);
@@ -1383,7 +1383,7 @@ function AccountPageContent() {
                                           const remainingDays = Math.ceil((expiryDate.getTime() - Date.now()) / 86_400_000);
                                           return (
                                             <span className={`inline-flex items-center gap-1 text-[10px] font-semibold mt-1 px-1.5 py-0.5 rounded-md ${isExpired ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'}`}>
-                                              🛡 {isExpired ? 'Garanti süresi doldu' : `Garanti: ${remainingDays} gün kaldı`}
+                                              🛡 {isExpired ? 'Warranty expired' : `Warranty: ${remainingDays} days left`}
                                             </span>
                                           );
                                         })()}
@@ -1397,18 +1397,18 @@ function AccountPageContent() {
 
                             {/* Price Breakdown */}
                             <div className="bg-white rounded-xl p-4 shadow-sm">
-                              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Fiyat Özeti</p>
+                              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Price Summary</p>
                               <div className="space-y-2">
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-gray-500">Ürünler Toplamı</span>
+                                  <span className="text-gray-500">Subtotal</span>
                                   <span className="font-medium">{subtotal.toLocaleString('tr-TR')} ₺</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                  <span className="text-gray-500">Kargo</span>
-                                  <span className="font-medium">{kargo === 0 ? <span className="text-green-600">Ücretsiz</span> : `${kargo.toLocaleString('tr-TR')} ₺`}</span>
+                                  <span className="text-gray-500">Shipping</span>
+                                  <span className="font-medium">{kargo === 0 ? <span className="text-green-600">Free</span> : `${kargo.toLocaleString('tr-TR')} ₺`}</span>
                                 </div>
                                 <div className="flex justify-between font-extrabold text-[#1B3A6B] border-t border-gray-100 pt-2 mt-1 text-base">
-                                  <span>Genel Toplam</span>
+                                  <span>Grand Total</span>
                                   <span>{order.total.toLocaleString('tr-TR')} ₺</span>
                                 </div>
                               </div>
@@ -1417,7 +1417,7 @@ function AccountPageContent() {
                             {/* Shipping Info */}
                             {order.shippingAddress && (
                               <div className="bg-white rounded-xl p-4 shadow-sm">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Teslimat Adresi</p>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Shipping Address</p>
                                 <p className="text-sm font-semibold text-gray-700">{order.shippingFullName}</p>
                                 <p className="text-sm text-gray-500">{order.shippingPhone}</p>
                                 <p className="text-sm text-gray-500 mt-0.5">{order.shippingAddress}</p>
@@ -1425,7 +1425,7 @@ function AccountPageContent() {
                             )}
                             {order.note && (
                               <div className="bg-white rounded-xl p-4 shadow-sm">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Sipariş Notu</p>
+                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Order Note</p>
                                 <p className="text-sm text-gray-600">{order.note}</p>
                               </div>
                             )}
@@ -1443,10 +1443,10 @@ function AccountPageContent() {
           {activeTab === 'adresler' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-[#1B3A6B]">Adreslerim</h2>
+                <h2 className="text-lg font-bold text-[#1B3A6B]">My Addresses</h2>
                 <button onClick={openNewAddressForm} className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors">
                   <Plus size={14} />
-                  Yeni Adres
+                  New Address
                 </button>
               </div>
 
@@ -1455,18 +1455,18 @@ function AccountPageContent() {
                 <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
                   <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
                     <div className="flex items-center justify-between mb-5">
-                      <h3 className="text-lg font-bold text-[#1B3A6B]">{editingAddress ? 'Adresi Düzenle' : 'Yeni Adres Ekle'}</h3>
+                      <h3 className="text-lg font-bold text-[#1B3A6B]">{editingAddress ? 'Edit Address' : 'Add New Address'}</h3>
                       <button onClick={() => setShowAddressForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        { label: 'Adres Başlığı', field: 'title', col: 2 },
-                        { label: 'Ad Soyad', field: 'fullName', col: 2 },
-                        { label: 'Telefon', field: 'phone', col: 2 },
-                        { label: 'İl', field: 'city', col: 1 },
-                        { label: 'İlçe', field: 'district', col: 1 },
-                        { label: 'Mahalle', field: 'neighborhood', col: 1 },
-                        { label: 'Sokak / Adres', field: 'street', col: 1 },
+                        { label: 'Address Title', field: 'title', col: 2 },
+                        { label: 'Full Name', field: 'fullName', col: 2 },
+                        { label: 'Phone', field: 'phone', col: 2 },
+                        { label: 'City', field: 'city', col: 1 },
+                        { label: 'District', field: 'district', col: 1 },
+                        { label: 'Neighborhood', field: 'neighborhood', col: 1 },
+                        { label: 'Street / Address', field: 'street', col: 1 },
                       ].map(({ label, field, col }) => (
                         <div key={field} className={col === 2 ? 'col-span-2' : ''}>
                           <label className="text-xs font-semibold text-gray-600 block mb-1">{label}</label>
@@ -1486,23 +1486,23 @@ function AccountPageContent() {
                           onChange={(e) => setAddressForm((p) => ({ ...p, isDefault: e.target.checked }))}
                           className="accent-orange-500"
                         />
-                        <label htmlFor="isDefault" className="text-sm text-gray-700">Varsayılan adres olarak ayarla</label>
+                        <label htmlFor="isDefault" className="text-sm text-gray-700">Set as default address</label>
                       </div>
                     </div>
                     <div className="flex gap-3 mt-5">
-                      <button onClick={() => setShowAddressForm(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">İptal</button>
-                      <button onClick={saveAddress} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">Kaydet</button>
+                      <button onClick={() => setShowAddressForm(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">Cancel</button>
+                      <button onClick={saveAddress} className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">Save</button>
                     </div>
                   </div>
                 </div>
               )}
 
               {addressLoading ? (
-                <div className="text-center py-10 text-gray-400">Yükleniyor...</div>
+                <div className="text-center py-10 text-gray-400">Loading...</div>
               ) : addresses.length === 0 ? (
                 <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
                   <MapPin size={50} className="mx-auto text-gray-200 mb-3" />
-                  <p className="text-gray-500">Henüz kayıtlı adresiniz bulunmuyor.</p>
+                  <p className="text-gray-500">You have no saved addresses yet.</p>
                 </div>
               ) : (
                 addresses.map((addr) => (
@@ -1513,7 +1513,7 @@ function AccountPageContent() {
                           <p className="font-bold text-[#1B3A6B]">{addr.title}</p>
                           {addr.isDefault && (
                             <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">
-                              Varsayılan
+                              Default
                             </span>
                           )}
                         </div>
@@ -1524,8 +1524,8 @@ function AccountPageContent() {
                         </p>
                       </div>
                       <div className="flex gap-3">
-                        <button onClick={() => openEditAddressForm(addr)} className="text-sm text-orange-500 hover:text-orange-600 font-semibold">Düzenle</button>
-                        <button onClick={() => deleteAddress(addr.id)} className="text-sm text-red-400 hover:text-red-600 font-semibold">Sil</button>
+                        <button onClick={() => openEditAddressForm(addr)} className="text-sm text-orange-500 hover:text-orange-600 font-semibold">Edit</button>
+                        <button onClick={() => deleteAddress(addr.id)} className="text-sm text-red-400 hover:text-red-600 font-semibold">Delete</button>
                       </div>
                     </div>
                   </div>
@@ -1537,21 +1537,21 @@ function AccountPageContent() {
           {/* Favorites Tab */}
           {activeTab === 'favoriler' && (
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-[#1B3A6B]">Favorilerim</h2>
+              <h2 className="text-lg font-bold text-[#1B3A6B]">My Favorites</h2>
               {favLoading ? (
-                <div className="text-center py-10 text-gray-400">Yükleniyor...</div>
+                <div className="text-center py-10 text-gray-400">Loading...</div>
               ) : favorites.length === 0 ? (
                 <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
                   <Heart size={50} className="mx-auto text-gray-200 mb-3" />
-                  <h3 className="font-bold text-gray-700 mb-2">Favori Listeniz Boş</h3>
-                  <p className="text-gray-500 text-sm mb-4">Beğendiğiniz ürünleri favorilere ekleyin.</p>
+                  <h3 className="font-bold text-gray-700 mb-2">Your Favorites List is Empty</h3>
+                  <p className="text-gray-500 text-sm mb-4">Add products you like to your favorites.</p>
                   <Link href="/urunler" className="inline-block bg-orange-500 text-white font-semibold px-6 py-2 rounded-xl hover:bg-orange-600 transition-colors text-sm">
-                    Ürünleri Keşfet
+                    Explore Products
                   </Link>
                 </div>
               ) : (
                 <>
-                  <p className="text-sm text-gray-500 -mt-2">{favorites.length} ürün favorilendi</p>
+                  <p className="text-sm text-gray-500 -mt-2">{favorites.length} product(s) favorited</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {favorites.map((fav) => {
                       const CATEGORY_FALLBACKS: Record<string, string> = {
@@ -1568,7 +1568,7 @@ function AccountPageContent() {
                           <div className="relative w-32 shrink-0 bg-gray-50">
                             <Image src={imgUrl} alt={fav.product.name} fill className="object-cover" sizes="128px" />
                             {fav.product.isNew && (
-                              <span className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">YENİ</span>
+                              <span className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">NEW</span>
                             )}
                           </div>
                           <div className="p-4 flex flex-col flex-1 min-w-0">
@@ -1578,15 +1578,15 @@ function AccountPageContent() {
                             </Link>
                             <p className="text-xs text-gray-400 mb-2">
                               {fav.product.stock > 0 ? (
-                                <span className="text-green-600 font-medium">Stokta mevcut</span>
+                                <span className="text-green-600 font-medium">In stock</span>
                               ) : (
-                                <span className="text-red-500 font-medium">Stok tükendi</span>
+                                <span className="text-red-500 font-medium">Out of stock</span>
                               )}
                             </p>
                             <p className="text-lg font-extrabold text-[#1B3A6B] mt-auto">{fav.product.price.toLocaleString('tr-TR')} ₺</p>
                             <div className="flex gap-2 mt-2">
                               <Link href={`/urunler/${makeProductSlug(fav.product.name, fav.product.id)}`} className="flex-1 text-center bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold py-1.5 rounded-lg transition-colors">
-                                İncele
+                                View
                               </Link>
                               <button
                                 onClick={async () => { await toggle(fav.product.id); setFavorites((p) => p.filter((f) => f.id !== fav.id)); }}
@@ -1610,8 +1610,8 @@ function AccountPageContent() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold text-[#1B3A6B]">Kayıtlı Kartlarım</h2>
-                  <p className="text-sm text-gray-500 mt-0.5">Kart bilgileriniz güvenli şekilde saklanır. Yalnızca son 4 hane görüntülenir.</p>
+                  <h2 className="text-lg font-bold text-[#1B3A6B]">My Saved Cards</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">Your card details are stored securely. Only the last 4 digits are displayed.</p>
                 </div>
                 <button
                   onClick={() => {
@@ -1621,7 +1621,7 @@ function AccountPageContent() {
                   className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors shrink-0"
                 >
                   <Plus size={14} />
-                  Yeni Kart
+                  New Card
                 </button>
               </div>
 
@@ -1630,7 +1630,7 @@ function AccountPageContent() {
                 <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
                   <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
                     <div className="flex items-center justify-between mb-5">
-                      <h3 className="text-lg font-bold text-[#1B3A6B]">Yeni Kart Ekle</h3>
+                      <h3 className="text-lg font-bold text-[#1B3A6B]">Add New Card</h3>
                       <button onClick={() => setShowCardForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
                     </div>
 
@@ -1641,35 +1641,35 @@ function AccountPageContent() {
                       'bg-gradient-to-br from-gray-700 to-gray-500'
                     }`}>
                       <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-white/10 -translate-y-8 translate-x-8" />
-                      <p className="text-xs font-semibold opacity-70 mb-4">BANKA KARTI</p>
+                      <p className="text-xs font-semibold opacity-70 mb-4">BANK CARD</p>
                       <p className="font-mono text-lg tracking-widest mb-4">
                         {cardForm.number ? cardForm.number.replace(/\d{4}(?=.)/g, '$& ').slice(0, 4).padEnd(4, '•') + ' •••• •••• ' + (cardForm.number.replace(/\D/g, '').slice(-4) || '••••') : '**** **** **** ****'}
                       </p>
                       <div className="flex justify-between items-end">
                         <div>
-                          <p className="text-xs opacity-70">Kart Sahibi</p>
-                          <p className="font-semibold text-sm">{cardForm.cardHolderName || 'AD SOYAD'}</p>
+                          <p className="text-xs opacity-70">Card Holder</p>
+                          <p className="font-semibold text-sm">{cardForm.cardHolderName || 'FULL NAME'}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-xs opacity-70">Son Tarih</p>
-                          <p className="font-semibold text-sm">{cardForm.expiryMonth || 'AA'}/{cardForm.expiryYear || 'YY'}</p>
+                          <p className="text-xs opacity-70">Expiry Date</p>
+                          <p className="font-semibold text-sm">{cardForm.expiryMonth || 'MM'}/{cardForm.expiryYear || 'YY'}</p>
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-semibold text-gray-600 block mb-1">Kart Üzerindeki İsim</label>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">Name on Card</label>
                         <input
                           type="text"
                           value={cardForm.cardHolderName}
                           onChange={e => setCardForm(p => ({ ...p, cardHolderName: e.target.value.toUpperCase() }))}
-                          placeholder="AD SOYAD"
+                          placeholder="FULL NAME"
                           className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 font-medium tracking-wider"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-semibold text-gray-600 block mb-1">Kart Numarası (son 4 hane)</label>
+                        <label className="text-xs font-semibold text-gray-600 block mb-1">Card Number (last 4 digits)</label>
                         <input
                           type="text"
                           value={cardForm.number}
@@ -1681,20 +1681,20 @@ function AccountPageContent() {
                       </div>
                       <div className="grid grid-cols-3 gap-3">
                         <div>
-                          <label className="text-xs font-semibold text-gray-600 block mb-1">Ay</label>
+                          <label className="text-xs font-semibold text-gray-600 block mb-1">Month</label>
                           <select
                             value={cardForm.expiryMonth}
                             onChange={e => setCardForm(p => ({ ...p, expiryMonth: e.target.value }))}
                             className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400 bg-white"
                           >
-                            <option value="">AA</option>
+                            <option value="">MM</option>
                             {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map(m => (
                               <option key={m} value={m}>{m}</option>
                             ))}
                           </select>
                         </div>
                         <div>
-                          <label className="text-xs font-semibold text-gray-600 block mb-1">Yıl</label>
+                          <label className="text-xs font-semibold text-gray-600 block mb-1">Year</label>
                           <select
                             value={cardForm.expiryYear}
                             onChange={e => setCardForm(p => ({ ...p, expiryYear: e.target.value }))}
@@ -1707,7 +1707,7 @@ function AccountPageContent() {
                           </select>
                         </div>
                         <div>
-                          <label className="text-xs font-semibold text-gray-600 block mb-1">Tür</label>
+                          <label className="text-xs font-semibold text-gray-600 block mb-1">Type</label>
                           <select
                             value={cardForm.cardType}
                             onChange={e => setCardForm(p => ({ ...p, cardType: e.target.value }))}
@@ -1726,12 +1726,12 @@ function AccountPageContent() {
                           onChange={e => setCardForm(p => ({ ...p, isDefault: e.target.checked }))}
                           className="accent-orange-500 rounded"
                         />
-                        <span className="text-sm text-gray-700">Varsayılan kart olarak ayarla</span>
+                        <span className="text-sm text-gray-700">Set as default card</span>
                       </label>
                     </div>
 
                     <div className="flex gap-3 mt-5">
-                      <button onClick={() => setShowCardForm(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">İptal</button>
+                      <button onClick={() => setShowCardForm(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">Cancel</button>
                       <button
                         disabled={cardSaving || !cardForm.cardHolderName || !cardForm.number || cardForm.number.length !== 4 || !cardForm.expiryMonth || !cardForm.expiryYear}
                         onClick={async () => {
@@ -1751,14 +1751,14 @@ function AccountPageContent() {
                             );
                             setShowCardForm(false);
                           } catch {
-                            toastError('Kart eklenemedi.');
+                            toastError('Card could not be added.');
                           } finally {
                             setCardSaving(false);
                           }
                         }}
                         className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-2.5 rounded-xl transition-colors text-sm"
                       >
-                        {cardSaving ? 'Ekleniyor...' : 'Kartı Ekle'}
+                        {cardSaving ? 'Adding...' : 'Add Card'}
                       </button>
                     </div>
                   </div>
@@ -1766,17 +1766,17 @@ function AccountPageContent() {
               )}
 
               {cardsLoading ? (
-                <div className="text-center py-10 text-gray-400">Yükleniyor...</div>
+                <div className="text-center py-10 text-gray-400">Loading...</div>
               ) : cards.length === 0 ? (
                 <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
                   <CreditCard size={50} className="mx-auto text-gray-200 mb-3" />
-                  <p className="text-gray-500 text-sm mb-4">Henüz kayıtlı kartınız bulunmuyor.</p>
+                  <p className="text-gray-500 text-sm mb-4">You have no saved cards yet.</p>
                   <button
                     onClick={() => { setCardForm({ cardHolderName: '', number: '', expiryMonth: '', expiryYear: '', cardType: 'Visa', isDefault: false }); setShowCardForm(true); }}
                     className="inline-flex items-center gap-1.5 bg-orange-500 text-white font-semibold px-5 py-2 rounded-xl hover:bg-orange-600 transition-colors text-sm"
                   >
                     <Plus size={14} />
-                    Yeni Kart Ekle
+                    Add New Card
                   </button>
                 </div>
               ) : (
@@ -1791,7 +1791,7 @@ function AccountPageContent() {
                           <div className="flex items-center gap-2">
                             <p className="font-semibold text-[#1B3A6B] tracking-widest">**** **** **** {card.last4}</p>
                             {card.isDefault && (
-                              <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Varsayılan</span>
+                              <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Default</span>
                             )}
                           </div>
                           <p className="text-xs text-gray-500">{card.cardHolderName} · {card.expiryMonth}/{card.expiryYear}</p>
@@ -1803,11 +1803,11 @@ function AccountPageContent() {
                             onClick={async () => { await api.cards.setDefault(card.id); api.cards.getAll().then(setCards); }}
                             className="text-xs text-gray-500 hover:text-orange-500 font-semibold border border-gray-200 px-3 py-1.5 rounded-lg transition-colors"
                           >
-                            Varsayılan Yap
+                            Set as Default
                           </button>
                         )}
                         <button
-                          onClick={async () => { if (!confirm('Bu kartı silmek istediğinize emin misiniz?')) return; await api.cards.delete(card.id); setCards((p) => p.filter((c) => c.id !== card.id)); }}
+                          onClick={async () => { if (!confirm('Are you sure you want to delete this card?')) return; await api.cards.delete(card.id); setCards((p) => p.filter((c) => c.id !== card.id)); }}
                           className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 size={15} />
@@ -1825,18 +1825,18 @@ function AccountPageContent() {
             <div className="space-y-5">
               {/* Şifre Değiştir */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-bold text-[#1B3A6B] mb-5">Şifre Değiştir</h2>
+                <h2 className="text-lg font-bold text-[#1B3A6B] mb-5">Change Password</h2>
                 <PasswordChangeForm />
               </div>
 
               {/* Bildirim Tercihleri */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h2 className="text-lg font-bold text-[#1B3A6B] mb-4">Bildirim Tercihleri</h2>
+                <h2 className="text-lg font-bold text-[#1B3A6B] mb-4">Notification Preferences</h2>
                 <div className="space-y-4">
                   {[
-                    { label: 'E-posta bildirimleri', desc: 'Sipariş güncellemeleri ve kampanyalar', value: notifEmail, key: 'notif_email', set: setNotifEmail },
-                    { label: 'SMS bildirimleri', desc: 'Kargo takip SMS\'leri', value: notifSms, key: 'notif_sms', set: setNotifSms },
-                    { label: 'Bülten aboneliği', desc: 'Haftalık ürün ve kampanya haberleri', value: notifNewsletter, key: 'notif_newsletter', set: setNotifNewsletter },
+                    { label: 'Email notifications', desc: 'Order updates and campaigns', value: notifEmail, key: 'notif_email', set: setNotifEmail },
+                    { label: 'SMS notifications', desc: 'Shipping tracking SMS messages', value: notifSms, key: 'notif_sms', set: setNotifSms },
+                    { label: 'Newsletter subscription', desc: 'Weekly product and campaign news', value: notifNewsletter, key: 'notif_newsletter', set: setNotifNewsletter },
                   ].map((item) => (
                     <div key={item.label} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                       <div>
@@ -1860,8 +1860,8 @@ function AccountPageContent() {
                   {/* Flash indirim bildirimi — sunucuda saklanır */}
                   <div className="flex items-center justify-between py-3 border-b border-gray-100">
                     <div>
-                      <p className="text-sm font-semibold text-gray-800">⚡ Flash indirim bildirimleri</p>
-                      <p className="text-xs text-gray-500">Stok fırsatı flash indirimlerinden anında haberdar ol</p>
+                      <p className="text-sm font-semibold text-gray-800">⚡ Flash sale notifications</p>
+                      <p className="text-xs text-gray-500">Get instantly notified about limited-stock flash sales</p>
                     </div>
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -1882,11 +1882,11 @@ function AccountPageContent() {
                   {pushSupported && (
                     <div className="flex items-center justify-between py-3">
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">🔔 Tarayıcı bildirimleri (Push)</p>
+                        <p className="text-sm font-semibold text-gray-800">🔔 Browser notifications (Push)</p>
                         <p className="text-xs text-gray-500">
                           {pushPermission === 'denied'
-                            ? 'Bildirim izni reddedildi. Tarayıcı ayarlarından açabilirsiniz.'
-                            : 'Sitenin dışındayken de sipariş ve indirim bildirimi al'}
+                            ? 'Notification permission denied. You can enable it in browser settings.'
+                            : 'Receive order and discount notifications even when away from the site'}
                         </p>
                       </div>
                       {pushPermission !== 'denied' && (
@@ -1910,7 +1910,7 @@ function AccountPageContent() {
           {(activeTab as string) === 'garanti' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-[#1B3A6B]">Garantilerim</h2>
+                <h2 className="text-lg font-bold text-[#1B3A6B]">My Warranties</h2>
                 <button
                   onClick={() => {
                     setWarrantiesLoading(true);
@@ -1918,7 +1918,7 @@ function AccountPageContent() {
                   }}
                   className="text-sm text-orange-500 hover:text-orange-600 font-semibold"
                 >
-                  Yenile
+                  Refresh
                 </button>
               </div>
 
@@ -1934,19 +1934,19 @@ function AccountPageContent() {
                 if (pendingItems.length === 0) return null;
                 return (
                   <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4">
-                    <p className="text-sm font-bold text-orange-700 mb-3">Garanti Kaydı Yapılmayan Ürünler</p>
+                    <p className="text-sm font-bold text-orange-700 mb-3">Products Without Warranty Registration</p>
                     <div className="space-y-2">
                       {pendingItems.map(({ order, item }) => (
                         <div key={`${order.id}-${item.productId}`} className="flex items-center justify-between bg-white rounded-xl p-3 border border-orange-100">
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-gray-800 truncate">{item.productName}</p>
-                            <p className="text-xs text-gray-400">Sipariş #{order.id} · {new Date(order.createdAt).toLocaleDateString('tr-TR')}</p>
+                            <p className="text-xs text-gray-400">Order #{order.id} · {new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
                           </div>
                           <button
                             onClick={() => { setWarrantyModal({ order, productId: item.productId, productName: item.productName }); setWarrantySerial(''); setWarrantyMsg(null); }}
                             className="shrink-0 ml-3 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
                           >
-                            Tescil Et
+                            Register
                           </button>
                         </div>
                       ))}
@@ -1962,8 +1962,8 @@ function AccountPageContent() {
               ) : warranties.length === 0 ? (
                 <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
                   <Shield size={50} className="mx-auto text-gray-200 mb-3" />
-                  <h3 className="font-bold text-gray-700 mb-2">Garanti Kaydınız Yok</h3>
-                  <p className="text-gray-500 text-sm">Teslim edilen siparişlerinizdeki ürünlerin garanti kaydını yukarıdan yapabilirsiniz.</p>
+                  <h3 className="font-bold text-gray-700 mb-2">No Warranty Registrations</h3>
+                  <p className="text-gray-500 text-sm">You can register warranties for products in your delivered orders from above.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -1982,23 +1982,23 @@ function AccountPageContent() {
                             <div className="min-w-0">
                               <p className="font-bold text-gray-800 truncate">{w.productName}</p>
                               {w.serialNumber && <p className="text-xs text-gray-400">S/N: {w.serialNumber}</p>}
-                              <p className="text-xs text-gray-400">Sipariş #{w.orderId} · {w.warrantyMonths} ay garanti</p>
+                              <p className="text-xs text-gray-400">Order #{w.orderId} · {w.warrantyMonths} month warranty</p>
                             </div>
                           </div>
                           <span className={`shrink-0 text-xs font-bold px-2.5 py-1 rounded-full ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                            {isActive ? 'Aktif' : 'Sona Erdi'}
+                            {isActive ? 'Active' : 'Expired'}
                           </span>
                         </div>
                         <div className="mt-3 pt-3 border-t border-gray-100 grid grid-cols-2 gap-2 text-xs text-gray-500">
                           <div>
-                            <span className="font-semibold text-gray-700">Satın Alma: </span>
+                            <span className="font-semibold text-gray-700">Purchase Date: </span>
                             {new Date(w.purchaseDate).toLocaleDateString('tr-TR')}
                           </div>
                           <div>
-                            <span className="font-semibold text-gray-700">Bitiş: </span>
+                            <span className="font-semibold text-gray-700">Expiry: </span>
                             {expiresDate.toLocaleDateString('tr-TR')}
                             {isActive && daysLeft <= 90 && (
-                              <span className="ml-1 text-amber-600 font-bold">({daysLeft} gün)</span>
+                              <span className="ml-1 text-amber-600 font-bold">({daysLeft} days)</span>
                             )}
                           </div>
                         </div>
@@ -2012,19 +2012,19 @@ function AccountPageContent() {
               {warrantyModal && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                   <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-                    <h3 className="font-extrabold text-[#1B3A6B] text-lg mb-1">Garanti Tescili</h3>
+                    <h3 className="font-extrabold text-[#1B3A6B] text-lg mb-1">Warranty Registration</h3>
                     <p className="text-sm text-gray-500 mb-4">{warrantyModal.productName}</p>
                     {warrantyMsg && (
                       <div className={`text-sm px-4 py-3 rounded-xl mb-4 font-medium ${warrantyMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
                         {warrantyMsg.text}
                       </div>
                     )}
-                    <label className="text-sm font-semibold text-gray-700 block mb-1">Seri Numarası <span className="text-gray-400 font-normal">(opsiyonel)</span></label>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1">Serial Number <span className="text-gray-400 font-normal">(optional)</span></label>
                     <input
                       type="text"
                       value={warrantySerial}
                       onChange={e => setWarrantySerial(e.target.value)}
-                      placeholder="Ürün üzerindeki S/N kodu"
+                      placeholder="S/N code on the product"
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 mb-4"
                     />
                     <div className="flex gap-3">
@@ -2032,7 +2032,7 @@ function AccountPageContent() {
                         onClick={() => { setWarrantyModal(null); setWarrantyMsg(null); }}
                         className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 text-sm transition-colors"
                       >
-                        İptal
+                        Cancel
                       </button>
                       <button
                         disabled={warrantySubmitting}
@@ -2042,17 +2042,17 @@ function AccountPageContent() {
                           try {
                             const reg = await api.warranty.register(warrantyModal.order.id, warrantyModal.productId, warrantySerial);
                             setWarranties(prev => [reg, ...prev]);
-                            setWarrantyMsg({ ok: true, text: 'Garanti kaydınız başarıyla oluşturuldu.' });
+                            setWarrantyMsg({ ok: true, text: 'Your warranty has been successfully registered.' });
                             setTimeout(() => setWarrantyModal(null), 1500);
                           } catch (e: unknown) {
-                            setWarrantyMsg({ ok: false, text: e instanceof Error ? e.message : 'Bir hata oluştu.' });
+                            setWarrantyMsg({ ok: false, text: e instanceof Error ? e.message : 'An error occurred.' });
                           } finally {
                             setWarrantySubmitting(false);
                           }
                         }}
                         className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl text-sm transition-colors"
                       >
-                        {warrantySubmitting ? 'Kaydediliyor...' : 'Garanti Tescil Et'}
+                        {warrantySubmitting ? 'Registering...' : 'Register Warranty'}
                       </button>
                     </div>
                   </div>
@@ -2062,15 +2062,15 @@ function AccountPageContent() {
           )}
 
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-sm font-bold text-red-500 mb-3">Tehlikeli Alan</h3>
-                <p className="text-xs text-gray-500 mb-3">Hesabınızı sildiğinizde tüm verileriniz kalıcı olarak silinir.</p>
+                <h3 className="text-sm font-bold text-red-500 mb-3">Danger Zone</h3>
+                <p className="text-xs text-gray-500 mb-3">When you delete your account, all your data will be permanently deleted.</p>
                 <button
                   onClick={handleDeleteAccount}
                   disabled={deletingAccount}
                   className="border-2 border-red-200 text-red-500 hover:bg-red-50 disabled:opacity-50 font-semibold px-5 py-2 rounded-xl transition-colors text-sm flex items-center gap-2"
                 >
                   {deletingAccount ? <div className="w-4 h-4 border-2 border-red-400 border-t-transparent rounded-full animate-spin" /> : null}
-                  Hesabı Sil
+                  Delete Account
                 </button>
               </div>
             </div>

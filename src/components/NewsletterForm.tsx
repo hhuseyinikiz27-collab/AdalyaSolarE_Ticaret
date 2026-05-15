@@ -13,7 +13,7 @@ export default function NewsletterForm() {
     e.preventDefault();
     if (!email.trim()) {
       setStatus('error');
-      setMessage('Lütfen e-posta adresinizi girin.');
+      setMessage('Please enter your email address.');
       return;
     }
     setStatus('loading');
@@ -24,7 +24,7 @@ export default function NewsletterForm() {
       setEmail('');
     } catch (err: unknown) {
       setStatus('error');
-      setMessage(err instanceof Error ? err.message : 'Bir hata oluştu.');
+      setMessage(err instanceof Error ? err.message : 'An error occurred.');
     }
   };
 
@@ -44,7 +44,7 @@ export default function NewsletterForm() {
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          placeholder="E-posta adresiniz..."
+          placeholder="Your email address..."
           className="flex-1 bg-white/10 text-white placeholder-gray-400 px-4 py-2.5 text-sm outline-none"
         />
         <button
@@ -56,7 +56,7 @@ export default function NewsletterForm() {
         </button>
       </div>
       {status === 'error' && <p className="text-xs text-red-400">{message}</p>}
-      <p className="text-xs text-gray-400">Kampanya ve indirimlerden haberdar olun. İstediğiniz zaman çıkabilirsiniz.</p>
+      <p className="text-xs text-gray-400">Stay updated on campaigns and discounts. Unsubscribe anytime.</p>
     </form>
   );
 }

@@ -139,7 +139,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
         <div className="max-w-4xl mx-auto px-4 py-10">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-1 text-sm text-gray-400 mb-8 flex-wrap">
-            <Link href="/" className="hover:text-orange-500 transition-colors">Ana Sayfa</Link>
+            <Link href="/" className="hover:text-orange-500 transition-colors">Home</Link>
             <ChevronRight size={13} />
             <Link href="/blog" className="hover:text-orange-500 transition-colors">Blog</Link>
             <ChevronRight size={13} />
@@ -160,7 +160,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
             <div className="flex flex-wrap items-center gap-4 ml-auto text-xs text-gray-400">
               <span className="flex items-center gap-1.5">
                 <Calendar size={13} className="text-orange-400" />
-                {new Date(post.date).toLocaleDateString('tr-TR', {
+                {new Date(post.date).toLocaleDateString('en-US', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
@@ -168,7 +168,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock size={13} className="text-orange-400" />
-                {post.readTime} dakika okuma
+                {post.readTime} min read
               </span>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
           {post.tags.length > 0 && (
             <div className="mt-12 pt-8 border-t border-gray-100">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mr-1">Etiketler:</span>
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mr-1">Tags:</span>
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
@@ -215,35 +215,35 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <p className="font-extrabold text-[#1B3A6B] mb-0.5">{post.author}</p>
               <p className="text-sm text-orange-500 font-semibold mb-2">{post.authorTitle}</p>
               <p className="text-sm text-gray-500 leading-relaxed">
-                Adalya Solar Enerji bünyesinde güneş enerjisi sistemleri alanında uzman kadromuzun bir üyesi.
+                A member of Adalya Solar Energy&apos;s expert team specializing in solar energy systems.
               </p>
             </div>
           </div>
 
           {/* CTA */}
           <div className="mt-10 bg-gradient-to-br from-[#1B3A6B] to-[#2d5282] rounded-2xl p-8 text-white text-center shadow-lg">
-            <h3 className="text-xl font-extrabold mb-2">Güneş Enerjisi Sistemi Kurmak İster misiniz?</h3>
+            <h3 className="text-xl font-extrabold mb-2">Want to Install a Solar Energy System?</h3>
             <p className="text-gray-300 text-sm mb-6">
-              Uzman ekibimizden ücretsiz keşif ve kişiselleştirilmiş fiyat teklifi alın.
+              Get a free site survey and personalized quote from our expert team.
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link
                 href="/iletisim"
                 className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-2.5 rounded-xl transition-colors text-sm shadow"
               >
-                Ücretsiz Teklif Al
+                Get a Free Quote
               </Link>
               <Link
                 href="/hesaplayici"
                 className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
               >
-                Tasarruf Hesapla
+                Calculate Savings
               </Link>
               <Link
                 href="/urunler"
                 className="bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm"
               >
-                Ürünlere Göz At
+                Browse Products
               </Link>
             </div>
           </div>
@@ -255,7 +255,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               className="inline-flex items-center gap-2 text-gray-500 hover:text-orange-500 font-semibold text-sm transition-colors group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-              Tüm yazılara dön
+              Back to all posts
             </Link>
           </div>
         </div>
@@ -267,10 +267,10 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-extrabold text-[#1B3A6B] flex items-center gap-2">
                   <BookOpen size={20} className="text-orange-500" />
-                  Bunları da Okuyun
+                  Also Read
                 </h2>
                 <Link href="/blog" className="text-orange-500 hover:text-orange-600 text-sm font-semibold flex items-center gap-1 transition-colors">
-                  Tüm Yazılar <ChevronRight size={15} />
+                  All Posts <ChevronRight size={15} />
                 </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -305,7 +305,7 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
                       <div className="flex items-center justify-between text-xs text-gray-400">
                         <span>{rel.author}</span>
                         <span className="flex items-center gap-1">
-                          <Clock size={11} /> {rel.readTime} dk
+                          <Clock size={11} /> {rel.readTime} min
                         </span>
                       </div>
                     </div>

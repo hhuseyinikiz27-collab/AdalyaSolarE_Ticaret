@@ -6,11 +6,11 @@ import { Plus, Pencil, Trash2, Eye, EyeOff, BookOpen, Calendar, Clock, Globe } f
 import { useToast } from '@/context/ToastContext';
 
 const BLOG_CATEGORIES = [
-  'Kurulum Rehberi',
-  'Ürün İncelemeleri',
-  'Teknoloji',
-  'Tasarruf İpuçları',
-  'Sektör Haberleri',
+  'Installation Guide',
+  'Product Reviews',
+  'Technology',
+  'Saving Tips',
+  'Industry News',
 ];
 
 const empty = {
@@ -54,7 +54,7 @@ export default function AdminBlogPage() {
     setLoading(true);
     api.blog.adminGetAll()
       .then(setPosts)
-      .catch(() => toastError('Blog yazıları yüklenemedi.'))
+      .catch(() => toastError('Failed to load blog posts.'))
       .finally(() => setLoading(false));
   };
 
@@ -86,8 +86,8 @@ export default function AdminBlogPage() {
   };
 
   const handleSave = async () => {
-    if (!form.title.trim()) { toastError('Başlık gerekli.'); return; }
-    if (!form.author.trim()) { toastError('Yazar gerekli.'); return; }
+    if (!form.title.trim()) { toastError('Title is required.'); return; }
+    if (!form.author.trim()) { toastError('Author is required.'); return; }
     setSaving(true);
     try {
       const payload = {
@@ -98,29 +98,29 @@ export default function AdminBlogPage() {
       };
       if (editing) {
         await api.blog.update(editing.id, payload);
-        toastSuccess('Blog yazısı güncellendi.');
+        toastSuccess('Blog post updated.');
       } else {
         await api.blog.create(payload);
-        toastSuccess('Blog yazısı oluşturuldu.');
+        toastSuccess('Blog post created.');
       }
       setShowForm(false);
       load();
     } catch (err: unknown) {
-      toastError(err instanceof Error ? err.message : 'Kaydedilemedi.');
+      toastError(err instanceof Error ? err.message : 'Could not save.');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bu yazıyı silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this post?')) return;
     setDeletingId(id);
     try {
       await api.blog.delete(id);
       setPosts((prev) => prev.filter((p) => p.id !== id));
-      toastSuccess('Yazı silindi.');
+      toastSuccess('Post deleted.');
     } catch {
-      toastError('Silinemedi.');
+      toastError('Could not delete.');
     } finally {
       setDeletingId(null);
     }
@@ -136,7 +136,7 @@ export default function AdminBlogPage() {
       });
       setPosts((prev) => prev.map((x) => x.id === p.id ? { ...x, isPublished: !x.isPublished } : x));
     } catch {
-      toastError('Güncelleme başarısız.');
+      toastError('Update failed.');
     }
   };
 
@@ -144,14 +144,14 @@ export default function AdminBlogPage() {
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Blog Yönetimi</h1>
-          <p className="text-sm text-gray-400 mt-0.5">{posts.length} yazı</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Blog Management</h1>
+          <p className="text-sm text-gray-400 mt-0.5">{posts.length} posts</p>
         </div>
         <button
           onClick={openCreate}
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-xl transition-colors"
         >
-          <Plus size={18} /> Yeni Yazı
+          <Plus size={18} /> New Post
         </button>
       </div>
 
@@ -165,9 +165,9 @@ export default function AdminBlogPage() {
       ) : posts.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 py-16 text-center text-gray-400">
           <BookOpen size={40} className="mx-auto mb-3 text-gray-200" />
-          <p className="font-semibold">Henüz blog yazısı yok.</p>
+          <p className="font-semibold">No blog posts yet.</p>
           <button onClick={openCreate} className="mt-4 text-orange-500 font-semibold text-sm hover:underline">
-            İlk yazıyı oluştur
+            Create the first post
           </button>
         </div>
       ) : (
@@ -184,21 +184,21 @@ export default function AdminBlogPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.isPublished ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
-                    {p.isPublished ? 'Yayında' : 'Taslak'}
+                    {p.isPublished ? 'Published' : 'Draft'}
                   </span>
                   <span className="text-xs text-orange-500 font-semibold">{p.category}</span>
                 </div>
                 <p className="font-bold text-[#1B3A6B] truncate">{p.title}</p>
                 <div className="flex items-center gap-3 text-xs text-gray-400 mt-0.5">
                   <span className="flex items-center gap-1"><Calendar size={11} />{new Date(p.date).toLocaleDateString('tr-TR')}</span>
-                  <span className="flex items-center gap-1"><Clock size={11} />{p.readTime} dk</span>
+                  <span className="flex items-center gap-1"><Clock size={11} />{p.readTime} min</span>
                   <span>{p.author}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => togglePublish(p)}
-                  title={p.isPublished ? 'Taslağa al' : 'Yayınla'}
+                  title={p.isPublished ? 'Move to Draft' : 'Publish'}
                   className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#1B3A6B] transition-colors"
                 >
                   {p.isPublished ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -208,7 +208,7 @@ export default function AdminBlogPage() {
                   target="_blank"
                   rel="noreferrer"
                   className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-orange-500 transition-colors"
-                  title="Görüntüle"
+                  title="View"
                 >
                   <Globe size={16} />
                 </a>
@@ -236,14 +236,14 @@ export default function AdminBlogPage() {
         <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center p-4 overflow-y-auto">
           <div className="bg-white rounded-2xl w-full max-w-2xl my-8 shadow-2xl">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="font-extrabold text-[#1B3A6B]">{editing ? 'Yazıyı Düzenle' : 'Yeni Yazı'}</h2>
+              <h2 className="font-extrabold text-[#1B3A6B]">{editing ? 'Edit Post' : 'New Post'}</h2>
               <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 text-xl font-bold">×</button>
             </div>
 
             <div className="px-6 py-5 space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Başlık *</label>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Title *</label>
                 <input
                   value={form.title}
                   onChange={(e) => {
@@ -255,7 +255,7 @@ export default function AdminBlogPage() {
                     setForm((f) => ({ ...f, title, slug }));
                   }}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
-                  placeholder="Blog yazısı başlığı"
+                  placeholder="Blog post title"
                 />
               </div>
 
@@ -266,38 +266,38 @@ export default function AdminBlogPage() {
                   value={form.slug}
                   onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 font-mono"
-                  placeholder="otomatik-olusturulur"
+                  placeholder="auto-generated"
                 />
               </div>
 
               {/* Excerpt */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Özet</label>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Excerpt</label>
                 <textarea
                   value={form.excerpt}
                   onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))}
                   rows={2}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 resize-none"
-                  placeholder="Kısa açıklama"
+                  placeholder="Short description"
                 />
               </div>
 
               {/* Content */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">İçerik <span className="text-gray-400 font-normal">(paragrafları boş satırla ayırın)</span></label>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Content <span className="text-gray-400 font-normal">(separate paragraphs with a blank line)</span></label>
                 <textarea
                   value={form.content}
                   onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
                   rows={10}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 resize-y"
-                  placeholder="İlk paragraf...&#10;&#10;İkinci paragraf...&#10;&#10;Üçüncü paragraf..."
+                  placeholder="First paragraph...&#10;&#10;Second paragraph...&#10;&#10;Third paragraph..."
                 />
               </div>
 
               {/* Category + Author row */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Kategori</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Category</label>
                   <select
                     value={form.category}
                     onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
@@ -307,7 +307,7 @@ export default function AdminBlogPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Okuma Süresi (dk)</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Read Time (min)</label>
                   <input
                     type="number"
                     value={form.readTime}
@@ -321,21 +321,21 @@ export default function AdminBlogPage() {
               {/* Author */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Yazar Adı *</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Author Name *</label>
                   <input
                     value={form.author}
                     onChange={(e) => setForm((f) => ({ ...f, author: e.target.value }))}
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
-                    placeholder="Ahmet Yılmaz"
+                    placeholder="John Smith"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Yazar Unvanı</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Author Title</label>
                   <input
                     value={form.authorTitle}
                     onChange={(e) => setForm((f) => ({ ...f, authorTitle: e.target.value }))}
                     className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
-                    placeholder="Solar Enerji Uzmanı"
+                    placeholder="Solar Energy Expert"
                   />
                 </div>
               </div>
@@ -343,7 +343,7 @@ export default function AdminBlogPage() {
               {/* Date + ImageUrl */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Tarih</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Date</label>
                   <input
                     type="date"
                     value={form.date}
@@ -352,7 +352,7 @@ export default function AdminBlogPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">Kapak Görseli URL</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Cover Image URL</label>
                   <input
                     value={form.imageUrl}
                     onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
@@ -364,12 +364,12 @@ export default function AdminBlogPage() {
 
               {/* Tags */}
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Etiketler <span className="text-gray-400 font-normal">(virgülle ayırın)</span></label>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Tags <span className="text-gray-400 font-normal">(separate with commas)</span></label>
                 <input
                   value={form.tags}
                   onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
-                  placeholder="güneş paneli, tasarruf, kurulum"
+                  placeholder="solar panel, savings, installation"
                 />
               </div>
 
@@ -381,20 +381,20 @@ export default function AdminBlogPage() {
                   onChange={(e) => setForm((f) => ({ ...f, isPublished: e.target.checked }))}
                   className="w-4 h-4 accent-orange-500"
                 />
-                <span className="text-sm font-semibold text-gray-700">Hemen yayınla</span>
+                <span className="text-sm font-semibold text-gray-700">Publish immediately</span>
               </label>
             </div>
 
             <div className="flex items-center gap-3 px-6 py-4 border-t border-gray-100 justify-end">
               <button onClick={() => setShowForm(false)} className="px-5 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">
-                İptal
+                Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
                 className="px-6 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold text-sm transition-colors"
               >
-                {saving ? 'Kaydediliyor...' : editing ? 'Güncelle' : 'Yayınla'}
+                {saving ? 'Saving...' : editing ? 'Update' : 'Publish'}
               </button>
             </div>
           </div>

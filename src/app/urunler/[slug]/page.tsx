@@ -13,23 +13,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const parts = slug.split('-');
   const id = parseInt(parts[parts.length - 1], 10);
 
-  if (isNaN(id)) return { title: 'Ürün | Adalya Solar Enerji' };
+  if (isNaN(id)) return { title: 'Ürün | Adalya Solar Energy' };
 
   try {
     const res = await fetch(`${BASE}/api/products/${id}`, { cache: 'no-store' });
-    if (!res.ok) return { title: 'Ürün | Adalya Solar Enerji' };
+    if (!res.ok) return { title: 'Ürün | Adalya Solar Energy' };
     const p = await res.json();
     return {
-      title: `${p.name} | Adalya Solar Enerji`,
-      description: (p.description || '').slice(0, 160) || 'Adalya Solar Enerji ürün detayları.',
+      title: `${p.name} | Adalya Solar Energy`,
+      description: (p.description || '').slice(0, 160) || 'Adalya Solar Energy product details.',
       openGraph: {
-        title: `${p.name} | Adalya Solar Enerji`,
+        title: `${p.name} | Adalya Solar Energy`,
         description: (p.description || '').slice(0, 160),
         images: p.imageUrl ? [`${BASE}${p.imageUrl.startsWith('/') ? '' : '/'}${p.imageUrl}`] : [],
       },
     };
   } catch {
-    return { title: 'Ürün | Adalya Solar Enerji' };
+    return { title: 'Ürün | Adalya Solar Energy' };
   }
 }
 

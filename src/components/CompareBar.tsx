@@ -14,7 +14,7 @@ export default function CompareBar() {
       <div className="max-w-7xl mx-auto flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
           <GitCompare size={18} className="text-orange-500 shrink-0" />
-          <span className="text-sm font-semibold text-gray-700 shrink-0">Karşılaştır ({items.length}/3)</span>
+          <span className="text-sm font-semibold text-gray-700 shrink-0">Compare ({items.length}/3)</span>
           <div className="flex gap-2 overflow-x-auto">
             {items.map(p => (
               <div key={p.id} className="flex items-center gap-2 bg-gray-50 rounded-xl px-3 py-1.5 shrink-0">
@@ -31,13 +31,13 @@ export default function CompareBar() {
         </div>
         <div className="flex gap-2 shrink-0">
           <button onClick={clear} className="text-sm text-gray-400 hover:text-gray-600 font-semibold px-3 py-1.5 transition-colors">
-            Temizle
+            Clear
           </button>
           <Link
             href="/karsilastir"
             className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-colors"
           >
-            Karşılaştır
+            Compare
           </Link>
         </div>
       </div>

@@ -52,25 +52,25 @@ export default function AdminCategories() {
         setCats(prev => [...prev, created].sort((a, b) => a.sortOrder - b.sortOrder));
       }
       setShowModal(false);
-      success(editing ? 'Kategori güncellendi.' : 'Kategori oluşturuldu.');
+      success(editing ? 'Category updated.' : 'Category created.');
       await revalidateAfterCategoryChange();
       window.dispatchEvent(new Event('category-changed'));
     } catch {
-      error('Kaydedilemedi.');
+      error('Could not save.');
     } finally {
       setSaving(false);
     }
   };
 
   const remove = async (id: number) => {
-    if (!confirm('Bu kategoriyi silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this category?')) return;
     try {
       await api.admin.categories.delete(id);
       setCats(prev => prev.filter(c => c.id !== id));
       await revalidateAfterCategoryChange();
       window.dispatchEvent(new Event('category-changed'));
     } catch {
-      error('Kategori silinemedi. Bu kategoriye bağlı ürünler olabilir.');
+      error('Category could not be deleted. There may be products linked to this category.');
     }
   };
 
@@ -78,15 +78,15 @@ export default function AdminCategories() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Kategori Yönetimi</h1>
-          <p className="text-sm text-gray-400 mt-1">Kategoriler navbar menüsüne anında yansır</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Category Management</h1>
+          <p className="text-sm text-gray-400 mt-1">Categories are instantly reflected in the navbar menu</p>
         </div>
         <button
           onClick={openNew}
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors"
         >
           <Plus size={18} />
-          Yeni Kategori
+          New Category
         </button>
       </div>
 
@@ -102,7 +102,7 @@ export default function AdminCategories() {
               <span className="text-2xl shrink-0">{cat.icon}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-[#1B3A6B]">{cat.name}</p>
-                <p className="text-xs text-gray-400">/{cat.slug} · Sıra: {cat.sortOrder}</p>
+                <p className="text-xs text-gray-400">/{cat.slug} · Order: {cat.sortOrder}</p>
                 {cat.description && <p className="text-xs text-gray-500 truncate mt-0.5">{cat.description}</p>}
               </div>
               <div className="flex gap-2 shrink-0">
@@ -123,16 +123,16 @@ export default function AdminCategories() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-[#1B3A6B]">{editing ? 'Kategoriyi Düzenle' : 'Yeni Kategori'}</h3>
+              <h3 className="text-lg font-bold text-[#1B3A6B]">{editing ? 'Edit Category' : 'New Category'}</h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Kategori Adı *</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1">Category Name *</label>
                 <input
                   value={form.name}
                   onChange={e => handleSlugify(e.target.value)}
-                  placeholder="örn: Güneş Panelleri"
+                  placeholder="e.g. Solar Panels"
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
                 />
               </div>
@@ -141,13 +141,13 @@ export default function AdminCategories() {
                 <input
                   value={form.slug}
                   onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
-                  placeholder="gunes-panelleri"
+                  placeholder="solar-panels"
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400 font-mono"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm font-semibold text-gray-700 block mb-1">İkon (emoji)</label>
+                  <label className="text-sm font-semibold text-gray-700 block mb-1">Icon (emoji)</label>
                   <input
                     value={form.icon}
                     onChange={e => setForm(f => ({ ...f, icon: e.target.value }))}
@@ -156,7 +156,7 @@ export default function AdminCategories() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-700 block mb-1">Sıra</label>
+                  <label className="text-sm font-semibold text-gray-700 block mb-1">Order</label>
                   <input
                     type="number"
                     value={form.sortOrder}
@@ -166,19 +166,19 @@ export default function AdminCategories() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Açıklama</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1">Description</label>
                 <input
                   value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  placeholder="Kısa açıklama"
+                  placeholder="Short description"
                   className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-orange-400"
                 />
               </div>
             </div>
             <div className="flex gap-3 mt-5">
-              <button onClick={() => setShowModal(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">İptal</button>
+              <button onClick={() => setShowModal(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">Cancel</button>
               <button onClick={save} disabled={saving} className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">
-                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                {saving ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>

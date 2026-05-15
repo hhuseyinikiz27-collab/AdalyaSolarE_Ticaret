@@ -102,10 +102,10 @@ export default function QuickViewModal({ product, onClose }: Props) {
             {/* Stock */}
             <p className="text-xs mb-4">
               {product.stock > 10
-                ? <span className="text-green-600 font-medium">✓ Stokta var</span>
+                ? <span className="text-green-600 font-medium">✓ In Stock</span>
                 : product.stock > 0
-                ? <span className="text-orange-500 font-medium">⚠ Son {product.stock} adet</span>
-                : <span className="text-red-500 font-medium">✗ Stokta yok</span>
+                ? <span className="text-orange-500 font-medium">⚠ Only {product.stock} left</span>
+                : <span className="text-red-500 font-medium">✗ Out of Stock</span>
               }
             </p>
 
@@ -114,7 +114,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
             {/* Quantity */}
             {product.stock > 0 && (
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-sm font-semibold text-gray-600">Adet:</span>
+                <span className="text-sm font-semibold text-gray-600">Qty:</span>
                 <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
                   <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-3 py-1.5 hover:bg-gray-50">−</button>
                   <span className="px-4 font-bold text-sm">{qty}</span>
@@ -132,7 +132,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
                 }`}
               >
                 {added ? <Check size={16} /> : <ShoppingCart size={16} />}
-                {added ? 'Eklendi!' : 'Sepete Ekle'}
+                {added ? 'Added!' : 'Add to Cart'}
               </button>
               <button
                 onClick={() => toggle(product.id)}
@@ -143,7 +143,7 @@ export default function QuickViewModal({ product, onClose }: Props) {
             </div>
 
             <Link href={`/urunler/${product.slug}`} className="text-center text-xs text-orange-500 hover:text-orange-600 mt-3 underline">
-              Ürün detayına git →
+              View product details →
             </Link>
           </div>
         </div>

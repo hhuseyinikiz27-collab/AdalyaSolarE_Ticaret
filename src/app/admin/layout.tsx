@@ -14,25 +14,25 @@ import { api } from '@/lib/api';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-  { href: '/admin/urunler', label: 'Ürünler', icon: Package },
-  { href: '/admin/kategoriler', label: 'Kategoriler', icon: Tag },
-  { href: '/admin/kullanicilar', label: 'Kullanıcılar', icon: Users },
-  { href: '/admin/siparisler', label: 'Siparişler', icon: ShoppingCart },
-  { href: '/admin/yorumlar', label: 'Yorumlar', icon: MessageSquare },
-  { href: '/admin/mesajlar', label: 'Mesajlar', icon: Inbox },
-  { href: '/admin/kampanyalar', label: 'Kampanyalar', icon: Megaphone },
-  { href: '/admin/kuponlar', label: 'Kuponlar', icon: Ticket },
+  { href: '/admin/urunler', label: 'Products', icon: Package },
+  { href: '/admin/kategoriler', label: 'Categories', icon: Tag },
+  { href: '/admin/kullanicilar', label: 'Users', icon: Users },
+  { href: '/admin/siparisler', label: 'Orders', icon: ShoppingCart },
+  { href: '/admin/yorumlar', label: 'Reviews', icon: MessageSquare },
+  { href: '/admin/mesajlar', label: 'Messages', icon: Inbox },
+  { href: '/admin/kampanyalar', label: 'Campaigns', icon: Megaphone },
+  { href: '/admin/kuponlar', label: 'Coupons', icon: Ticket },
   { href: '/admin/blog', label: 'Blog', icon: BookOpen },
   { href: '/admin/bundlelar', label: 'Bundle / Kit', icon: Layers },
-  { href: '/admin/iadeler', label: 'İadeler', icon: RotateCcw },
-  { href: '/admin/sorular', label: 'Sorular', icon: HelpCircle },
-  { href: '/admin/hediye-kartlari', label: 'Hediye Kartları', icon: Gift },
-  { href: '/admin/kurulum-talepleri', label: 'Kurulum Talepleri', icon: Wrench },
-  { href: '/admin/teklif-talepleri', label: 'Teklif Talepleri', icon: FileText },
-  { href: '/admin/referanslar', label: 'Referans Projeler', icon: MapPinIcon },
-  { href: '/admin/analitik', label: 'Analitik', icon: BarChart2 },
-  { href: '/admin/toplu-siparisler', label: 'Toplu Siparişler', icon: ClipboardList },
-  { href: '/admin/ayarlar', label: 'Ayarlar', icon: Settings },
+  { href: '/admin/iadeler', label: 'Returns', icon: RotateCcw },
+  { href: '/admin/sorular', label: 'Questions', icon: HelpCircle },
+  { href: '/admin/hediye-kartlari', label: 'Gift Cards', icon: Gift },
+  { href: '/admin/kurulum-talepleri', label: 'Installation Requests', icon: Wrench },
+  { href: '/admin/teklif-talepleri', label: 'Quote Requests', icon: FileText },
+  { href: '/admin/referanslar', label: 'Reference Projects', icon: MapPinIcon },
+  { href: '/admin/analitik', label: 'Analytics', icon: BarChart2 },
+  { href: '/admin/toplu-siparisler', label: 'Bulk Orders', icon: ClipboardList },
+  { href: '/admin/ayarlar', label: 'Settings', icon: Settings },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -75,7 +75,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     api.admin.coupons.getExpiringCount().then((r) => applyBadge('/admin/kuponlar', r.count, setExpiringCoupons)).catch(() => {});
   }, [user, applyBadge]);
 
-  // localStorage'ı önce oku, sonra badge'leri çek — sıra garantili
+  // Read localStorage first, then fetch badges — order guaranteed
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('admin_badge_dismissed') || '{}');
@@ -187,7 +187,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors w-full"
           >
             <LogOut size={18} />
-            Çıkış Yap
+            Sign Out
           </button>
         </div>
       </aside>

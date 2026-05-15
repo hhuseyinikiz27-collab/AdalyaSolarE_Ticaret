@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export const metadata = { title: 'Kullanım Koşulları | Adalya Solar Enerji' };
+export const metadata = { title: 'Terms of Use | Adalya Solar Energy' };
 
 async function fetchPolicy(key: string): Promise<string | null> {
   try {
@@ -20,13 +20,13 @@ export default async function KullanimKosullariPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-12">
       <div className="text-sm text-gray-500 mb-6">
-        <Link href="/" className="hover:text-orange-500">Ana Sayfa</Link>
+        <Link href="/" className="hover:text-orange-500">Home</Link>
         <span className="mx-1">/</span>
-        <span className="text-orange-500 font-semibold">Kullanım Koşulları</span>
+        <span className="text-orange-500 font-semibold">Terms of Use</span>
       </div>
 
-      <h1 className="text-3xl font-extrabold text-[#1B3A6B] mb-2">Kullanım Koşulları</h1>
-      <p className="text-sm text-gray-400 mb-8">Son güncelleme: Mayıs 2026</p>
+      <h1 className="text-3xl font-extrabold text-[#1B3A6B] mb-2">Terms of Use</h1>
+      <p className="text-sm text-gray-400 mb-8">Last updated: May 2026</p>
 
       {content ? (
         <div className="text-gray-700 text-sm leading-relaxed whitespace-pre-wrap">
@@ -35,58 +35,58 @@ export default async function KullanimKosullariPage() {
       ) : (
         <div className="prose prose-sm max-w-none text-gray-700 space-y-6">
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">1. Genel Hükümler</h2>
-            <p>Bu Kullanım Koşulları, <strong>adalyasolar.com</strong> alan adlı web sitesini kullanan tüm ziyaretçi ve kullanıcılar için geçerlidir. Siteyi kullanmaya devam etmeniz, bu koşulları kabul ettiğiniz anlamına gelir. Koşulları kabul etmiyorsanız siteyi kullanmayı bırakınız.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">1. General Provisions</h2>
+            <p>These Terms of Use apply to all visitors and users of the website at <strong>adalyasolar.com</strong>. Continuing to use the site means you have accepted these terms. If you do not accept the terms, please stop using the site.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">2. Hizmet Kapsamı</h2>
-            <p>Adalya Solar Enerji; güneş paneli, inverter, montaj ekipmanı ve ilgili ürünlerin satışını gerçekleştiren bir e-ticaret platformudur. Sitede yer alan ürün açıklamaları, görseller ve fiyat bilgileri bilgilendirme amaçlı olup önceden haber verilmeksizin değiştirilebilir.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">2. Scope of Service</h2>
+            <p>Adalya Solar Energy is an e-commerce platform that sells solar panels, inverters, installation equipment, and related products. Product descriptions, images, and price information on the site are for informational purposes and may be changed without prior notice.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">3. Kullanıcı Hesabı</h2>
-            <p>Platformumuza üye olurken doğru ve güncel bilgi vermeniz gerekmektedir. Hesap güvenliğinizden ve şifrenizin gizliliğinden siz sorumlusunuz. Hesabınızın yetkisiz kişilerce kullanıldığını tespit ettiğinizde derhal <strong>info@adalyasolar.com</strong> adresine bildiriniz.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">3. User Account</h2>
+            <p>When registering on our platform, you must provide accurate and up-to-date information. You are responsible for the security of your account and the confidentiality of your password. If you detect unauthorized use of your account, immediately notify us at <strong>info@adalyasolar.com</strong>.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">4. Sipariş ve Ödeme</h2>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">4. Orders and Payment</h2>
             <ul className="list-disc pl-5 space-y-1 mt-2">
-              <li>Siparişiniz onaylanana kadar satış gerçekleşmiş sayılmaz.</li>
-              <li>Ödeme, sipariş tamamlama sırasında alınır; başarısız ödemelerde sipariş iptal edilir.</li>
-              <li>Stok tükenmesi veya teknik hata durumunda sipariş iptal edilerek ödeme iade edilir.</li>
-              <li>Fiyatlar KDV dahildir; kargo ücreti ayrıca belirtilir.</li>
+              <li>A sale is not considered complete until your order is confirmed.</li>
+              <li>Payment is collected at the time of order completion; failed payments result in order cancellation.</li>
+              <li>In case of stock shortage or technical error, the order is cancelled and the payment is refunded.</li>
+              <li>Prices include VAT; shipping fees are stated separately.</li>
             </ul>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">5. Teslimat</h2>
-            <p>Teslimat süreleri ürün ve stok durumuna göre değişmekte olup ortalama <strong>3–7 iş günü</strong>dür. Teslimat adresinizde bulunmamanız durumunda kargo firması size bildirim yapacaktır. Gecikmelerde sorumluluk kargo firmasına aittir.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">5. Delivery</h2>
+            <p>Delivery times vary depending on the product and stock status, with an average of <strong>3–7 business days</strong>. If you are not present at your delivery address, the shipping company will notify you. The shipping company is responsible for delays.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">6. Fikri Mülkiyet</h2>
-            <p>Sitede yer alan tüm içerik (logo, görsel, metin, tasarım) Adalya Solar Enerji&apos;ye aittir. İzinsiz kopyalanması, çoğaltılması veya dağıtılması yasaktır ve hukuki işleme konu olabilir.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">6. Intellectual Property</h2>
+            <p>All content on the site (logos, images, text, design) belongs to Adalya Solar Energy. Unauthorized copying, reproduction, or distribution is prohibited and may be subject to legal action.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">7. Sorumluluk Sınırlaması</h2>
-            <p>Adalya Solar Enerji; teknik arızalar, internet kesintileri veya üçüncü taraf hizmetlerden kaynaklanan aksaklıklardan sorumlu tutulamaz. Site &quot;olduğu gibi&quot; sunulmakta olup hizmetin kesintisiz çalışacağı garanti edilmez.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">7. Limitation of Liability</h2>
+            <p>Adalya Solar Energy cannot be held responsible for technical failures, internet outages, or disruptions caused by third-party services. The site is provided &quot;as is&quot; and uninterrupted service is not guaranteed.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">8. Yasaklı Kullanımlar</h2>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">8. Prohibited Uses</h2>
             <ul className="list-disc pl-5 space-y-1 mt-2">
-              <li>Sahte kimlik veya bilgi kullanarak hesap açmak</li>
-              <li>Sisteme yetkisiz erişim sağlamaya çalışmak</li>
-              <li>Diğer kullanıcıları yanıltacak ya da zarara uğratacak eylemler</li>
-              <li>Otomatik bot/script ile site trafiği oluşturmak</li>
+              <li>Opening an account using a false identity or information</li>
+              <li>Attempting to gain unauthorized access to the system</li>
+              <li>Actions that mislead or harm other users</li>
+              <li>Generating site traffic with automated bots/scripts</li>
             </ul>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">9. Değişiklik Hakkı</h2>
-            <p>Bu koşullar önceden haber verilmeksizin güncellenebilir. Güncel koşullar her zaman bu sayfada yayımlanır. Siteyi kullanmaya devam etmeniz, güncel koşulları kabul ettiğiniz anlamına gelir.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">9. Right to Modify</h2>
+            <p>These terms may be updated without prior notice. The current terms are always published on this page. Continuing to use the site means you have accepted the current terms.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">10. Uygulanacak Hukuk</h2>
-            <p>Bu koşullar Türkiye Cumhuriyeti kanunlarına tabidir. Uyuşmazlıklarda Antalya Mahkemeleri ve İcra Daireleri yetkilidir.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">10. Governing Law</h2>
+            <p>These terms are subject to the laws of the Republic of Turkey. Antalya Courts and Enforcement Offices are authorized in disputes.</p>
           </section>
           <section>
-            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">11. İletişim</h2>
-            <p>Sorularınız için <Link href="/iletisim" className="text-orange-500 hover:underline">İletişim</Link> sayfamızı ziyaret edebilir ya da <strong>info@adalyasolar.com</strong> adresine e-posta gönderebilirsiniz.</p>
+            <h2 className="text-lg font-bold text-[#1B3A6B] mb-2">11. Contact</h2>
+            <p>For your questions, you can visit our <Link href="/iletisim" className="text-orange-500 hover:underline">Contact</Link> page or send an email to <strong>info@adalyasolar.com</strong>.</p>
           </section>
         </div>
       )}

@@ -69,10 +69,10 @@ export default function ProductListRow({ product }: Props) {
           {/* Stock */}
           <p className="text-xs">
             {product.stock > 10
-              ? <span className="text-green-600 font-medium">✓ Stokta var</span>
+              ? <span className="text-green-600 font-medium">✓ In Stock</span>
               : product.stock > 0
-              ? <span className="text-orange-500 font-medium">⚠ Son {product.stock} adet</span>
-              : <span className="text-red-500 font-medium">✗ Stokta yok</span>
+              ? <span className="text-orange-500 font-medium">⚠ Only {product.stock} left</span>
+              : <span className="text-red-500 font-medium">✗ Out of Stock</span>
             }
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function ProductListRow({ product }: Props) {
               }`}
             >
               {added ? <Check size={14} /> : <ShoppingCart size={14} />}
-              {added ? 'Eklendi!' : 'Sepete Ekle'}
+              {added ? 'Added!' : 'Add to Cart'}
             </button>
           </div>
         </div>

@@ -24,14 +24,14 @@ function getEffectiveStatus(coupon: ApiCoupon): {
   const limitReached = coupon.maxUses > 0 && coupon.usedCount >= coupon.maxUses;
 
   if (!coupon.isActive) {
-    if (expired) return { label: 'Pasif', reason: 'Süresi doldu', color: 'red' };
-    if (limitReached) return { label: 'Pasif', reason: 'Limit doldu', color: 'orange' };
-    return { label: 'Pasif', reason: 'Manuel pasif', color: 'gray' };
+    if (expired) return { label: 'Inactive', reason: 'Expired', color: 'red' };
+    if (limitReached) return { label: 'Inactive', reason: 'Limit reached', color: 'orange' };
+    return { label: 'Inactive', reason: 'Manually deactivated', color: 'gray' };
   }
-  // isActive = true ama gerçekte geçersiz
-  if (expired) return { label: 'Aktif (Süresi Dolmuş!)', reason: 'Süresi doldu — pasife alın', color: 'red' };
-  if (limitReached) return { label: 'Aktif (Limit Dolmuş!)', reason: 'Kullanım limiti doldu — pasife alın', color: 'orange' };
-  return { label: 'Aktif', reason: null, color: 'green' };
+  // isActive = true but effectively invalid
+  if (expired) return { label: 'Active (Expired!)', reason: 'Expired — please deactivate', color: 'red' };
+  if (limitReached) return { label: 'Active (Limit Reached!)', reason: 'Usage limit reached — please deactivate', color: 'orange' };
+  return { label: 'Active', reason: null, color: 'green' };
 }
 
 export default function AdminCouponsPage() {
@@ -69,7 +69,7 @@ export default function AdminCouponsPage() {
       );
       setCoupons(updated);
     } catch (e) {
-      setLoadError(e instanceof Error ? e.message : 'Kuponlar yüklenemedi.');
+      setLoadError(e instanceof Error ? e.message : 'Could not load coupons.');
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ export default function AdminCouponsPage() {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.code.trim()) { setError('Kupon kodu boş bırakılamaz.'); return; }
+    if (!form.code.trim()) { setError('Coupon code cannot be empty.'); return; }
     setSaving(true);
     setError('');
     try {
@@ -105,7 +105,7 @@ export default function AdminCouponsPage() {
       setCoupons(prev => [created, ...prev]);
       setShowForm(false);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Kupon oluşturulamadı.');
+      setError(err instanceof Error ? err.message : 'Could not create coupon.');
     } finally {
       setSaving(false);
     }
@@ -116,18 +116,18 @@ export default function AdminCouponsPage() {
       const result = await api.admin.coupons.toggle(id);
       setCoupons(prev => prev.map(c => c.id === id ? { ...c, isActive: result.isActive } : c));
     } catch {
-      setError('Durum değiştirilemedi.');
+      setError('Could not change status.');
       setTimeout(() => setError(''), 3000);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bu kuponu silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this coupon?')) return;
     try {
       await api.admin.coupons.delete(id);
       setCoupons(prev => prev.filter(c => c.id !== id));
     } catch {
-      setError('Kupon silinemedi.');
+      setError('Could not delete coupon.');
       setTimeout(() => setError(''), 3000);
     }
   };
@@ -137,20 +137,20 @@ export default function AdminCouponsPage() {
       {loadError && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm mb-6 flex items-center justify-between">
           <span>{loadError}</span>
-          <button onClick={load} className="font-semibold underline ml-4">Tekrar Dene</button>
+          <button onClick={load} className="font-semibold underline ml-4">Try Again</button>
         </div>
       )}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Kupon Yönetimi</h1>
-          <p className="text-sm text-gray-500 mt-1">İndirim kuponları oluşturun ve yönetin</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Coupon Management</h1>
+          <p className="text-sm text-gray-500 mt-1">Create and manage discount coupons</p>
         </div>
         <button
           onClick={openForm}
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-5 py-2.5 rounded-xl transition-colors text-sm"
         >
           <Plus size={16} />
-          Yeni Kupon
+          New Coupon
         </button>
       </div>
 
@@ -159,37 +159,37 @@ export default function AdminCouponsPage() {
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold text-[#1B3A6B]">Yeni Kupon Oluştur</h2>
+              <h2 className="text-lg font-bold text-[#1B3A6B]">Create New Coupon</h2>
               <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
             </div>
             {error && <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-xl mb-4">{error}</p>}
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-gray-600 block mb-1">Kupon Kodu</label>
+                <label className="text-xs font-semibold text-gray-600 block mb-1">Coupon Code</label>
                 <input
                   type="text"
                   value={form.code}
                   onChange={e => setForm(p => ({ ...p, code: e.target.value.toUpperCase() }))}
-                  placeholder="Örn: ADALYA20"
+                  placeholder="e.g. ADALYA20"
                   className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-orange-400 font-mono tracking-widest"
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-600 block mb-1">İndirim Türü</label>
+                  <label className="text-xs font-semibold text-gray-600 block mb-1">Discount Type</label>
                   <select
                     value={form.discountType}
                     onChange={e => setForm(p => ({ ...p, discountType: e.target.value }))}
                     className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400 bg-white"
                   >
-                    <option value="percentage">Yüzde (%)</option>
-                    <option value="fixed">Sabit (₺)</option>
+                    <option value="percentage">Percentage (%)</option>
+                    <option value="fixed">Fixed (₺)</option>
                   </select>
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-600 block mb-1">
-                    İndirim Değeri {form.discountType === 'percentage' ? '(%)' : '(₺)'}
+                    Discount Value {form.discountType === 'percentage' ? '(%)' : '(₺)'}
                   </label>
                   <input
                     type="number"
@@ -205,7 +205,7 @@ export default function AdminCouponsPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-semibold text-gray-600 block mb-1">Min. Sipariş (₺)</label>
+                  <label className="text-xs font-semibold text-gray-600 block mb-1">Min. Order (₺)</label>
                   <input
                     type="number"
                     min={0}
@@ -216,7 +216,7 @@ export default function AdminCouponsPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-gray-600 block mb-1">Maks. Kullanım</label>
+                  <label className="text-xs font-semibold text-gray-600 block mb-1">Max. Uses</label>
                   <input
                     type="number"
                     min={1}
@@ -228,7 +228,7 @@ export default function AdminCouponsPage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600 block mb-1">Son Kullanma Tarihi (opsiyonel)</label>
+                <label className="text-xs font-semibold text-gray-600 block mb-1">Expiry Date (optional)</label>
                 <input
                   type="date"
                   value={form.expiresAt}
@@ -238,25 +238,25 @@ export default function AdminCouponsPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-semibold text-gray-600 block mb-1">Kampanya Kısıtlaması</label>
+                <label className="text-xs font-semibold text-gray-600 block mb-1">Campaign Restriction</label>
                 <select
                   value={form.campaignId}
                   onChange={e => setForm(p => ({ ...p, campaignId: e.target.value }))}
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400 bg-white"
                 >
-                  <option value="">Kampanyaya bağlı değil (herkese açık)</option>
+                  <option value="">Not linked to a campaign (public)</option>
                   {campaigns.map(c => (
                     <option key={c.id} value={String(c.id)}>{c.title}</option>
                   ))}
                 </select>
                 {form.campaignId && (
-                  <p className="text-xs text-orange-600 mt-1">Bu kodu yalnızca seçili kampanyaya katılmış üyeler kullanabilir.</p>
+                  <p className="text-xs text-orange-600 mt-1">Only members enrolled in the selected campaign can use this code.</p>
                 )}
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">İptal</button>
+                <button type="button" onClick={() => setShowForm(false)} className="flex-1 border border-gray-200 text-gray-600 font-semibold py-2.5 rounded-xl hover:bg-gray-50 transition-colors text-sm">Cancel</button>
                 <button type="submit" disabled={saving} className="flex-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold py-2.5 rounded-xl transition-colors text-sm">
-                  {saving ? 'Oluşturuluyor...' : 'Oluştur'}
+                  {saving ? 'Creating...' : 'Create'}
                 </button>
               </div>
             </form>
@@ -272,9 +272,9 @@ export default function AdminCouponsPage() {
       ) : coupons.length === 0 ? (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-16 text-center">
           <Ticket size={50} className="mx-auto text-gray-200 mb-3" />
-          <p className="text-gray-500">Henüz kupon oluşturulmamış.</p>
+          <p className="text-gray-500">No coupons created yet.</p>
           <button onClick={openForm} className="mt-4 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-xl transition-colors text-sm">
-            İlk Kuponu Oluştur
+            Create First Coupon
           </button>
         </div>
       ) : (
@@ -282,14 +282,14 @@ export default function AdminCouponsPage() {
           <table className="w-full">
             <thead>
               <tr className="bg-gray-50 text-left">
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Kod</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Kampanya</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">İndirim</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Min. Sipariş</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Kullanım</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Son Tarih</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Durum</th>
-                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">İşlem</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Code</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Campaign</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Discount</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Min. Order</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Usage</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Expiry</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-5 py-3.5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -303,9 +303,9 @@ export default function AdminCouponsPage() {
                   <td className="px-5 py-4 text-xs text-gray-500">
                     {coupon.campaignId
                       ? <span className="bg-orange-100 text-orange-700 font-semibold px-2 py-0.5 rounded-full">
-                          {campaigns.find(c => c.id === coupon.campaignId)?.title || `Kampanya ${coupon.campaignId}`}
+                          {campaigns.find(c => c.id === coupon.campaignId)?.title || `Campaign ${coupon.campaignId}`}
                         </span>
-                      : <span className="text-gray-400">Herkese açık</span>
+                      : <span className="text-gray-400">Public</span>
                     }
                   </td>
                   <td className="px-5 py-4">

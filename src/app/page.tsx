@@ -33,7 +33,7 @@ export default function Home() {
     ['10.000+', t('statInstallations')],
     ['500+', t('statBrands')],
     ['%98', t('statSatisfaction')],
-    ['25 Yıl', t('statWarranty')],
+    ['25 Years', t('statWarranty')],
   ];
 
   return (

@@ -42,7 +42,7 @@ export default function AdminMesajlarPage() {
     setLoadError('');
     api.admin.messages.getAll()
       .then(setMessages)
-      .catch(e => setLoadError(e instanceof Error ? e.message : 'Mesajlar yüklenemedi.'))
+      .catch(e => setLoadError(e instanceof Error ? e.message : 'Messages could not be loaded.'))
       .finally(() => setLoading(false));
   };
 
@@ -63,13 +63,13 @@ export default function AdminMesajlarPage() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this message?')) return;
     try {
       await api.admin.messages.delete(id);
       setMessages((prev) => prev.filter((m) => m.id !== id));
       if (expanded === id) setExpanded(null);
     } catch {
-      error('Mesaj silinemedi.');
+      error('Message could not be deleted.');
     }
   };
 
@@ -84,9 +84,9 @@ export default function AdminMesajlarPage() {
       : messages;
 
   const tabs: { id: Filter; label: string; count: number; icon: React.ReactNode }[] = [
-    { id: 'tumu', label: 'Tümü', count: messages.length, icon: <Mail size={15} /> },
-    { id: 'kurumsal', label: 'Kurumsal Talepler', count: kurumsalCount, icon: <Building2 size={15} /> },
-    { id: 'iletisim', label: 'İletişim Formu', count: iletisimCount, icon: <MessageSquare size={15} /> },
+    { id: 'tumu', label: 'All', count: messages.length, icon: <Mail size={15} /> },
+    { id: 'kurumsal', label: 'Corporate Requests', count: kurumsalCount, icon: <Building2 size={15} /> },
+    { id: 'iletisim', label: 'Contact Form', count: iletisimCount, icon: <MessageSquare size={15} /> },
   ];
 
   return (
@@ -94,17 +94,17 @@ export default function AdminMesajlarPage() {
       {loadError && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl px-4 py-3 text-sm mb-6 flex items-center justify-between">
           <span>{loadError}</span>
-          <button onClick={load} className="font-semibold underline ml-4">Tekrar Dene</button>
+          <button onClick={load} className="font-semibold underline ml-4">Try Again</button>
         </div>
       )}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Mesajlar</h1>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Message Management</h1>
           <p className="text-sm text-gray-500 mt-1">
             {unreadCount > 0 ? (
-              <span className="text-orange-500 font-semibold">{unreadCount} okunmamış mesaj</span>
+              <span className="text-orange-500 font-semibold">{unreadCount} unread message{unreadCount > 1 ? 's' : ''}</span>
             ) : (
-              'Tüm mesajlar okundu'
+              'All messages read'
             )}
           </p>
         </div>
@@ -142,7 +142,7 @@ export default function AdminMesajlarPage() {
       ) : filtered.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center text-gray-400">
           <Mail size={40} className="mx-auto mb-3 opacity-30" />
-          <p className="font-medium">Bu kategoride henüz mesaj yok</p>
+          <p className="font-medium">No messages in this category yet</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -175,17 +175,17 @@ export default function AdminMesajlarPage() {
                       </span>
                       <span className="text-xs text-gray-400">{msg.email}</span>
                       {!msg.isRead && (
-                        <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">Yeni</span>
+                        <span className="text-xs bg-orange-100 text-orange-600 font-semibold px-2 py-0.5 rounded-full">New</span>
                       )}
                       {isCorporate(msg) && (
                         <span className="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
-                          <Building2 size={10} /> Kurumsal
+                          <Building2 size={10} /> Corporate
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-gray-500 truncate mt-0.5">
                       {corp
-                        ? `${corp.urunler.length} ürün talebi${corp.teslimat && corp.teslimat !== 'Belirtilmedi' ? ` · ${corp.teslimat}` : ''}`
+                        ? `${corp.urunler.length} product request${corp.teslimat && corp.teslimat !== 'Belirtilmedi' ? ` · ${corp.teslimat}` : ''}`
                         : msg.subject
                       }
                     </p>
@@ -202,25 +202,25 @@ export default function AdminMesajlarPage() {
                 {expanded === msg.id && (
                   <div className="px-5 pb-5 border-t border-gray-100 pt-4">
                     {corp ? (
-                      /* Kurumsal mesaj: yapılandırılmış görünüm */
+                      /* Corporate message: structured view */
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-                          <InfoCell label="Firma" value={corp.firma} />
-                          <InfoCell label="Yetkili" value={corp.yetkili || msg.name} />
-                          <InfoCell label="E-posta">
+                          <InfoCell label="Company" value={corp.firma} />
+                          <InfoCell label="Contact" value={corp.yetkili || msg.name} />
+                          <InfoCell label="Email">
                             <a href={`mailto:${msg.email}`} className="font-medium text-orange-500 hover:underline">{msg.email}</a>
                           </InfoCell>
-                          {msg.phone && <InfoCell label="Telefon">
+                          {msg.phone && <InfoCell label="Phone">
                             <a href={`tel:${msg.phone}`} className="font-medium text-gray-700">{msg.phone}</a>
                           </InfoCell>}
                           {corp.teslimat && corp.teslimat !== 'Belirtilmedi' && (
-                            <InfoCell label="Teslimat Adresi" value={corp.teslimat} />
+                            <InfoCell label="Delivery Address" value={corp.teslimat} />
                           )}
                         </div>
 
                         {corp.urunler.length > 0 && (
                           <div>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Talep Edilen Ürünler</p>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Requested Products</p>
                             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 space-y-2">
                               {corp.urunler.map((u, i) => (
                                 <div key={i} className="flex items-start gap-2 text-sm">
@@ -236,7 +236,7 @@ export default function AdminMesajlarPage() {
 
                         {corp.notlar && (
                           <div>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Ek Notlar</p>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Additional Notes</p>
                             <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 leading-relaxed">
                               {corp.notlar}
                             </div>
@@ -244,17 +244,17 @@ export default function AdminMesajlarPage() {
                         )}
                       </div>
                     ) : (
-                      /* Normal iletişim mesajı */
+                      /* Regular contact message */
                       <div>
                         <div className="grid grid-cols-2 gap-3 text-sm mb-4">
-                          <InfoCell label="Ad Soyad" value={msg.name} />
-                          <InfoCell label="E-posta">
+                          <InfoCell label="Full Name" value={msg.name} />
+                          <InfoCell label="Email">
                             <a href={`mailto:${msg.email}`} className="font-medium text-orange-500 hover:underline">{msg.email}</a>
                           </InfoCell>
-                          {msg.phone && <InfoCell label="Telefon">
+                          {msg.phone && <InfoCell label="Phone">
                             <a href={`tel:${msg.phone}`} className="font-medium text-gray-700">{msg.phone}</a>
                           </InfoCell>}
-                          <InfoCell label="Konu" value={msg.subject || '—'} />
+                          <InfoCell label="Subject" value={msg.subject || '—'} />
                         </div>
                         <div className="bg-gray-50 rounded-xl p-4 text-sm text-gray-700 whitespace-pre-wrap leading-relaxed mb-4">
                           {msg.message}
@@ -272,14 +272,14 @@ export default function AdminMesajlarPage() {
                           className="flex items-center gap-1.5 text-xs bg-[#1B3A6B] hover:bg-[#152d55] text-white font-semibold px-3 py-1.5 rounded-lg transition-colors"
                         >
                           <Mail size={13} />
-                          Yanıtla
+                          Reply
                         </a>
                         <button
                           onClick={() => handleDelete(msg.id)}
                           className="flex items-center gap-1.5 text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-1.5 rounded-lg transition-colors"
                         >
                           <Trash2 size={13} />
-                          Sil
+                          Delete
                         </button>
                       </div>
                     </div>

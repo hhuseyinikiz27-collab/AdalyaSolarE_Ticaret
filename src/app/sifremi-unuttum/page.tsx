@@ -13,13 +13,13 @@ export default function ForgotPasswordPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.includes('@')) { setError('Geçerli bir e-posta adresi girin.'); return; }
+    if (!email.includes('@')) { setError('Please enter a valid email address.'); return; }
     setLoading(true);
     setError('');
     try {
       await api.auth.forgotPassword(email.trim().toLowerCase());
     } catch {
-      // Güvenlik gereği hata göstermiyoruz — kullanıcı var mı yok mu belli olmasın
+      // For security, we don't show errors — whether the account exists or not
     } finally {
       setLoading(false);
       setSent(true);
@@ -33,9 +33,9 @@ export default function ForgotPasswordPage() {
           <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
             <Mail size={32} className="text-white" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Şifremi Unuttum</h1>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Forgot Password</h1>
           <p className="text-gray-500 text-sm mt-2">
-            E-posta adresinizi girin, şifre sıfırlama bağlantısı gönderelim.
+            Enter your email address and we&apos;ll send you a password reset link.
           </p>
         </div>
 
@@ -43,16 +43,17 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="text-center">
               <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
-              <h2 className="text-lg font-bold text-gray-800 mb-2">Bağlantı Gönderildi</h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-2">Link Sent</h2>
               <p className="text-gray-500 text-sm mb-6">
-                <span className="font-semibold text-[#1B3A6B]">{email}</span> adresine kayıtlı bir hesap varsa
-                şifre sıfırlama bağlantısı gönderildi. Spam klasörünüzü de kontrol edin.
+                If an account is registered with{' '}
+                <span className="font-semibold text-[#1B3A6B]">{email}</span>,
+                a password reset link has been sent. Please also check your spam folder.
               </p>
               <Link
                 href="/giris"
                 className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
               >
-                Giriş Sayfasına Dön
+                Return to Sign In
               </Link>
             </div>
           ) : (
@@ -64,7 +65,7 @@ export default function ForgotPasswordPage() {
                 </div>
               )}
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1.5">E-posta Adresi</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1.5">Email Address</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
@@ -72,7 +73,7 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="ornek@email.com"
+                    placeholder="example@email.com"
                     className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
                   />
                 </div>
@@ -86,7 +87,7 @@ export default function ForgotPasswordPage() {
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
-                  'Sıfırlama Bağlantısı Gönder'
+                  'Send Reset Link'
                 )}
               </button>
 
@@ -95,7 +96,7 @@ export default function ForgotPasswordPage() {
                 className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition-colors"
               >
                 <ArrowLeft size={14} />
-                Giriş sayfasına geri dön
+                Back to sign in
               </Link>
             </form>
           )}

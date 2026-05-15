@@ -9,10 +9,10 @@ import {
 } from 'lucide-react';
 
 const ACTION_LABELS: Record<string, { label: string; color: string; Icon: React.FC<{ size: number }> }> = {
-  login:            { label: 'Giriş yapıldı',           color: 'text-green-600 bg-green-50',  Icon: LogIn },
-  password_changed: { label: 'Şifre değiştirildi',      color: 'text-blue-600 bg-blue-50',    Icon: KeyRound },
-  locked_out:       { label: 'Hesap kilitlendi',         color: 'text-red-600 bg-red-50',      Icon: Lock },
-  admin_unlocked:   { label: 'Admin kilidi kaldırdı',   color: 'text-orange-600 bg-orange-50', Icon: LockOpen },
+  login:            { label: 'Logged in',               color: 'text-green-600 bg-green-50',  Icon: LogIn },
+  password_changed: { label: 'Password changed',        color: 'text-blue-600 bg-blue-50',    Icon: KeyRound },
+  locked_out:       { label: 'Account locked',          color: 'text-red-600 bg-red-50',      Icon: Lock },
+  admin_unlocked:   { label: 'Admin removed lock',      color: 'text-orange-600 bg-orange-50', Icon: LockOpen },
 };
 
 function fmtDate(iso: string | null) {
@@ -25,17 +25,17 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Siparişler modal
+  // Orders modal
   const [viewOrders, setViewOrders] = useState<{ user: AdminUser; orders: unknown[] } | null>(null);
   const [ordersLoading, setOrdersLoading] = useState(false);
 
-  // Güvenlik modal
+  // Security modal
   const [viewSecurity, setViewSecurity] = useState<{ user: AdminUser; security: ApiUserSecurity } | null>(null);
   const [secLoading, setSecLoading] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
   const [clearingBan, setClearingBan] = useState(false);
 
-  // Not modal
+  // Note modal
   const [noteModal, setNoteModal] = useState<{ user: AdminUser; note: string } | null>(null);
   const [noteSaving, setNoteSaving] = useState(false);
   const [noteMsg, setNoteMsg] = useState('');
@@ -48,7 +48,7 @@ export default function AdminUsers() {
   }, []);
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Are you sure you want to delete this user?')) return;
     await api.admin.users.delete(id);
     await load();
   };
@@ -59,7 +59,7 @@ export default function AdminUsers() {
       await api.admin.users.updateRole(user.id, newRole);
       await load();
     } catch {
-      error('Rol güncellenemedi.');
+      error('Role could not be updated.');
     }
   };
 
@@ -107,11 +107,11 @@ export default function AdminUsers() {
     setNoteMsg('');
     try {
       await api.admin.users.updateNote(noteModal.user.id, noteModal.note || null);
-      setNoteMsg('Not kaydedildi.');
+      setNoteMsg('Note saved.');
       setUsers(prev => prev.map(u => u.id === noteModal.user.id ? { ...u, adminNote: noteModal.note || null } : u));
       setTimeout(() => setNoteModal(null), 800);
     } catch {
-      setNoteMsg('Kaydedilemedi.');
+      setNoteMsg('Could not be saved.');
     } finally {
       setNoteSaving(false);
     }
@@ -119,49 +119,49 @@ export default function AdminUsers() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-8">Kullanıcı Yönetimi</h1>
+      <h1 className="text-2xl font-extrabold text-[#1B3A6B] mb-8">User Management</h1>
 
-      {/* Admin Not Modal */}
+      {/* Admin Note Modal */}
       {noteModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-[#1B3A6B]">Admin Notu</h2>
+              <h2 className="text-lg font-bold text-[#1B3A6B]">Admin Note</h2>
               <button onClick={() => setNoteModal(null)}><X size={20} className="text-gray-400" /></button>
             </div>
-            <p className="text-sm text-gray-500 mb-3">{noteModal.user.name} — dahili not (müşteriye görünmez)</p>
+            <p className="text-sm text-gray-500 mb-3">{noteModal.user.name} — internal note (not visible to customer)</p>
             <textarea
               value={noteModal.note}
               onChange={e => setNoteModal(n => n ? { ...n, note: e.target.value } : null)}
               rows={4}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]"
-              placeholder="Bu müşteri hakkında dahili notunuzu yazın..."
+              placeholder="Write your internal note about this customer..."
             />
             {noteMsg && <p className="text-sm mt-2 text-green-600">{noteMsg}</p>}
             <div className="flex gap-2 mt-4">
-              <button onClick={() => setNoteModal(null)} className="flex-1 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm">İptal</button>
+              <button onClick={() => setNoteModal(null)} className="flex-1 py-2 border border-gray-200 text-gray-600 rounded-lg text-sm">Cancel</button>
               <button onClick={handleSaveNote} disabled={noteSaving} className="flex-1 py-2 bg-[#1B3A6B] text-white rounded-lg text-sm hover:bg-[#152d54] disabled:opacity-50">
-                {noteSaving ? 'Kaydediliyor...' : 'Kaydet'}
+                {noteSaving ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Sipariş Geçmişi Modal */}
+      {/* Order History Modal */}
       {viewOrders && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b">
               <div>
                 <h2 className="text-lg font-bold text-[#1B3A6B]">{viewOrders.user.name}</h2>
-                <p className="text-sm text-gray-400">{viewOrders.user.email} — Sipariş Geçmişi</p>
+                <p className="text-sm text-gray-400">{viewOrders.user.email} — Order History</p>
               </div>
               <button onClick={() => setViewOrders(null)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
             </div>
             <div className="p-6">
               {viewOrders.orders.length === 0 ? (
-                <p className="text-center text-gray-400 py-8">Henüz sipariş yok.</p>
+                <p className="text-center text-gray-400 py-8">No orders yet.</p>
               ) : (
                 <div className="space-y-3">
                   {(viewOrders.orders as { id: number; total: number; status: string; createdAt: string; items: { productName: string; quantity: number; unitPrice: number }[] }[]).map((order) => (
@@ -189,7 +189,7 @@ export default function AdminUsers() {
         </div>
       )}
 
-      {/* Güvenlik Detayı Modal */}
+      {/* Security Details Modal */}
       {viewSecurity && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[85vh] flex flex-col">
@@ -199,33 +199,33 @@ export default function AdminUsers() {
                   <Shield size={18} className="text-orange-500" />
                   {viewSecurity.user.name}
                 </h2>
-                <p className="text-sm text-gray-400">{viewSecurity.user.email} — Güvenlik Detayları</p>
+                <p className="text-sm text-gray-400">{viewSecurity.user.email} — Security Details</p>
               </div>
               <button onClick={() => setViewSecurity(null)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
             </div>
 
             <div className="overflow-y-auto flex-1 p-6 space-y-5">
-              {/* Özet kartlar */}
+              {/* Summary cards */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-gray-50 rounded-xl p-3">
-                  <p className="text-xs text-gray-400 mb-0.5 flex items-center gap-1"><LogIn size={11} /> Son Giriş</p>
+                  <p className="text-xs text-gray-400 mb-0.5 flex items-center gap-1"><LogIn size={11} /> Last Login</p>
                   <p className="text-sm font-semibold text-gray-800">{fmtDate(viewSecurity.security.lastLoginAt)}</p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-3">
-                  <p className="text-xs text-gray-400 mb-0.5 flex items-center gap-1"><KeyRound size={11} /> Son Şifre Değişikliği</p>
+                  <p className="text-xs text-gray-400 mb-0.5 flex items-center gap-1"><KeyRound size={11} /> Last Password Change</p>
                   <p className="text-sm font-semibold text-gray-800">{fmtDate(viewSecurity.security.passwordChangedAt)}</p>
                 </div>
               </div>
 
-              {/* Kilit durumu */}
+              {/* Lock status */}
               {viewSecurity.security.isLocked ? (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
                   <AlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-red-700 text-sm">Hesap Kilitli</p>
+                    <p className="font-semibold text-red-700 text-sm">Account Locked</p>
                     <p className="text-xs text-red-600 mt-0.5">{viewSecurity.security.lockoutReason}</p>
                     <p className="text-xs text-red-500 mt-0.5">
-                      Kilit bitiş: {fmtDate(viewSecurity.security.lockoutUntil)}
+                      Lock expires: {fmtDate(viewSecurity.security.lockoutUntil)}
                     </p>
                   </div>
                   <button
@@ -234,27 +234,27 @@ export default function AdminUsers() {
                     className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shrink-0"
                   >
                     {unlocking ? <Loader2 size={12} className="animate-spin" /> : <LockOpen size={12} />}
-                    Kilidi Kaldır
+                    Unlock
                   </button>
                 </div>
               ) : (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2">
                   <LockOpen size={16} className="text-green-600" />
-                  <span className="text-sm font-medium text-green-700">Hesap aktif, kilit yok.</span>
+                  <span className="text-sm font-medium text-green-700">Account active, no lock.</span>
                 </div>
               )}
 
-              {/* Sipariş spam ban durumu */}
+              {/* Order spam ban status */}
               {viewSecurity.security.isSpamBanned ? (
                 <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-start gap-3">
                   <AlertTriangle size={18} className="text-orange-500 shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-orange-700 text-sm">Sipariş Kısıtlaması Aktif</p>
+                    <p className="font-semibold text-orange-700 text-sm">Order Restriction Active</p>
                     <p className="text-xs text-orange-600 mt-0.5">
-                      Bu kullanıcı geçici olarak sipariş oluşturamaz.
+                      This user is temporarily unable to place orders.
                     </p>
                     <p className="text-xs text-orange-500 mt-0.5">
-                      Kısıtlama bitiş: {fmtDate(viewSecurity.security.spamBanUntil)}
+                      Restriction expires: {fmtDate(viewSecurity.security.spamBanUntil)}
                     </p>
                   </div>
                   <button
@@ -263,21 +263,21 @@ export default function AdminUsers() {
                     className="flex items-center gap-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors shrink-0"
                   >
                     {clearingBan ? <Loader2 size={12} className="animate-spin" /> : <LockOpen size={12} />}
-                    Kısıtlamayı Kaldır
+                    Remove Restriction
                   </button>
                 </div>
               ) : (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2">
                   <LockOpen size={16} className="text-green-600" />
-                  <span className="text-sm font-medium text-green-700">Sipariş kısıtlaması yok.</span>
+                  <span className="text-sm font-medium text-green-700">No order restriction.</span>
                 </div>
               )}
 
-              {/* Güvenlik Logları */}
+              {/* Security Logs */}
               <div>
-                <h3 className="text-sm font-bold text-gray-700 mb-3">Güvenlik Geçmişi</h3>
+                <h3 className="text-sm font-bold text-gray-700 mb-3">Security History</h3>
                 {viewSecurity.security.logs.length === 0 ? (
-                  <p className="text-xs text-gray-400 text-center py-4">Henüz kayıt yok.</p>
+                  <p className="text-xs text-gray-400 text-center py-4">No records yet.</p>
                 ) : (
                   <div className="space-y-2">
                     {viewSecurity.security.logs.map((log) => {
@@ -313,11 +313,11 @@ export default function AdminUsers() {
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="text-left px-6 py-4 font-semibold text-gray-500">Kullanıcı</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Rol</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Sipariş</th>
-                <th className="text-left px-4 py-4 font-semibold text-gray-500">Kayıt Tarihi</th>
-                <th className="text-right px-6 py-4 font-semibold text-gray-500">İşlem</th>
+                <th className="text-left px-6 py-4 font-semibold text-gray-500">User</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Role</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Orders</th>
+                <th className="text-left px-4 py-4 font-semibold text-gray-500">Registration Date</th>
+                <th className="text-right px-6 py-4 font-semibold text-gray-500">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -336,16 +336,16 @@ export default function AdminUsers() {
                   </td>
                   <td className="px-4 py-4">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${u.role === 'admin' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-600'}`}>
-                      {u.role === 'admin' ? 'Admin' : 'Kullanıcı'}
+                      {u.role === 'admin' ? 'admin' : 'user'}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-gray-600">{u.orderCount} sipariş</td>
+                  <td className="px-4 py-4 text-gray-600">{u.orderCount} orders</td>
                   <td className="px-4 py-4 text-gray-500">{new Date(u.createdAt).toLocaleDateString('tr-TR')}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => { setNoteMsg(''); setNoteModal({ user: u, note: u.adminNote ?? '' }); }}
-                        title="Admin Notu"
+                        title="Admin Note"
                         className={`p-2 rounded-lg transition-colors ${u.adminNote ? 'text-yellow-500 hover:bg-yellow-50' : 'text-gray-400 hover:text-yellow-500 hover:bg-yellow-50'}`}
                       >
                         <StickyNote size={16} />
@@ -353,7 +353,7 @@ export default function AdminUsers() {
                       <button
                         onClick={() => handleViewOrders(u)}
                         disabled={ordersLoading}
-                        title="Siparişleri Gör"
+                        title="View Orders"
                         className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <ShoppingBag size={16} />
@@ -361,21 +361,21 @@ export default function AdminUsers() {
                       <button
                         onClick={() => handleViewSecurity(u)}
                         disabled={secLoading}
-                        title="Güvenlik Detayları"
+                        title="Security Details"
                         className="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                       >
                         {secLoading ? <Loader2 size={16} className="animate-spin" /> : <Shield size={16} />}
                       </button>
                       <button
                         onClick={() => handleRoleToggle(u)}
-                        title={u.role === 'admin' ? 'Admin Yetkisini Kaldır' : 'Admin Yap'}
+                        title={u.role === 'admin' ? 'Remove Admin Role' : 'Make Admin'}
                         className="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                       >
                         {u.role === 'admin' ? <UserIcon size={16} /> : <ShieldCheck size={16} />}
                       </button>
                       <button
                         onClick={() => handleDelete(u.id)}
-                        title="Kullanıcıyı Sil"
+                        title="Delete User"
                         className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       >
                         <Trash2 size={16} />

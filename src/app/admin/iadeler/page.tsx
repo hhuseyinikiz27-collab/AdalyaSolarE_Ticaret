@@ -5,10 +5,10 @@ import { api, ApiReturnRequest } from '@/lib/api';
 import { AlertCircle, CheckCircle, XCircle, Clock, Package, ChevronDown } from 'lucide-react';
 
 const STATUS_LABELS: Record<string, string> = {
-  beklemede:  'Beklemede',
-  onaylandi:  'Onaylandı',
-  reddedildi: 'Reddedildi',
-  tamamlandi: 'Tamamlandı',
+  beklemede:  'Pending',
+  onaylandi:  'Approved',
+  reddedildi: 'Rejected',
+  tamamlandi: 'Completed',
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -55,7 +55,7 @@ export default function AdminReturnsPage() {
           ? { ...r, status: actionForm.status as ApiReturnRequest['status'], adminNote: actionForm.adminNote || null }
           : r
       ));
-      // Talep onaylandı veya tamamlandıysa kazanılan sadakat puanlarını geri al
+      // If the request is approved or completed, reverse the earned loyalty points
       if (actionForm.status === 'onaylandi' || actionForm.status === 'tamamlandi') {
         api.admin.loyalty.deductForOrder(actionModal.req.orderId).catch(() => {});
       }
@@ -71,10 +71,10 @@ export default function AdminReturnsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">İade / İptal Talepleri</h1>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Return / Cancellation Management</h1>
           {pending > 0 && (
             <p className="text-sm text-amber-600 font-medium mt-0.5">
-              {pending} bekleyen talep var
+              {pending} pending request{pending > 1 ? 's' : ''}
             </p>
           )}
         </div>
@@ -89,18 +89,18 @@ export default function AdminReturnsPage() {
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
-              {s === '' ? 'Tümü' : STATUS_LABELS[s]}
+              {s === '' ? 'All' : STATUS_LABELS[s]}
             </button>
           ))}
         </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-20 text-gray-400">Yükleniyor...</div>
+        <div className="text-center py-20 text-gray-400">Loading...</div>
       ) : requests.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <Package size={48} className="mx-auto mb-3 text-gray-200" />
-          <p className="font-semibold">Talep bulunamadı.</p>
+          <p className="font-semibold">No requests found.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -118,15 +118,15 @@ export default function AdminReturnsPage() {
                   </div>
                   <div>
                     <p className="font-bold text-[#1B3A6B] text-sm">
-                      {req.type === 'iade' ? 'İade Talebi' : 'İptal Talebi'}
-                      {' — '}Sipariş #{req.orderId}
+                      {req.type === 'iade' ? 'Return Request' : 'Cancellation Request'}
+                      {' — '}Order #{req.orderId}
                     </p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {req.userName} · {req.userEmail}
                     </p>
                     <p className="text-sm text-gray-600 mt-2 bg-gray-50 rounded-lg px-3 py-2">{req.reason}</p>
                     {req.adminNote && (
-                      <p className="text-xs text-gray-500 mt-1 italic">Admin notu: {req.adminNote}</p>
+                      <p className="text-xs text-gray-500 mt-1 italic">Admin note: {req.adminNote}</p>
                     )}
                     <p className="text-xs text-gray-400 mt-2">
                       {new Date(req.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
@@ -143,7 +143,7 @@ export default function AdminReturnsPage() {
                       className="flex items-center gap-1.5 bg-[#1B3A6B] hover:bg-[#2d5282] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
                     >
                       <ChevronDown size={13} />
-                      İşlem Yap
+                      Take Action
                     </button>
                   )}
                 </div>
@@ -158,11 +158,11 @@ export default function AdminReturnsPage() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
             <h3 className="text-lg font-bold text-[#1B3A6B] mb-4">
-              Sipariş #{actionModal.req.orderId} — Talep İşlemi
+              Order #{actionModal.req.orderId} — Process Request
             </h3>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-2">Durum</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-2">Status</label>
                 <div className="grid grid-cols-2 gap-2">
                   {['onaylandi', 'reddedildi', 'tamamlandi'].map(s => (
                     <button
@@ -180,12 +180,12 @@ export default function AdminReturnsPage() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Admin Notu (isteğe bağlı)</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1">Admin Note (optional)</label>
                 <textarea
                   value={actionForm.adminNote}
                   onChange={e => setActionForm(p => ({ ...p, adminNote: e.target.value }))}
                   rows={3}
-                  placeholder="Kullanıcıya bildirilecek not..."
+                  placeholder="Note to be communicated to the user..."
                   className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400 resize-none"
                 />
               </div>
@@ -195,14 +195,14 @@ export default function AdminReturnsPage() {
                 onClick={() => setActionModal(null)}
                 className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50"
               >
-                Vazgeç
+                Cancel
               </button>
               <button
                 onClick={submitAction}
                 disabled={submitting}
                 className="flex-1 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold disabled:opacity-50"
               >
-                {submitting ? 'Kaydediliyor...' : 'Kaydet'}
+                {submitting ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>

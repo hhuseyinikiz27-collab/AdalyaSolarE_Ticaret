@@ -1,7 +1,7 @@
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import ContactForm from './ContactForm';
 
-export const metadata = { title: 'İletişim | Adalya Solar Enerji' };
+export const metadata = { title: 'Contact | Adalya Solar Energy' };
 
 const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5207';
 
@@ -20,14 +20,14 @@ export default async function ContactPage() {
 
   const phone = info['site.phone'] || '';
   const email = info['site.email'] || 'info@adalyasolar.com';
-  const address = info['site.address'] || 'Antalya / Türkiye';
+  const address = info['site.address'] || 'Antalya / Turkey';
   const phoneHref = phone ? `tel:+9${phone.replace(/\s/g, '')}` : '#';
 
   const contactItems = [
-    { icon: Phone, title: 'Telefon', lines: phone ? [phone] : ['—'] },
-    { icon: Mail, title: 'E-posta', lines: [email] },
-    { icon: MapPin, title: 'Adres', lines: [address] },
-    { icon: Clock, title: 'Çalışma Saatleri', lines: ['Pzt – Cmt: 09:00 – 18:00', 'Pazar: Kapalı'] },
+    { icon: Phone, title: 'Phone', lines: phone ? [phone] : ['—'] },
+    { icon: Mail, title: 'Email', lines: [email] },
+    { icon: MapPin, title: 'Address', lines: [address] },
+    { icon: Clock, title: 'Working Hours', lines: ['Mon – Sat: 09:00 – 18:00', 'Sunday: Closed'] },
   ];
 
   return (
@@ -35,12 +35,12 @@ export default async function ContactPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-[#1B3A6B] via-[#2d5282] to-[#1B3A6B] text-white py-16 px-4 text-center">
         <span className="inline-block bg-orange-500/20 border border-orange-400/30 text-orange-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-          İletişim
+          Contact
         </span>
-        <h1 className="text-4xl font-extrabold mb-3">Bizimle İletişime Geçin</h1>
+        <h1 className="text-4xl font-extrabold mb-3">Get in Touch with Us</h1>
         <p className="text-gray-300 max-w-xl mx-auto text-sm leading-relaxed">
-          Güneş enerjisi sisteminiz için ücretsiz analiz ve fiyat teklifi almak,
-          ya da herhangi bir konuda destek almak için bize ulaşın.
+          Contact us to receive a free analysis and price quote for your solar energy system,
+          or to get support on any topic.
         </p>
       </section>
 
@@ -48,7 +48,7 @@ export default async function ContactPage() {
 
         {/* Contact Info */}
         <div className="space-y-5">
-          <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">İletişim Bilgileri</h2>
+          <h2 className="text-xl font-extrabold text-[#1B3A6B] mb-6">Contact Information</h2>
           {contactItems.map(({ icon: Icon, title, lines }) => (
             <div key={title} className="flex gap-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
               <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">
@@ -70,7 +70,7 @@ export default async function ContactPage() {
               style={{ border: 0 }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Konum"
+              title="Location"
             />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default async function ContactPage() {
 
       {/* Bottom CTA */}
       <section className="bg-orange-50 border-t border-orange-100 py-10 px-4 text-center">
-        <p className="text-[#1B3A6B] font-semibold mb-1">Hızlı yanıt almak için doğrudan arayın</p>
+        <p className="text-[#1B3A6B] font-semibold mb-1">Call us directly for a quick response</p>
         {phone ? (
           <a href={phoneHref} className="text-3xl font-extrabold text-orange-500 hover:text-orange-600 transition-colors">
             {phone}
@@ -93,7 +93,7 @@ export default async function ContactPage() {
         ) : (
           <p className="text-3xl font-extrabold text-orange-500">—</p>
         )}
-        <p className="text-gray-400 text-xs mt-1">Pzt – Cmt 09:00 – 18:00</p>
+        <p className="text-gray-400 text-xs mt-1">Mon – Sat 09:00 – 18:00</p>
       </section>
     </main>
   );

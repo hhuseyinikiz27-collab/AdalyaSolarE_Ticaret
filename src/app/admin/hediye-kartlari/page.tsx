@@ -20,7 +20,7 @@ export default function AdminGiftCards() {
   useEffect(() => { load(); }, []);
 
   const handleCreate = async () => {
-    if (!form.amount || Number(form.amount) <= 0) { setError('Geçerli bir tutar girin.'); return; }
+    if (!form.amount || Number(form.amount) <= 0) { setError('Please enter a valid amount.'); return; }
     setSaving(true);
     setError('');
     try {
@@ -33,14 +33,14 @@ export default function AdminGiftCards() {
       setForm({ amount: '', code: '', expiresAt: '', note: '' });
       load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Oluşturulamadı.');
+      setError(e instanceof Error ? e.message : 'Could not create.');
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bu hediye kartını silmek istiyor musunuz?')) return;
+    if (!confirm('Are you sure you want to delete this gift card?')) return;
     await api.giftCards.adminDelete(id);
     load();
   };
@@ -56,18 +56,18 @@ export default function AdminGiftCards() {
       <div className="flex items-center gap-3 mb-8">
         <Gift size={24} className="text-orange-500" />
         <div>
-          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Hediye Kartları</h1>
-          <p className="text-sm text-gray-400 mt-0.5">Oluştur ve kullanıcılara ilet</p>
+          <h1 className="text-2xl font-extrabold text-[#1B3A6B]">Gift Card Management</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Create and send to users</p>
         </div>
       </div>
 
       {/* Create form */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-        <h2 className="font-bold text-[#1B3A6B] mb-4">Yeni Hediye Kartı</h2>
+        <h2 className="font-bold text-[#1B3A6B] mb-4">New Gift Card</h2>
         {error && <p className="text-red-500 text-sm mb-3 bg-red-50 px-3 py-2 rounded-xl">{error}</p>}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
           <div>
-            <label className="text-xs font-semibold text-gray-500 block mb-1">Tutar (₺) *</label>
+            <label className="text-xs font-semibold text-gray-500 block mb-1">Amount (₺) *</label>
             <input
               type="number"
               value={form.amount}
@@ -77,7 +77,7 @@ export default function AdminGiftCards() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-gray-500 block mb-1">Kod (boş = otomatik)</label>
+            <label className="text-xs font-semibold text-gray-500 block mb-1">Code (empty = auto)</label>
             <input
               value={form.code}
               onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))}
@@ -86,7 +86,7 @@ export default function AdminGiftCards() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-gray-500 block mb-1">Son Kullanım</label>
+            <label className="text-xs font-semibold text-gray-500 block mb-1">Expiry Date</label>
             <input
               type="date"
               value={form.expiresAt}
@@ -95,11 +95,11 @@ export default function AdminGiftCards() {
             />
           </div>
           <div>
-            <label className="text-xs font-semibold text-gray-500 block mb-1">Not</label>
+            <label className="text-xs font-semibold text-gray-500 block mb-1">Note</label>
             <input
               value={form.note}
               onChange={e => setForm(f => ({ ...f, note: e.target.value }))}
-              placeholder="Müşteri adı vb."
+              placeholder="Customer name etc."
               className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-orange-400"
             />
           </div>
@@ -110,7 +110,7 @@ export default function AdminGiftCards() {
           className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-colors"
         >
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Plus size={15} />}
-          Oluştur
+          Create
         </button>
       </div>
 
@@ -120,14 +120,14 @@ export default function AdminGiftCards() {
       ) : cards.length === 0 ? (
         <div className="text-center py-16 text-gray-400 bg-white rounded-2xl">
           <Gift size={36} className="mx-auto mb-3 text-gray-200" />
-          <p>Henüz hediye kartı oluşturulmadı.</p>
+          <p>No gift cards created yet.</p>
         </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
-                {['Kod', 'Tutar', 'Kalan', 'Son Kullanım', 'Not', 'Durum', ''].map(h => (
+                {['Code', 'Amount', 'Balance', 'Expiry Date', 'Note', 'Status', ''].map(h => (
                   <th key={h} className="text-left px-4 py-3 text-xs font-bold text-gray-400 uppercase">{h}</th>
                 ))}
               </tr>
@@ -155,7 +155,7 @@ export default function AdminGiftCards() {
                   <td className="px-4 py-3 text-gray-500 text-xs">{gc.note || '—'}</td>
                   <td className="px-4 py-3">
                     <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${gc.isActive ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
-                      {gc.isActive ? 'Aktif' : 'Tükendi'}
+                      {gc.isActive ? 'Active' : 'Exhausted'}
                     </span>
                   </td>
                   <td className="px-4 py-3">
